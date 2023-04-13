@@ -8,7 +8,7 @@ public class GenerateLevel : MonoBehaviour
     private static GameObject[,] grid = null;
 
     [Header("Prefabs")]
-	[SerializeField] private GameObject tilePrefab;
+	[SerializeField] private GameObject[] tilePrefabs;
 	[SerializeField] private GameObject[] playerPrefabs;
 	[SerializeField] private GameObject[] enemyPrefabs;
     [SerializeField] private GameObject[] orePrefabs;
@@ -99,34 +99,40 @@ public class GenerateLevel : MonoBehaviour
         // Make new grid
         grid = new GameObject[gridHeight, gridWidth];
 
-        // Spawn tiles
-        for(int row = 0; row < gridHeight; row++)
+        // Create spaceship / player spawn zones in center
+        // Create alien spawn zones on each edge
+        // Create border spawn zones along edges
+        // Create ore spawn zones a set distance away from the spaceship zone
+        // Create general zones that can potentially exist on top of the core zones
+
+        // Spawn tiles anywhere that doesn't have them
+        for (int row = 0; row < gridHeight; row++)
         {
-            for(int col = 0; col < gridWidth; col++)
+            for (int col = 0; col < gridWidth; col++)
             {
-                grid[row, col] = Instantiate(tilePrefab, new Vector3(col, 0, row), tilePrefab.transform.rotation);
+                grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation);
             }
         }
 
-        // Spawn spaceship
-        grid[gridHeight / 2, gridWidth / 2].GetComponent<Tile>().occupant = Instantiate(spaceshipPrefab, new Vector3(gridWidth / 2, spaceshipPrefab.transform.position.y, gridHeight / 2), Quaternion.identity);
+        //      // Spawn spaceship
+        //      grid[gridHeight / 2, gridWidth / 2].GetComponent<Tile>().occupant = Instantiate(spaceshipPrefab, new Vector3(gridWidth / 2, spaceshipPrefab.transform.position.y, gridHeight / 2), Quaternion.identity);
 
-        // Spawn players
-        for (int i = 0; i < playerPrefabs.Length; i++)
-        {
-            SpawnEntityAtRandom(playerPrefabs[i]);
-        }
+        //      // Spawn players
+        //      for (int i = 0; i < playerPrefabs.Length; i++)
+        //      {
+        //          SpawnEntityAtRandom(playerPrefabs[i]);
+        //      }
 
-        // Spawn enemies
-		for (int i = 0; i < (int)(gridWidth * gridHeight * percentEnemies); i++)
-		{
-			SpawnEntityAtRandom(enemyPrefabs[0]);
-		}
+        //      // Spawn enemies
+        //for (int i = 0; i < (int)(gridWidth * gridHeight * percentEnemies); i++)
+        //{
+        //	SpawnEntityAtRandom(enemyPrefabs[0]);
+        //}
 
-        // Spawn ores
-		for (int i = 0; i < (int)(gridWidth * gridHeight * percentOres); i++)
-		{
-            SpawnEntityAtRandom(orePrefabs[0]);
-		}
-	}
+        //      // Spawn ores
+        //for (int i = 0; i < (int)(gridWidth * gridHeight * percentOres); i++)
+        //{
+        //          SpawnEntityAtRandom(orePrefabs[0]);
+        //}
+    }
 }
