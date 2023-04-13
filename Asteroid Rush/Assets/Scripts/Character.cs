@@ -12,6 +12,13 @@ public class Character : MonoBehaviour
     [SerializeField]
     private int movementPoints;
     #endregion
+
+    #region Properties
+    public int Movement
+    {
+        get { return movementPoints; }
+    }    
+    #endregion
     // Start is called before the first frame update
     void Start()
     {
