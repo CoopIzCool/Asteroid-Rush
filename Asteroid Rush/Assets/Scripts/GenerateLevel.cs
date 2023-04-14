@@ -276,17 +276,32 @@ public class GenerateLevel : MonoBehaviour
 
 		// Create general zones that can potentially exist on top of the core zones
 		#region Non-Core Zones
-		GameObject zoneObj = new GameObject();
-		zoneObj.transform.parent = parentZones[3].transform;
-		Zone zone = zoneObj.AddComponent<Zone>();
-		zone.width = Random.Range(minZoneWidth, maxZoneWidth);
-		zone.height = Random.Range(minZoneHeight, maxZoneHeight);
-		zone.xPos = 1;
-		zone.zPos = 1;
-		zone.zoneType = ZoneTypes.Field; //zone.zoneType = (ZoneTypes)Random.Range(0, 5);
-		zoneObj.name = zone.zoneType.ToString();
+		int z = Random.Range(1, 4);
+		int x = Random.Range(1, 4);
+		while (z < gridHeight - minZoneHeight)
+		{
+			GameObject zoneObj = new GameObject();
+			zoneObj.transform.parent = parentZones[3].transform;
+			Zone zone = zoneObj.AddComponent<Zone>();
+			zone.width = Random.Range(minZoneWidth, Mathf.Clamp(maxZoneWidth, minZoneWidth, gridWidth - x));
+			zone.height = Random.Range(minZoneHeight, Mathf.Clamp(maxZoneHeight, minZoneHeight, gridHeight - z));
+			zone.xPos = x;
+			zone.zPos = z;
+			zone.zoneType = ZoneTypes.Field; //zone.zoneType = (ZoneTypes)Random.Range(0, 5);
+			zoneObj.name = zone.zoneType.ToString();
 
-		zone.BuildZone(tilePrefabs, objectPrefabs);
+			zone.BuildZone(tilePrefabs, objectPrefabs);
+
+			if(gridWidth - (x + zone.width) >= minZoneWidth)
+			{
+				x += zone.width;
+			}
+			else
+			{
+				z += parentZones[3].transform.GetChild(0).GetComponent<Zone>().height;
+				x = Random.Range(1, 4);
+			}
+		}
 		#endregion
 
 		// Create ore spawn zones a set distance away from the spaceship zone
