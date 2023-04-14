@@ -8,12 +8,12 @@ public class ButtonInfo : MonoBehaviour
     public int ItemID;
     public Text PriceText;
     public Text QuantityText;
-    public string upgradeName;
+    public string itemName;
     public GameObject ShopManager;
 
     void Update()
     {
-        PriceText.text = "Price: $" + ShopManager.GetComponent<ShopManager>().shopItems[2, ItemID].ToString();
-        QuantityText.text = upgradeName + " Lvl: " + ShopManager.GetComponent<ShopManager>().shopItems[3, ItemID].ToString();
+        PriceText.text = "$" + ShopManager.GetComponent<ShopManager>().shopItems[2, ItemID].ToString();
+        QuantityText.text = itemName + "\nOwned: " + ShopManager.GetComponent<ShopManager>().shopItems[3, ItemID].ToString();
     }
 }

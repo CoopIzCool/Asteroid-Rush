@@ -11,7 +11,7 @@ public class ShopManager : MonoBehaviour
     /// <summary>
     /// Number of coins the player currently has
     /// </summary>
-    private float coins;
+    private float coins = 100;
 
     public Text CoinsText;
     public Text UICoinsText;
@@ -22,11 +22,6 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     private bool isShopOpen = false;
 
-    /// <summary>
-    /// Player in the scene
-    /// </summary>
-    //private Player player;
-
     private bool gameIsPaused;
 
     public GameObject Viewport;
@@ -34,31 +29,30 @@ public class ShopManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CoinsText.text = "Coins: " + coins.ToString();
-        UICoinsText.text = "Coins: " + coins.ToString();
-
+        CoinsText.text = "Currency: " + coins.ToString();
+        UICoinsText.text = "Currency: " + coins.ToString();
 
         //ID
-        //Power
+        //Potion
         shopItems[1, 1] = 1;
-        //Range
+        //Item 2
         shopItems[1, 2] = 2;
-        //Mining Speed
+        //Item 3
         shopItems[1, 3] = 3;
-        //Player Speed
+        //Item 4
         shopItems[1, 4] = 4;
-        //Revenue
+        //Item 5
         shopItems[1, 5] = 5;
-        //Ring
+        //Item 6
         shopItems[1, 6] = 6;
 
         //Prices
-        shopItems[2, 1] = 30;
-        shopItems[2, 2] = 20;
+        shopItems[2, 1] = 10;
+        shopItems[2, 2] = 10;
         shopItems[2, 3] = 10;
-        shopItems[2, 4] = 50;
-        shopItems[2, 5] = 100;
-        shopItems[2, 6] = 1000000;
+        shopItems[2, 4] = 10;
+        shopItems[2, 5] = 10;
+        shopItems[2, 6] = 10;
 
         //Quantity
         shopItems[3, 1] = 0;
@@ -70,7 +64,7 @@ public class ShopManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Function for purchasing an upgrade
+    /// Function for purchasing an item
     /// </summary>
     public void Buy()
     {
@@ -85,10 +79,7 @@ public class ShopManager : MonoBehaviour
             //Increases the quantity/level of upgrade
             shopItems[3, ButtonRef.GetComponent<ButtonInfo>().ItemID]++;
 
-
-
-            //Doubles the cost of upgrades every time it is purchased
-            shopItems[2, ButtonRef.GetComponent<ButtonInfo>().ItemID] = shopItems[2, ButtonRef.GetComponent<ButtonInfo>().ItemID] * 2;
+            CoinsText.text = "Currency: " + coins.ToString(); 
 
             //Updates text
             ButtonRef.GetComponent<ButtonInfo>().QuantityText.text = shopItems[3, ButtonRef.GetComponent<ButtonInfo>().ItemID].ToString();
@@ -101,8 +92,8 @@ public class ShopManager : MonoBehaviour
     /// <param name="valueChange">Amount to change coins by</param>
     public void ChangeCoins(float valueChange)
     {
-        CoinsText.text = "Coins: " + (coins + valueChange).ToString();
-        UICoinsText.text = "Coins: " + (coins + valueChange).ToString();
+        CoinsText.text = "Currency: " + (coins + valueChange).ToString();
+        UICoinsText.text = "Currency: " + (coins + valueChange).ToString();
         coins += valueChange;
     }
 
@@ -147,12 +138,12 @@ public class ShopManager : MonoBehaviour
         PauseGame();
     }
 
-    public void OpenTopUPTab()
+    public void OpenEquipmentTab()
     {
         Viewport.SetActive(false);
     }
 
-    public void OpenUpgradeTab()
+    public void OpenConsumableTab()
     {
         Viewport.SetActive(true);
     }
