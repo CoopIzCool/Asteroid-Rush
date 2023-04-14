@@ -72,7 +72,15 @@ public class GenerateLevel : MonoBehaviour
 	/// <param name="row">The row to access</param>
 	/// <param name="col">The column to access</param>
 	/// <param name="value">The value to assign</param>
-	public static void SetGridItem(int row, int col, GameObject value) => grid[row, col] = value;
+	public static void SetGridItem(int row, int col, GameObject value)
+	{
+		if (grid[row, col] != null)
+		{
+			if (grid[row, col].TryGetComponent(out Tile tileScript)) Destroy(tileScript.occupant);
+			Destroy(grid[row, col]);
+		}
+		grid[row, col] = value;
+	}
 
 	/// <summary>
 	/// Spawns the given prefab at a random unoccupied location in the grid
@@ -107,8 +115,16 @@ public class GenerateLevel : MonoBehaviour
 	{
 		foreach (GameObject tile in grid)
 		{
-			Destroy(tile.GetComponent<Tile>().occupant);
+			if (tile.TryGetComponent(out Tile tileScript)) Destroy(tileScript.occupant);
 			Destroy(tile);
+		}
+
+		foreach(GameObject parentZone in parentZones)
+		{
+			for(int i = 0; i < parentZone.transform.childCount; i++)
+			{
+				Destroy(parentZone.transform.GetChild(i).gameObject);
+			}
 		}
 
 		grid = null;
@@ -279,13 +295,13 @@ public class GenerateLevel : MonoBehaviour
 		#endregion
 
 		//Spawn tiles anywhere that doesn't have them
-		//for (int row = 0; row < gridHeight; row++)
-		//{
-		//	for (int col = 0; col < gridWidth; col++)
-		//	{
-		//		if (grid[row, col] == null) grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation);
-		//	}
-		//}
+		for (int row = 0; row < gridHeight; row++)
+		{
+			for (int col = 0; col < gridWidth; col++)
+			{
+				if (grid[row, col] == null) grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation);
+			}
+		}
 
 		//      // Spawn enemies
 		//for (int i = 0; i < (int)(gridWidth * gridHeight * percentEnemies); i++)
