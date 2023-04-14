@@ -49,7 +49,7 @@ public class Zone : MonoBehaviour
 		{
 			for(int col = xPos; col < xPos + width; col++)
 			{
-				GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+				if(GenerateLevel.GetGridItem(row, col) == null) GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
 			}
 		}
 
@@ -65,7 +65,7 @@ public class Zone : MonoBehaviour
 			{
 				randomX = Random.Range(xPos, xPos + width);
 				randomZ = Random.Range(zPos, zPos + height);
-			} while (GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().tileType != TileType.Pit && GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().occupant != null);
+			} while (GenerateLevel.GetGridItem(randomZ, randomX).transform.parent != transform || GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().tileType == TileType.Pit || GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().occupant != null);
 
 			int wallSize = 0;
 

@@ -94,7 +94,7 @@ public class GenerateLevel : MonoBehaviour
 		{
 			randomPos = new Vector2Int(Random.Range(0, gridWidth), Random.Range(0, gridHeight));
 		}
-		while (grid[randomPos.y, randomPos.x].GetComponent<Tile>().occupant != null);
+		while (grid[randomPos.y, randomPos.x].GetComponent<Tile>().tileType != TileType.Basic && grid[randomPos.y, randomPos.x].GetComponent<Tile>().occupant != null);
 
 		grid[randomPos.y, randomPos.x].GetComponent<Tile>().occupant = Instantiate(prefab, new Vector3(randomPos.x, prefab.transform.position.y, randomPos.y), prefab.transform.rotation);
 	}
@@ -276,8 +276,8 @@ public class GenerateLevel : MonoBehaviour
 
 		// Create general zones that can potentially exist on top of the core zones
 		#region Non-Core Zones
-		int z = Random.Range(1, 4);
-		int x = Random.Range(1, 4);
+		int z = 1;
+		int x = 1;
 		while (z < gridHeight - minZoneHeight)
 		{
 			GameObject zoneObj = new GameObject();
@@ -292,14 +292,14 @@ public class GenerateLevel : MonoBehaviour
 
 			zone.BuildZone(tilePrefabs, objectPrefabs);
 
-			if(gridWidth - (x + zone.width) >= minZoneWidth)
+			if (gridWidth - (x + zone.width + 1) >= minZoneWidth)
 			{
 				x += zone.width;
 			}
 			else
 			{
 				z += parentZones[3].transform.GetChild(0).GetComponent<Zone>().height;
-				x = Random.Range(1, 4);
+				x = 1;
 			}
 		}
 		#endregion
