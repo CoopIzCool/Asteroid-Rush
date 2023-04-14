@@ -295,6 +295,7 @@ public class GenerateLevel : MonoBehaviour
 		#endregion
 
 		//Spawn tiles anywhere that doesn't have them
+		#region Filler Tiles
 		for (int row = 0; row < gridHeight; row++)
 		{
 			for (int col = 0; col < gridWidth; col++)
@@ -302,12 +303,7 @@ public class GenerateLevel : MonoBehaviour
 				if (grid[row, col] == null) grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation);
 			}
 		}
-
-		//      // Spawn enemies
-		//for (int i = 0; i < (int)(gridWidth * gridHeight * percentEnemies); i++)
-		//{
-		//	SpawnEntityAtRandom(enemyPrefabs[0]);
-		//}
+		#endregion
 
 		//      // Spawn ores
 		//for (int i = 0; i < (int)(gridWidth * gridHeight * percentOres); i++)
