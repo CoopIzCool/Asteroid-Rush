@@ -51,6 +51,8 @@ public class TurnHandler : MonoBehaviour
                 {
                     Debug.Log(selectedCharacter.name);
                     currentMovement = selectedCharacter.GetComponent<Character>().Movement;
+                    lineRenderer.positionCount = currentMovement + 1;
+                    lineRenderer.SetPosition(0,selectedCharacter.transform.position);
                 }
             }
         }
@@ -63,24 +65,17 @@ public class TurnHandler : MonoBehaviour
         if(selectedTile.occupant == null)
         {
 
-            if(tiles.Count == 0)
+            if(selectedTile != tiles.Peek())
             {
                 tiles.Push(selectedTile);
-                lineRenderer.SetPosition(tiles.Count - 1, selectedTile.transform.position);
+                lineRenderer.SetPosition(tiles.Count, selectedTile.transform.position);
             }
             else
             {
-                if(selectedTile != tiles.Peek())
-                {
-                    tiles.Push(selectedTile);
-                    lineRenderer.SetPosition(tiles.Count - 1, selectedTile.transform.position);
-                }
-                else
-                {
-                    tiles.Pop();
-                    lineRenderer.positionCount = lineRenderer.positionCount - 1;
-                }
+                tiles.Pop();
+                lineRenderer.positionCount = lineRenderer.positionCount - 1;
             }
+            
         }
     }
 }
