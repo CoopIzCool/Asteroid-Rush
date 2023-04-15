@@ -16,6 +16,7 @@ public class Zone : MonoBehaviour
 {
     public List<GameObject> tiles = new List<GameObject>();
     public ZoneTypes zoneType = ZoneTypes.Field;
+	public bool isOreZone = false;
     public int width = 0;
     public int height = 0;
 	public int xPos = 0;
@@ -43,24 +44,34 @@ public class Zone : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Build a "Field" type zone
+	/// </summary>
     private void BuildField(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
     {
 		for(int row = zPos; row < zPos + height; row++)
 		{
 			for(int col = xPos; col < xPos + width; col++)
 			{
-				if(GenerateLevel.GetGridItem(row, col) == null) GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+				if (GenerateLevel.GetGridItem(row, col) == null)
+				{
+					GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+					tiles.Add(GenerateLevel.GetGridItem(row, col));
+				}
 			}
 		}
 
 		int numWalls = Random.Range(2, 4);
+
+		// Bail out early if the zone can't support the maximum number of walls
+		if (tiles.Count < numWalls * 3 + 1) return;
+
 		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0];
 
 		for (int i = 0; i < numWalls; i++)
 		{
 			int randomX;
 			int randomZ;
-
 			do
 			{
 				randomX = Random.Range(xPos, xPos + width);
@@ -81,7 +92,9 @@ public class Zone : MonoBehaviour
 				{
 					GenerateLevel.SetGridItem(randomZ, randomX, Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), Quaternion.identity, transform));
 				}
-				
+
+				tiles.Add(GenerateLevel.GetGridItem(randomZ, randomX));
+
 				if (randomX > xPos) validPositions.Add(new Vector2Int(randomX - 1, randomZ));
 				if (randomX < xPos + width - 1) validPositions.Add(new Vector2Int(randomX + 1, randomZ));
 				if (randomZ > zPos) validPositions.Add(new Vector2Int(randomX, randomZ - 1));
@@ -101,7 +114,7 @@ public class Zone : MonoBehaviour
 				wallSize++;
 			} while (Random.Range(0f, 1f) < 0.5f && wallSize < 3);
 		}
-    }
+	}
 
 	private void BuildIsland(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
 	{

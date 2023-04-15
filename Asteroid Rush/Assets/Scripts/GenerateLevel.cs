@@ -288,7 +288,7 @@ public class GenerateLevel : MonoBehaviour
 			zone.xPos = x;
 			zone.zPos = z;
 			zone.zoneType = ZoneTypes.Field; //zone.zoneType = (ZoneTypes)Random.Range(0, 5);
-			zoneObj.name = zone.zoneType.ToString();
+			zoneObj.name = zone.zoneType.ToString() + "Zone";
 
 			zone.BuildZone(tilePrefabs, objectPrefabs);
 
@@ -298,7 +298,7 @@ public class GenerateLevel : MonoBehaviour
 			}
 			else
 			{
-				z += parentZones[3].transform.GetChild(0).GetComponent<Zone>().height;
+				z += grid[z, 1].transform.parent.GetComponent<Zone>().height;
 				x = 1;
 			}
 		}
@@ -307,6 +307,73 @@ public class GenerateLevel : MonoBehaviour
 		// Create ore spawn zones a set distance away from the spaceship zone
 		#region Ore Zones
 		GameObject[] oreZoneObjs = new GameObject[Random.Range(2, 4)];
+		for (int i = 0; i < oreZoneObjs.Length; i++)
+		{
+			oreZoneObjs[i] = new GameObject("OreZone");
+			oreZoneObjs[i].transform.parent = parentZones[4].transform;
+			Zone oreZone = oreZoneObjs[i].AddComponent<Zone>();
+
+			Vector2Int randomEdge = new Vector2Int();
+			do
+			{
+				if (Random.Range(0f, 1f) < 0.5f)
+				{
+					randomEdge.x = Random.Range(1, gridWidth - 1);
+					randomEdge.y = Random.Range(0f, 1f) < 0.5f ? 1 : gridHeight - 2;
+				}
+				else
+				{
+					randomEdge.x = Random.Range(0f, 1f) < 0.5f ? 1 : gridWidth - 2;
+					randomEdge.y = Random.Range(1, gridHeight - 1);
+				}
+			} while (grid[randomEdge.y, randomEdge.x] == null || grid[randomEdge.y, randomEdge.x].transform.parent.GetComponent<Zone>().isOreZone);
+
+			Zone chosenZone = grid[randomEdge.y, randomEdge.x].transform.parent.GetComponent<Zone>();
+			chosenZone.isOreZone = true;
+
+			oreZone.xPos = chosenZone.xPos;
+			oreZone.zPos = chosenZone.zPos;
+			oreZone.width = chosenZone.width;
+			oreZone.height = chosenZone.height;
+			oreZone.zoneType = chosenZone.zoneType;
+			oreZone.isOreZone = chosenZone.isOreZone;
+
+			int randomX;
+			int randomZ;
+
+			do
+			{
+				randomX = Random.Range(oreZone.xPos, oreZone.xPos + oreZone.width);
+				randomZ = Random.Range(oreZone.zPos, oreZone.zPos + oreZone.height);
+			} while (grid[randomZ, randomX].transform.parent != chosenZone.transform || grid[randomZ, randomX].GetComponent<Tile>().tileType == TileType.Pit || grid[randomZ, randomX].GetComponent<Tile>().occupant != null);
+
+			int numOres = 0;
+			do
+			{
+				List<Vector2Int> validPositions = new List<Vector2Int>();
+
+				SetGridItem(randomZ, randomX, Instantiate(tilePrefabs[0], new Vector3(randomX, 0, randomZ), tilePrefabs[0].transform.rotation, oreZoneObjs[i].transform));
+				grid[randomZ, randomX].GetComponent<Tile>().occupant = Instantiate(orePrefabs[0], new Vector3(randomX, orePrefabs[0].transform.position.y, randomZ), Quaternion.identity, oreZoneObjs[i].transform);
+
+				if (randomX > oreZone.xPos) validPositions.Add(new Vector2Int(randomX - 1, randomZ));
+				if (randomX < oreZone.xPos + oreZone.width - 1) validPositions.Add(new Vector2Int(randomX + 1, randomZ));
+				if (randomZ > oreZone.zPos) validPositions.Add(new Vector2Int(randomX, randomZ - 1));
+				if (randomZ < oreZone.zPos + oreZone.height - 1) validPositions.Add(new Vector2Int(randomX, randomZ + 1));
+
+				if (validPositions.Count > 0)
+				{
+					Vector2Int chosenPosition = validPositions[Random.Range(0, validPositions.Count)];
+					randomX = chosenPosition.x;
+					randomZ = chosenPosition.y;
+				}
+				else
+				{
+					break;
+				}
+
+				numOres++;
+			} while (Random.Range(0f, 1f) < 0.5f && numOres < 3);
+		}
 		#endregion
 
 		//Spawn tiles anywhere that doesn't have them
@@ -319,11 +386,5 @@ public class GenerateLevel : MonoBehaviour
 			}
 		}
 		#endregion
-
-		//      // Spawn ores
-		//for (int i = 0; i < (int)(gridWidth * gridHeight * percentOres); i++)
-		//{
-		//          SpawnEntityAtRandom(orePrefabs[0]);
-		//}
 	}
 }
