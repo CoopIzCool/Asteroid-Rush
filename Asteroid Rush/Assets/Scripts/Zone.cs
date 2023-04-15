@@ -85,15 +85,14 @@ public class Zone : MonoBehaviour
 				List<Vector2Int> validPositions = new List<Vector2Int>();
 				if (pitOrWall == objectPrefabs[0])
 				{
-					GenerateLevel.SetGridItem(randomZ, randomX, Instantiate(tilePrefabs[0], new Vector3(randomX, 0, randomZ), tilePrefabs[0].transform.rotation, transform));
-					GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), Quaternion.identity, transform);
+					GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), Quaternion.identity, GenerateLevel.GetGridItem(randomZ, randomX).transform);
 				}
 				else
 				{
+					tiles.Remove(GenerateLevel.GetGridItem(randomZ, randomX));
 					GenerateLevel.SetGridItem(randomZ, randomX, Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), Quaternion.identity, transform));
+					tiles.Add(GenerateLevel.GetGridItem(randomZ, randomX));
 				}
-
-				tiles.Add(GenerateLevel.GetGridItem(randomZ, randomX));
 
 				if (randomX > xPos) validPositions.Add(new Vector2Int(randomX - 1, randomZ));
 				if (randomX < xPos + width - 1) validPositions.Add(new Vector2Int(randomX + 1, randomZ));
