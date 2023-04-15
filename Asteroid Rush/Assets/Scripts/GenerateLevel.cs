@@ -143,14 +143,14 @@ public class GenerateLevel : MonoBehaviour
 		GameObject shipZoneObj = new GameObject("ShipZone");
 		shipZoneObj.transform.parent = parentZones[0].transform;
 		Zone shipZone = shipZoneObj.AddComponent<Zone>();
-		shipZone.xPos = gridWidth / 2 - 1;
-		shipZone.zPos = gridHeight / 2 - 1;
-		shipZone.width = 3;
-		shipZone.height = 3;
+		shipZone.xPos = gridWidth / 2 - 2;
+		shipZone.zPos = gridHeight / 2 - 2;
+		shipZone.width = 4;
+		shipZone.height = 4;
 
-		for (int row = gridHeight / 2 - 1; row <= gridHeight / 2 + 1; row++)
+		for (int row = shipZone.zPos; row <= shipZone.zPos + shipZone.height; row++)
 		{
-			for (int col = gridWidth / 2 - 1; col <= gridWidth / 2 + 1; col++)
+			for (int col = shipZone.xPos; col <= shipZone.xPos + shipZone.width; col++)
 			{
 				grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, shipZoneObj.transform);
 				shipZone.tiles.Add(grid[row, col]);

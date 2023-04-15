@@ -61,7 +61,7 @@ public class Zone : MonoBehaviour
 			}
 		}
 
-		int numWalls = Random.Range(2, 4);
+		int numWalls = Random.Range(1, 3);
 
 		// Bail out early if the zone can't support the maximum number of walls
 		if (tiles.Count < numWalls * 3 + 1) return;
@@ -85,7 +85,7 @@ public class Zone : MonoBehaviour
 				List<Vector2Int> validPositions = new List<Vector2Int>();
 				if (pitOrWall == objectPrefabs[0])
 				{
-					GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), Quaternion.identity, GenerateLevel.GetGridItem(randomZ, randomX).transform);
+					GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), Quaternion.identity, transform);
 				}
 				else
 				{
@@ -94,10 +94,10 @@ public class Zone : MonoBehaviour
 					tiles.Add(GenerateLevel.GetGridItem(randomZ, randomX));
 				}
 
-				if (randomX > xPos) validPositions.Add(new Vector2Int(randomX - 1, randomZ));
-				if (randomX < xPos + width - 1) validPositions.Add(new Vector2Int(randomX + 1, randomZ));
-				if (randomZ > zPos) validPositions.Add(new Vector2Int(randomX, randomZ - 1));
-				if (randomZ < zPos + height - 1) validPositions.Add(new Vector2Int(randomX, randomZ + 1));
+				if (randomX > xPos && GenerateLevel.GetGridItem(randomZ, randomX - 1).transform.parent == transform) validPositions.Add(new Vector2Int(randomX - 1, randomZ));
+				if (randomX < xPos + width - 1 && GenerateLevel.GetGridItem(randomZ, randomX + 1).transform.parent == transform) validPositions.Add(new Vector2Int(randomX + 1, randomZ));
+				if (randomZ > zPos && GenerateLevel.GetGridItem(randomZ - 1, randomX).transform.parent == transform) validPositions.Add(new Vector2Int(randomX, randomZ - 1));
+				if (randomZ < zPos + height - 1 && GenerateLevel.GetGridItem(randomZ + 1, randomX).transform.parent == transform) validPositions.Add(new Vector2Int(randomX, randomZ + 1));
 
 				if (validPositions.Count > 0)
 				{
