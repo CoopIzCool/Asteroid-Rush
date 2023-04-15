@@ -143,6 +143,8 @@ public class GenerateLevel : MonoBehaviour
 		GameObject shipZoneObj = new GameObject("ShipZone");
 		shipZoneObj.transform.parent = parentZones[0].transform;
 		Zone shipZone = shipZoneObj.AddComponent<Zone>();
+		shipZone.xPos = gridWidth / 2 - 1;
+		shipZone.zPos = gridHeight / 2 - 1;
 		shipZone.width = 3;
 		shipZone.height = 3;
 
