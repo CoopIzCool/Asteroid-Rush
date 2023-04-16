@@ -352,14 +352,14 @@ MonoBehaviour:
   - {fileID: 643716446}
   enemyZoneWidth: 4
   enemyZoneHeight: 4
-  minZoneWidth: 4
-  maxZoneWidth: 6
-  minZoneHeight: 3
-  maxZoneHeight: 6
-  minGridWidth: 20
-  maxGridWidth: 20
-  minGridHeight: 20
-  maxGridHeight: 20
+  minZoneWidth: 8
+  maxZoneWidth: 12
+  minZoneHeight: 4
+  maxZoneHeight: 12
+  minGridWidth: 40
+  maxGridWidth: 40
+  minGridHeight: 40
+  maxGridHeight: 40
   percentEnemies: 0.05
   percentOres: 0.1
 --- !u!1 &643716446

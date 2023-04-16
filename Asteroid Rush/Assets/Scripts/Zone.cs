@@ -61,7 +61,7 @@ public class Zone : MonoBehaviour
 			}
 		}
 
-		int numWalls = Random.Range(1, 3);
+		int numWalls = Random.Range(3, 5);
 
 		// Bail out early if the zone can't support the maximum number of walls
 		if (tiles.Count < numWalls * 3 + 1) return;
@@ -122,7 +122,27 @@ public class Zone : MonoBehaviour
 
 	private void BuildPit(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
 	{
+		int walkableWidth = Random.Range(1, 4);
 
+		for(int row = zPos; row < zPos + height; row++)
+		{
+			for(int col = xPos; col < xPos + width; col++)
+			{
+				if (GenerateLevel.GetGridItem(row, col) == null)
+				{
+					if (row < zPos + walkableWidth || row > zPos + height - 1 - walkableWidth || col < xPos + walkableWidth || col > xPos + width - 1 - walkableWidth)
+					{
+						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+						tiles.Add(GenerateLevel.GetGridItem(row, col));
+					}
+					else
+					{
+						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[2], new Vector3(col, tilePrefabs[2].transform.position.y, row), tilePrefabs[2].transform.rotation, transform));
+						tiles.Add(GenerateLevel.GetGridItem(row, col));
+					}
+				}
+			}
+		}
 	}
 
 	private void BuildTunnel(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
@@ -132,7 +152,6 @@ public class Zone : MonoBehaviour
 
 	private void BuildMaze(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
 	{
-
 	}
 
 	// Start is called before the first frame update
