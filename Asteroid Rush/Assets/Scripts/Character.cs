@@ -11,6 +11,9 @@ public class Character : MonoBehaviour
     private int maxHealth;
     [SerializeField]
     private int movementPoints;
+
+    [Header("Movement Components:")]
+    private Tile currentTile;
     #endregion
 
     #region Properties
