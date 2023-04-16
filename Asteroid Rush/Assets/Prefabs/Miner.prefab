@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -280369424627782613}
   - component: {fileID: 7202197682027103944}
   - component: {fileID: 475979422763054015}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Miner
   m_TagString: Character
   m_Icon: {fileID: 0}
@@ -109,6 +109,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 10
   movementPoints: 3
+  currentTile: {fileID: 0}
   mineSpeed: 2
 --- !u!65 &7202197682027103944
 BoxCollider:

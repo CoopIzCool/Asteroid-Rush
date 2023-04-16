@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5681455709484952756}
   - component: {fileID: 2645745693012693857}
   - component: {fileID: 431761255602262028}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Attacker
   m_TagString: Character
   m_Icon: {fileID: 0}
@@ -105,6 +105,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 10
   movementPoints: 3
+  currentTile: {fileID: 0}
 --- !u!65 &2645745693012693857
 BoxCollider:
   m_ObjectHideFlags: 0

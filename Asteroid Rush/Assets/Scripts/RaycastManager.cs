@@ -51,7 +51,14 @@ public class RaycastManager : MonoBehaviour
         if (Physics.Raycast(mouseRay, out hitInfo, tileLayerMask))
         {
             GameObject hitObject = hitInfo.collider.gameObject;
-            return hitObject.GetComponent<Tile>();
+            if(hitObject.GetComponent<Tile>())
+            {
+                return hitObject.GetComponent<Tile>();
+            }
+            else if(hitObject.GetComponent<Character>())
+            {
+                return hitObject.GetComponent<Character>().CurrentTile;
+            }
         }
         return null;
     }

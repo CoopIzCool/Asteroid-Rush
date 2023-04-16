@@ -24,6 +24,7 @@ public class Character : MonoBehaviour
 
     public Tile CurrentTile
     {
+        get { return currentTile; }
         set { currentTile = value; }
     }
     #endregion
@@ -44,6 +45,13 @@ public class Character : MonoBehaviour
 
     }
 
+    public void MoveToTile(Tile tile)
+    {
+        transform.position = tile.transform.position;
+        currentTile.occupant = null;
+        tile.occupant = gameObject;
+        currentTile = tile;
+    }
     #region Damage and Death
     public void TakeDamage(int damage)
     {

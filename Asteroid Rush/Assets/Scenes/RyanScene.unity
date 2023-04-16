@@ -539,10 +539,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterLayerMask:
     serializedVersion: 2
-    m_Bits: 2147483647
+    m_Bits: 128
   tileLayerMask:
     serializedVersion: 2
-    m_Bits: 2147483647
+    m_Bits: 192
 --- !u!4 &913166637
 Transform:
   m_ObjectHideFlags: 0
@@ -578,7 +578,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 87fac61424945444cb209c00b9731dec, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -598,10 +598,8 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1}
+  m_SortingOrder: -1
+  m_Positions: []
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -610,7 +608,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1
+        value: 0.45000002
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -649,8 +647,8 @@ LineRenderer:
       m_Mode: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    numCornerVertices: 0
-    numCapVertices: 0
+    numCornerVertices: 3
+    numCapVertices: 5
     alignment: 0
     textureMode: 0
     shadowBias: 0.5
