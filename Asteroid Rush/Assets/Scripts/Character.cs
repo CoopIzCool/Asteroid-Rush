@@ -13,7 +13,7 @@ public class Character : MonoBehaviour
     private int movementPoints;
 
     [Header("Movement Components:")]
-    private Tile currentTile;
+    [SerializeField] private Tile currentTile;
     #endregion
 
     #region Properties
@@ -21,6 +21,11 @@ public class Character : MonoBehaviour
     {
         get { return movementPoints; }
     }    
+
+    public Tile CurrentTile
+    {
+        set { currentTile = value; }
+    }
     #endregion
     // Start is called before the first frame update
     void Start()

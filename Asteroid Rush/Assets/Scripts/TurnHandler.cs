@@ -51,7 +51,7 @@ public class TurnHandler : MonoBehaviour
                 {
                     Debug.Log(selectedCharacter.name);
                     currentMovement = selectedCharacter.GetComponent<Character>().Movement;
-                    lineRenderer.positionCount = currentMovement + 1;
+                    lineRenderer.positionCount = 1;
                     lineRenderer.SetPosition(0,selectedCharacter.transform.position);
                 }
             }

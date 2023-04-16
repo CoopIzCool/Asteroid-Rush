@@ -39,6 +39,7 @@ public class RaycastManager : MonoBehaviour
             if (hitObject.tag == "Character")
             {
                 turnHandler.SelectedCharacter = hitObject;
+                //Debug.Log(hitObject.GetComponent<Tile>().tileType.ToString());
             }
         }
     }

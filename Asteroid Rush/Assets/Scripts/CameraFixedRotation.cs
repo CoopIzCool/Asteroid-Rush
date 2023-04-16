@@ -22,6 +22,8 @@ public class CameraFixedRotation : MonoBehaviour
     private float activeTimer;
     private bool camActive = true;
 
+    [SerializeField] private float shiftIndex;
+
     #endregion Fields
 
     #region Properties
@@ -106,7 +108,7 @@ public class CameraFixedRotation : MonoBehaviour
         float y = Mathf.Cos(xRotate) * radius;
         float z = Mathf.Cos(radians) * Mathf.Sin(xRotate) * radius;
         //set position and rotation
-        transform.position = new Vector3(x, y, z);
+        transform.position = new Vector3(x + shiftIndex, y, z+ shiftIndex);
         transform.LookAt(centerPoint);
         if(!isActive && activeTimer < inactiveTime)
         {
