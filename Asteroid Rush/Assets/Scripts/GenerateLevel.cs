@@ -42,8 +42,6 @@ public class GenerateLevel : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		gridWidth = Random.Range(minGridWidth, maxGridWidth);
-		gridHeight = Random.Range(minGridHeight, maxGridHeight);
 		ResetGrid();
 	}
 
@@ -52,8 +50,7 @@ public class GenerateLevel : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
-			gridWidth = Random.Range(minGridWidth, maxGridWidth);
-			gridHeight = Random.Range(minGridHeight, maxGridHeight);
+
 			ResetGrid();
 		}
 	}
@@ -104,6 +101,8 @@ public class GenerateLevel : MonoBehaviour
 	/// </summary>
 	public void ResetGrid()
 	{
+		gridWidth = Random.Range(minGridWidth, maxGridWidth);
+		gridHeight = Random.Range(minGridHeight, maxGridHeight);
 		if (grid != null) DestroyGrid();
 		BuildGrid();
 	}
@@ -157,9 +156,10 @@ public class GenerateLevel : MonoBehaviour
 			}
 		}
 
-		grid[gridHeight / 2, gridWidth / 2].GetComponent<Tile>().occupant = Instantiate(spaceshipPrefab, new Vector3(gridWidth / 2, spaceshipPrefab.transform.position.y, gridHeight / 2), Quaternion.identity);
-		grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>().occupant = Instantiate(playerPrefabs[0], new Vector3(gridWidth / 2 - 1, playerPrefabs[0].transform.position.y, gridHeight / 2 + 1), playerPrefabs[0].transform.rotation);
-		grid[gridHeight / 2 + 1, gridWidth / 2 + 1].GetComponent<Tile>().occupant = Instantiate(playerPrefabs[1], new Vector3(gridWidth / 2 + 1, playerPrefabs[1].transform.position.y, gridHeight / 2 + 1), playerPrefabs[1].transform.rotation);
+		grid[gridHeight / 2, gridWidth / 2].GetComponent<Tile>().occupant = Instantiate(spaceshipPrefab, new Vector3(gridWidth / 2, spaceshipPrefab.transform.position.y, gridHeight / 2), spaceshipPrefab.transform.rotation, shipZoneObj.transform);
+		grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>().occupant = Instantiate(playerPrefabs[0], new Vector3(gridWidth / 2 - 1, playerPrefabs[0].transform.position.y, gridHeight / 2 + 1), playerPrefabs[0].transform.rotation, shipZoneObj.transform);
+		grid[gridHeight / 2 + 1, gridWidth / 2 + 1].GetComponent<Tile>().occupant = Instantiate(playerPrefabs[1], new Vector3(gridWidth / 2 + 1, playerPrefabs[1].transform.position.y, gridHeight / 2 + 1), playerPrefabs[1].transform.rotation, shipZoneObj.transform);
+
 		//Set initial character tile to players
 		grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>().occupant.GetComponent<Character>().CurrentTile = grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>();
 		grid[gridHeight / 2 + 1, gridWidth / 2 + 1].GetComponent<Tile>().occupant.GetComponent<Character>().CurrentTile = grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>();
@@ -293,7 +293,7 @@ public class GenerateLevel : MonoBehaviour
 			zone.height = Random.Range(minZoneHeight, Mathf.Clamp(maxZoneHeight, minZoneHeight, gridHeight - z));
 			zone.xPos = x;
 			zone.zPos = z;
-			zone.zoneType = ZoneTypes.Maze; //zone.zoneType = (ZoneTypes)Random.Range(0, 5);
+			zone.zoneType = (ZoneTypes)Random.Range(0, 3);
 			zoneObj.name = zone.zoneType.ToString() + "Zone";
 
 			zone.BuildZone(tilePrefabs, objectPrefabs);
@@ -388,7 +388,7 @@ public class GenerateLevel : MonoBehaviour
 		{
 			for (int col = 0; col < gridWidth; col++)
 			{
-				if (grid[row, col] == null) grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation);
+				if (grid[row, col] == null) grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, parentZones[5].transform);
 			}
 		}
 		#endregion
