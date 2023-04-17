@@ -14,6 +14,8 @@ public class Character : MonoBehaviour
 
     [Header("Movement Components:")]
     [SerializeField] private Tile currentTile;
+    private Vector3 tileOffset = new Vector3(0, 0.5f, 0);
+    [SerializeField]private bool moved;
     #endregion
 
     #region Properties
@@ -26,6 +28,12 @@ public class Character : MonoBehaviour
     {
         get { return currentTile; }
         set { currentTile = value; }
+    }
+
+    public bool Moved
+    {
+        get { return moved; }
+        set { moved = value; }
     }
     #endregion
     // Start is called before the first frame update
@@ -48,6 +56,7 @@ public class Character : MonoBehaviour
     public void MoveToTile(Tile tile)
     {
         transform.position = tile.transform.position;
+        transform.position += tileOffset;
         currentTile.occupant = null;
         tile.occupant = gameObject;
         currentTile = tile;
