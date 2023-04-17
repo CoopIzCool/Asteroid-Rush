@@ -247,9 +247,9 @@ public class GenerateLevel : MonoBehaviour
 			}
 		}
 
-		for (int row = 0; row < gridWidth; row++)
+		for (int row = 0; row < gridHeight; row++)
 		{
-			if (row == 0 || row == gridWidth - 1)
+			if (row == 0 || row == gridHeight - 1)
 			{
 				if (grid[row, 0] == null)
 				{

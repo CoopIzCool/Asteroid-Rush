@@ -358,10 +358,10 @@ MonoBehaviour:
   maxZoneWidth: 12
   minZoneHeight: 6
   maxZoneHeight: 12
-  minGridWidth: 50
-  maxGridWidth: 50
-  minGridHeight: 50
-  maxGridHeight: 50
+  minGridWidth: 35
+  maxGridWidth: 35
+  minGridHeight: 35
+  maxGridHeight: 35
   percentEnemies: 0.05
   percentOres: 0.1
 --- !u!1 &643716446
