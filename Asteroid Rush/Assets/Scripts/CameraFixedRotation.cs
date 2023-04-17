@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Code developed by Ryan Cooper in 2020
+/// Code developed by Ryan Cooper in 2020/ refurbished in 2023
 /// </summary>
 public class CameraFixedRotation : MonoBehaviour
 {
@@ -22,7 +22,9 @@ public class CameraFixedRotation : MonoBehaviour
     private float activeTimer;
     private bool camActive = true;
 
-    [SerializeField] private float shiftIndex;
+    [SerializeField] private float xShiftIndex;
+    [SerializeField] private float zShiftIndex;
+    [SerializeField] private float radiusOffset;
 
     #endregion Fields
 
@@ -35,6 +37,17 @@ public class CameraFixedRotation : MonoBehaviour
     public bool CamActive
     {
         get { return camActive; }
+    }
+
+    public float XShift
+    {
+        get { return xShiftIndex; }
+        set { xShiftIndex = value; }
+    }
+    public float ZShift
+    {
+        get { return zShiftIndex; }
+        set { zShiftIndex = value; }
     }
     #endregion Properties
     // Start is called before the first frame update
@@ -108,7 +121,7 @@ public class CameraFixedRotation : MonoBehaviour
         float y = Mathf.Cos(xRotate) * radius;
         float z = Mathf.Cos(radians) * Mathf.Sin(xRotate) * radius;
         //set position and rotation
-        transform.position = new Vector3(x + shiftIndex, y, z+ shiftIndex);
+        transform.position = new Vector3(x + xShiftIndex, y, z+ zShiftIndex);
         transform.LookAt(centerPoint);
         if(!isActive && activeTimer < inactiveTime)
         {
@@ -125,5 +138,12 @@ public class CameraFixedRotation : MonoBehaviour
     {
         camActive = true;
         activeTimer = 0f;
+    }
+
+    public void SetRadiusAndCenter()
+    {
+        //Set radius to be the grid dimentions plus an offset
+        radius = ((xShiftIndex + zShiftIndex) / 2.0f) + radiusOffset;
+        centerPoint.position = new Vector3(xShiftIndex, 2.0f, zShiftIndex);
     }
 }

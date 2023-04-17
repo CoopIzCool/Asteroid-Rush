@@ -39,6 +39,8 @@ public class GenerateLevel : MonoBehaviour
 	[SerializeField, Range(0, 1)] private float percentEnemies;
 	[SerializeField, Range(0, 1)] private float percentOres;
 
+	[Header("Camera Logic & Misc")]
+	[SerializeField] CameraFixedRotation cameraLogic;
 	// Start is called before the first frame update
 	void Start()
 	{
@@ -137,6 +139,11 @@ public class GenerateLevel : MonoBehaviour
 		// Make new grid
 		grid = new GameObject[gridHeight, gridWidth];
 
+		//Set offset of the camera based on grid height
+		cameraLogic.XShift = gridHeight / 2.0f;
+		cameraLogic.ZShift = gridWidth / 2.0f;
+		cameraLogic.SetRadiusAndCenter();
+
 		// Create spaceship / player spawn zone in center
 		#region Spaceship Zone
 		GameObject shipZoneObj = new GameObject("ShipZone");
@@ -162,7 +169,7 @@ public class GenerateLevel : MonoBehaviour
 
 		//Set initial character tile to players
 		grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>().occupant.GetComponent<Character>().CurrentTile = grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>();
-		grid[gridHeight / 2 + 1, gridWidth / 2 + 1].GetComponent<Tile>().occupant.GetComponent<Character>().CurrentTile = grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>();
+		grid[gridHeight / 2 + 1, gridWidth / 2 + 1].GetComponent<Tile>().occupant.GetComponent<Character>().CurrentTile = grid[gridHeight / 2 + 1, gridWidth / 2 + 1].GetComponent<Tile>();
 		
 		#endregion
 
