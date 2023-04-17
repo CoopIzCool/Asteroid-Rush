@@ -12,6 +12,8 @@ public class Tile : MonoBehaviour
     // The object currently occupying this tile
     public GameObject occupant = null;
     public TileType tileType;
+    public int xPos;
+    public int zPos;
 
     // Start is called before the first frame update
     void Start()
