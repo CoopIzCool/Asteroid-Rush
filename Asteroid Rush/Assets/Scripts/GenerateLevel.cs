@@ -326,7 +326,7 @@ public class GenerateLevel : MonoBehaviour
 			zone.height = Random.Range(minZoneHeight, Mathf.Clamp(maxZoneHeight, minZoneHeight, gridHeight - z));
 			zone.xPos = x;
 			zone.zPos = z;
-			zone.zoneType = (ZoneTypes)Random.Range(0, 3);
+			zone.zoneType = (ZoneTypes)Random.Range(0, 4);
 			zoneObj.name = zone.zoneType.ToString() + "Zone";
 
 			zone.BuildZone(tilePrefabs, objectPrefabs);
