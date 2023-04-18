@@ -28,13 +28,13 @@ public class Zone : MonoBehaviour
 				BuildField(tilePrefabs, objectPrefabs);
 				break;
 			case ZoneTypes.Island:
-				BuildIsland(tilePrefabs, objectPrefabs);
+				BuildIsland(tilePrefabs, objectPrefabs, Random.Range(4, width - 1), Random.Range(1, 4));
 				break;
 			case ZoneTypes.Pit:
 				BuildPit(tilePrefabs, objectPrefabs);
 				break;
 			case ZoneTypes.Tunnel:
-				BuildTunnel(tilePrefabs, objectPrefabs);
+				BuildTunnel(tilePrefabs, objectPrefabs, Random.Range(4, width - 1));
 				break;
 			case ZoneTypes.Maze:
 				BuildMaze(tilePrefabs, objectPrefabs);
@@ -61,7 +61,8 @@ public class Zone : MonoBehaviour
 			}
 		}
 
-		int numWalls = Random.Range(3, 5);
+		int numWalls = Random.Range(3, 6);
+		//int numWalls = (int)Random.Range(tiles.Count * 0.3f, tiles.Count * 0.5f);
 
 		// Bail out early if the zone can't support the maximum number of walls
 		if (tiles.Count < numWalls * 3 + 1) return;
@@ -117,32 +118,31 @@ public class Zone : MonoBehaviour
 		}
 	}
 
-	private void BuildIsland(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
+	private void BuildIsland(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int islandWidth, int bridgeWidth)
 	{
-		int islandWidth = Random.Range(4, width - 1);
 		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0];
 		bool[] bridges = new bool[4];
 		int numBridges = 0;
 
 		for(int i = 0; i < 4; i++)
 		{
-			if(Random.Range(0f, 1f) < 0.5f)
+			if (Random.Range(0f, 1f) < 0.5f)
 			{
 				bridges[i] = true;
 				numBridges++;
-				BuildIslandBridge(i, islandWidth, tilePrefabs[0]);
+				BuildIslandBridge(i, islandWidth, bridgeWidth, tilePrefabs[0]);
 			}
 		}
 
 		if(numBridges < 2 && !bridges[0])
 		{
-			BuildIslandBridge(0, islandWidth, tilePrefabs[0]);
+			BuildIslandBridge(0, islandWidth, bridgeWidth, tilePrefabs[0]);
 			numBridges++;
 		}
 
 		if (numBridges < 2 && !bridges[1])
 		{
-			BuildIslandBridge(1, islandWidth, tilePrefabs[0]);
+			BuildIslandBridge(1, islandWidth, bridgeWidth, tilePrefabs[0]);
 		}
 
 		for (int row = zPos; row < zPos + height; row++)
@@ -223,9 +223,9 @@ public class Zone : MonoBehaviour
 		}
 	}
 
-	private void BuildTunnel(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
+	private void BuildTunnel(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int tunnelWidth)
 	{
-
+		BuildIsland(tilePrefabs, objectPrefabs, tunnelWidth, tunnelWidth);
 	}
 
 	private void BuildMaze(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
@@ -239,10 +239,9 @@ public class Zone : MonoBehaviour
 	/// <param name="direction">The direction to build the bridge in/param>
 	/// <param name="islandWidth">The width of the island</param>
 	/// <param name="tilePrefab">A basic tile prefab</param>
-	private void BuildIslandBridge(int direction, int islandWidth, GameObject tilePrefab)
+	private void BuildIslandBridge(int direction, int islandWidth, int bridgeWidth, GameObject tilePrefab)
 	{
 		Vector2Int bridge = new Vector2Int(0, 0);
-		int bridgeWidth = Random.Range(1, 4);
 		switch (direction)
 		{
 			case 0:
