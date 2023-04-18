@@ -155,6 +155,8 @@ public class GenerateLevel : MonoBehaviour
 			{
 				grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, shipZoneObj.transform);
 				shipZone.tiles.Add(grid[row, col]);
+				grid[row, col].GetComponent<Tile>().xPos = col;
+				grid[row, col].GetComponent<Tile>().zPos = row;
 			}
 		}
 
@@ -246,8 +248,8 @@ public class GenerateLevel : MonoBehaviour
 				{
 					grid[gridHeight - 1, col] = Instantiate(tilePrefabs[4], new Vector3(col, tilePrefabs[4].transform.position.y, gridHeight - 1), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[gridHeight - 1, col]);
-					grid[0, col].GetComponent<Tile>().xPos = col;
-					grid[0, col].GetComponent<Tile>().zPos = gridHeight - 1;
+					grid[gridHeight - 1, col].GetComponent<Tile>().xPos = col;
+					grid[gridHeight - 1, col].GetComponent<Tile>().zPos = gridHeight - 1;
 				}
 			}
 			else
@@ -264,8 +266,8 @@ public class GenerateLevel : MonoBehaviour
 				{
 					grid[gridHeight - 1, col] = Instantiate(tilePrefabs[3], new Vector3(col, tilePrefabs[3].transform.position.y, gridHeight - 1), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[gridHeight - 1, col]);
-					grid[0, col].GetComponent<Tile>().xPos = col;
-					grid[0, col].GetComponent<Tile>().zPos = gridHeight - 1;
+					grid[gridHeight - 1, col].GetComponent<Tile>().xPos = col;
+					grid[gridHeight - 1, col].GetComponent<Tile>().zPos = gridHeight - 1;
 				}
 			}
 		}
@@ -393,6 +395,8 @@ public class GenerateLevel : MonoBehaviour
 
 				SetGridItem(randomZ, randomX, Instantiate(tilePrefabs[0], new Vector3(randomX, 0, randomZ), tilePrefabs[0].transform.rotation, oreZoneObjs[i].transform));
 				grid[randomZ, randomX].GetComponent<Tile>().occupant = Instantiate(orePrefabs[0], new Vector3(randomX, orePrefabs[0].transform.position.y, randomZ), Quaternion.identity, oreZoneObjs[i].transform);
+				grid[randomZ, randomX].GetComponent<Tile>().xPos = randomX;
+				grid[randomZ, randomX].GetComponent<Tile>().zPos = randomZ;
 
 				if (randomX > oreZone.xPos) validPositions.Add(new Vector2Int(randomX - 1, randomZ));
 				if (randomX < oreZone.xPos + oreZone.width - 1) validPositions.Add(new Vector2Int(randomX + 1, randomZ));
@@ -421,7 +425,12 @@ public class GenerateLevel : MonoBehaviour
 		{
 			for (int col = 0; col < gridWidth; col++)
 			{
-				if (grid[row, col] == null) grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, parentZones[5].transform);
+				if (grid[row, col] == null)
+				{
+					grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, parentZones[5].transform);
+					grid[row, col].GetComponent<Tile>().xPos = col;
+					grid[row, col].GetComponent<Tile>().zPos = row;
+				}
 			}
 		}
 		#endregion
@@ -433,72 +442,86 @@ public class GenerateLevel : MonoBehaviour
 	/// <returns>Whether the current level is valid</returns>
 	private bool IsGridValid()
 	{
-		// Enemy positions
-		foreach (Vector2Int position in corePositions)
+		#region Dijkstra's Algorithm
+		//List<GameObject> openList = new List<GameObject> { startTile };
+		//List<GameObject> closedList = new List<GameObject>();
+		List<Vector2Int> openList = new List<Vector2Int> { new Vector2Int(shipPosition.x, shipPosition.y) };
+		List<Vector2Int> closedList = new List<Vector2Int>();
+
+		// Current tile
+		Vector2Int current = openList[0];
+		int currentZ;
+		int currentX;
+
+		// Run until there are no tiles left to search
+		while (openList.Count > 0)
 		{
-			// Ship position
-			GameObject startTile = grid[shipPosition.x, shipPosition.y];
+			current = openList[0];
+			currentZ = current.x;
+			currentX = current.y;
 
-			#region Dijkstra's Algorithm
-			List<GameObject> openList = new List<GameObject> { startTile };
-			List<GameObject> closedList = new List<GameObject>();
-
-			// Current tile
-			GameObject current = startTile;
-			int currentZ;
-			int currentX;
-
-			// Run until there are no tiles left to search
-			while (openList.Count > 0)
+			// If the item is reached, we are successful
+			if (corePositions.Contains(current))
 			{
-				current = openList[0];
-				currentZ = current.GetComponent<Tile>().zPos;
-				currentX = current.GetComponent<Tile>().xPos;
+				corePositions.Remove(current);
+			}
+			else if(corePositions.Count == 0)
+			{
+				break;
+			}
 
-				// If the item is reached, we are successful
-				if (current == grid[position.x, position.y])
+			// Check the four cardinal directions
+			for (int i = 0; i < 4; i++)
+			{
+				Vector2Int endTile;
+
+				switch (i)
 				{
-					break;
+					case 0:
+						if (currentX == gridWidth - 1) continue;
+						endTile = new Vector2Int(currentZ, currentX + 1);
+						break;
+					case 1:
+						if (currentZ == 0) continue;
+						endTile = new Vector2Int(currentZ - 1, currentX);
+						break;
+					case 2:
+						if (currentX == 0) continue;
+						endTile = new Vector2Int(currentZ, currentX - 1);
+						break;
+					default:
+						if (currentZ == gridHeight - 1) continue;
+						endTile = new Vector2Int(currentZ + 1, currentX);
+						break;
 				}
 
-				// Check the four cardinal directions
-				for (int i = 0; i < 4; i++)
+				// Add any unsearched tiles
+				if (!openList.Contains(endTile) && !closedList.Contains(endTile) && grid[endTile.x, endTile.y].GetComponent<Tile>().tileType == TileType.Basic)
 				{
-					GameObject endTile;
-
-					switch (i)
-					{
-						case 0:
-							endTile = grid[currentZ, currentX + 1];
-							break;
-						case 1:
-							endTile = grid[currentZ - 1, currentX];
-							break;
-						case 2:
-							endTile = grid[currentZ, currentX - 1];
-							break;
-						default:
-							endTile = grid[currentZ + 1, currentX];
-							break;
-					}
-
-					// Add any unsearched tiles
-					if (!openList.Contains(endTile) && !closedList.Contains(endTile) && endTile.GetComponent<Tile>().tileType == TileType.Pit && endTile.GetComponent<Tile>().occupant != null)
+					if (grid[endTile.x, endTile.y].GetComponent<Tile>().occupant == null || grid[endTile.x, endTile.y].GetComponent<Tile>().occupant.tag == "Ore")
 					{
 						openList.Add(endTile);
 					}
 				}
-				openList.Remove(current);
-				closedList.Add(current);
 			}
-
-			// If the item was never found, we failed
-			if (current != grid[position.x, position.y])
-			{
-				return false;
-			}
-			#endregion
+			openList.Remove(current);
+			closedList.Add(current);
 		}
+
+		// If the item was never found, we failed
+		if (corePositions.Count > 0)
+		{
+			Debug.Log("-----------------");
+			Debug.Log("MISSED POSITIONS:");
+			Debug.Log("-----------------");
+			corePositions.ForEach(position => {
+				Debug.Log(grid[position.x, position.y].transform.parent);
+				Debug.Log(position);
+				});
+			corePositions.Clear();
+			return false;
+		}
+		#endregion
 
 		return true;
 	}

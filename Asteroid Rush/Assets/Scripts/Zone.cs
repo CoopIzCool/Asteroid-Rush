@@ -55,6 +55,8 @@ public class Zone : MonoBehaviour
 				{
 					GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
 					tiles.Add(GenerateLevel.GetGridItem(row, col));
+					GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+					GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 				}
 			}
 		}
@@ -90,6 +92,8 @@ public class Zone : MonoBehaviour
 					tiles.Remove(GenerateLevel.GetGridItem(randomZ, randomX));
 					GenerateLevel.SetGridItem(randomZ, randomX, Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), Quaternion.identity, transform));
 					tiles.Add(GenerateLevel.GetGridItem(randomZ, randomX));
+					GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().xPos = randomX;
+					GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().zPos = randomZ;
 				}
 
 				if (randomX > xPos && GenerateLevel.GetGridItem(randomZ, randomX - 1).transform.parent == transform) validPositions.Add(new Vector2Int(randomX - 1, randomZ));
@@ -154,18 +158,24 @@ public class Zone : MonoBehaviour
 							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
 							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 						}
 						else
 						{
 							tiles.Remove(GenerateLevel.GetGridItem(row, col));
 							GenerateLevel.SetGridItem(row, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.identity, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 						}
 					}
 					else
 					{
 						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
 						tiles.Add(GenerateLevel.GetGridItem(row, col));
+						GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+						GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 					}
 				}
 			}
@@ -187,6 +197,8 @@ public class Zone : MonoBehaviour
 					{
 						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
 						tiles.Add(GenerateLevel.GetGridItem(row, col));
+						GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+						GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 					}
 					else
 					{
@@ -195,11 +207,15 @@ public class Zone : MonoBehaviour
 							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
 							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 						}
 						else
 						{
 							GenerateLevel.SetGridItem(row, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.identity, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 						}
 					}
 				}
@@ -247,7 +263,7 @@ public class Zone : MonoBehaviour
 				break;
 			case 1:
 				bridge.x = xPos + width / 2 + islandWidth / 2;
-				bridge.y = Random.Range(zPos + height / 2 - islandWidth / 2, zPos + height / 2 + islandWidth / 2);
+				bridge.y = Random.Range(zPos + height / 2 - islandWidth / 2, zPos + height / 2 + islandWidth / 2 - bridgeWidth + 1);
 
 				for (int row = bridge.y; row < bridge.y + bridgeWidth; row++)
 				{
@@ -279,7 +295,7 @@ public class Zone : MonoBehaviour
 				break;
 			default:
 				bridge.x = xPos + width / 2 - islandWidth / 2;
-				bridge.y = Random.Range(zPos + height / 2 - islandWidth / 2, zPos + height / 2 + islandWidth / 2);
+				bridge.y = Random.Range(zPos + height / 2 - islandWidth / 2, zPos + height / 2 + islandWidth / 2 - bridgeWidth + 1);
 
 				for (int row = bridge.y; row < bridge.y + bridgeWidth; row++)
 				{
