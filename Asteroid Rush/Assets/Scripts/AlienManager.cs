@@ -107,13 +107,18 @@ public class AlienManager : MonoBehaviour
                 foreach(Direction direction in directionPriority) {
                     // check for an occupied tile in that direction
                     Vector2Int testTile = currentTile + directionToVector[direction];
-                    if(GenerateLevel.GetGridItem(testTile.x, testTile.y) == null) {
+                    GameObject tile = GenerateLevel.GetGridItem(testTile.x, testTile.y);
+                    Debug.Log(tile);
+                    if(tile != null) {
+                        Debug.Log(tile.GetComponent<Tile>());
+                    }
+                    if(tile != null && tile.GetComponent<Tile>().occupant == null) {
                         currentTile = testTile;
                     }
                 }
             }
 
-            //alien.GetComponent<Alien>().MoveToTile(currentTile.x, currentTile.y);
+            alien.GetComponent<Alien>().MoveToTile(GenerateLevel.GetGridItem(currentTile.x, currentTile.y).GetComponent<Tile>());
         }
     }
 
