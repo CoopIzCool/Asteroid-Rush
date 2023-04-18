@@ -102,11 +102,15 @@ public class TurnHandler : MonoBehaviour
             {
                 ClearCurrentPath();
                 currentTurn = TurnOrder.Alien;
+                AlienManager.Instance.TakeTurn();
             }
         }
         else
         {
             //Fill in enemy behavior here
+            
+
+            // TEMP: immediately go back to player turn
             currentTurn = TurnOrder.Player;
             SetUpPlayerTurn();
         }
