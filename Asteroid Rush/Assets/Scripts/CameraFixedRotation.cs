@@ -26,6 +26,7 @@ public class CameraFixedRotation : MonoBehaviour
     [SerializeField] private float zShiftIndex;
     [SerializeField] private float radiusOffset;
 
+    private float centerPointShift = 10.0f;
     #endregion Fields
 
     #region Properties
@@ -112,6 +113,33 @@ public class CameraFixedRotation : MonoBehaviour
         {
             counter = 0.0f;
         }
+
+        //Code for centerpoint shifting
+        /*
+        //Shift the center Point
+        if(Input.GetKey(KeyCode.I))
+        {
+            float centerShiftAxis = Mathf.Clamp(((centerPointShift * Time.deltaTime) + centerPoint.position.z),0,zShiftIndex * 2);
+
+            centerPoint.position = new Vector3 (centerPoint.position.x, centerPoint.position.z,centerShiftAxis);
+        }
+        else if (Input.GetKey(KeyCode.K))
+        {
+            float centerShiftAxis = Mathf.Clamp((centerPoint.position.z - (centerPointShift * Time.deltaTime)), 0, zShiftIndex * 2);
+            centerPoint.position = new Vector3(centerPoint.position.x, centerPoint.position.z, centerShiftAxis);
+        }
+
+        //Shift the center Point
+        if (Input.GetKey(KeyCode.L))
+        {
+            centerPoint.position += new Vector3(centerPointShift * Time.deltaTime, 0,0);
+        }
+        else if (Input.GetKey(KeyCode.J))
+        {
+            centerPoint.position += new Vector3(centerPointShift * Time.deltaTime * -1.0f, 0, 0);
+        }
+        */ 
+
         //Clamp XRotation to prevent Axis Flipping
         xRotate = Mathf.Clamp(xRotate, 0.1f, Mathf.PI/2);
         //Debug.Log(xRotate);
