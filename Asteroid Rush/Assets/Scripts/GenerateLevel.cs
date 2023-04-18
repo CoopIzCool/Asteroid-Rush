@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,6 +14,10 @@ public class GenerateLevel : MonoBehaviour
 	private static GameObject[,] grid = null;
 	private int gridWidth = 0;
 	private int gridHeight = 0;
+
+	// Validation fields
+	private List<Vector2Int> corePositions = new List<Vector2Int>();
+	private Vector2Int shipPosition;
 
 	[Header("Prefabs")]
 	[SerializeField] private GameObject[] tilePrefabs;
@@ -53,6 +56,7 @@ public class GenerateLevel : MonoBehaviour
 	{
 		ResetGrid();
 		AlienManager.Instance.Grid = this;
+		do ResetGrid(); while (!IsGridValid());
 	}
 
 	// Update is called once per frame
@@ -60,8 +64,7 @@ public class GenerateLevel : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
-
-			ResetGrid();
+			do ResetGrid(); while (!IsGridValid());
 		}
 	}
 
@@ -173,9 +176,12 @@ public class GenerateLevel : MonoBehaviour
 			{
 				grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, shipZoneObj.transform);
 				shipZone.tiles.Add(grid[row, col]);
+				grid[row, col].GetComponent<Tile>().xPos = col;
+				grid[row, col].GetComponent<Tile>().zPos = row;
 			}
 		}
 
+		shipPosition = new Vector2Int(gridHeight / 2, gridWidth / 2);
 		grid[gridHeight / 2, gridWidth / 2].GetComponent<Tile>().occupant = Instantiate(spaceshipPrefab, new Vector3(gridWidth / 2, spaceshipPrefab.transform.position.y, gridHeight / 2), spaceshipPrefab.transform.rotation, shipZoneObj.transform);
 		GameObject player1 = Instantiate(playerPrefabs[0], new Vector3(gridWidth / 2 - 1, playerPrefabs[0].transform.position.y, gridHeight / 2 + 1), playerPrefabs[0].transform.rotation, shipZoneObj.transform);
 		grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>().occupant = player1;
@@ -202,31 +208,43 @@ public class GenerateLevel : MonoBehaviour
 		}
 
 		int randomPos = Random.Range(1, gridWidth - enemyZoneWidth - 1);
+		corePositions.Add(new Vector2Int(0, randomPos));
 		for (int col = randomPos; col < randomPos + enemyZoneWidth; col++)
 		{
 			grid[0, col] = Instantiate(tilePrefabs[1], new Vector3(col, 0, 0), tilePrefabs[1].transform.rotation, enemyZoneObjs[0].transform);
 			enemyZoneObjs[0].GetComponent<Zone>().tiles.Add(grid[0, col]);
+			grid[0, col].GetComponent<Tile>().xPos = col;
+			grid[0, col].GetComponent<Tile>().zPos = 0;
 		}
 
 		randomPos = Random.Range(1, gridWidth - enemyZoneWidth - 1);
+		corePositions.Add(new Vector2Int(gridHeight - 1, randomPos));
 		for (int col = randomPos; col < randomPos + enemyZoneWidth; col++)
 		{
 			grid[gridHeight - 1, col] = Instantiate(tilePrefabs[1], new Vector3(col, 0, gridHeight - 1), tilePrefabs[1].transform.rotation, enemyZoneObjs[2].transform);
 			enemyZoneObjs[2].GetComponent<Zone>().tiles.Add(grid[gridHeight - 1, col]);
+			grid[gridHeight - 1, col].GetComponent<Tile>().xPos = col;
+			grid[gridHeight - 1, col].GetComponent<Tile>().zPos = gridHeight - 1;
 		}
 
 		randomPos = Random.Range(1, gridHeight - enemyZoneHeight - 1);
+		corePositions.Add(new Vector2Int(randomPos, 0));
 		for (int row = randomPos; row < randomPos + enemyZoneWidth; row++)
 		{
 			grid[row, 0] = Instantiate(tilePrefabs[1], new Vector3(0, 0, row), tilePrefabs[1].transform.rotation, enemyZoneObjs[1].transform);
 			enemyZoneObjs[1].GetComponent<Zone>().tiles.Add(grid[row, 0]);
+			grid[row, 0].GetComponent<Tile>().xPos = 0;
+			grid[row, 0].GetComponent<Tile>().zPos = row;
 		}
 
 		randomPos = Random.Range(1, gridHeight - enemyZoneHeight - 1);
+		corePositions.Add(new Vector2Int(randomPos, gridWidth - 1));
 		for (int row = randomPos; row < randomPos + enemyZoneWidth; row++)
 		{
 			grid[row, gridWidth - 1] = Instantiate(tilePrefabs[1], new Vector3(gridWidth - 1, 0, row), tilePrefabs[1].transform.rotation, enemyZoneObjs[3].transform);
 			enemyZoneObjs[3].GetComponent<Zone>().tiles.Add(grid[row, gridWidth - 1]);
+			grid[row, gridWidth - 1].GetComponent<Tile>().xPos = gridWidth - 1;
+			grid[row, gridWidth - 1].GetComponent<Tile>().zPos = row;
 		}
 		#endregion
 
@@ -246,12 +264,16 @@ public class GenerateLevel : MonoBehaviour
 				{
 					grid[0, col] = Instantiate(tilePrefabs[4], new Vector3(col, tilePrefabs[4].transform.position.y, 0), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[0, col]);
+					grid[0, col].GetComponent<Tile>().xPos = col;
+					grid[0, col].GetComponent<Tile>().zPos = 0;
 				}
 
 				if (grid[gridHeight - 1, col] == null)
 				{
 					grid[gridHeight - 1, col] = Instantiate(tilePrefabs[4], new Vector3(col, tilePrefabs[4].transform.position.y, gridHeight - 1), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[gridHeight - 1, col]);
+					grid[gridHeight - 1, col].GetComponent<Tile>().xPos = col;
+					grid[gridHeight - 1, col].GetComponent<Tile>().zPos = gridHeight - 1;
 				}
 			}
 			else
@@ -260,12 +282,16 @@ public class GenerateLevel : MonoBehaviour
 				{
 					grid[0, col] = Instantiate(tilePrefabs[3], new Vector3(col, tilePrefabs[3].transform.position.y, 0), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[0, col]);
+					grid[0, col].GetComponent<Tile>().xPos = col;
+					grid[0, col].GetComponent<Tile>().zPos = 0;
 				}
 
 				if (grid[gridHeight - 1, col] == null)
 				{
 					grid[gridHeight - 1, col] = Instantiate(tilePrefabs[3], new Vector3(col, tilePrefabs[3].transform.position.y, gridHeight - 1), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[gridHeight - 1, col]);
+					grid[gridHeight - 1, col].GetComponent<Tile>().xPos = col;
+					grid[gridHeight - 1, col].GetComponent<Tile>().zPos = gridHeight - 1;
 				}
 			}
 		}
@@ -278,12 +304,16 @@ public class GenerateLevel : MonoBehaviour
 				{
 					grid[row, 0] = Instantiate(tilePrefabs[4], new Vector3(0, tilePrefabs[4].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[row, 0]);
+					grid[row, 0].GetComponent<Tile>().xPos = 0;
+					grid[row, 0].GetComponent<Tile>().zPos = row;
 				}
 
 				if (grid[row, gridWidth - 1] == null)
 				{
 					grid[row, gridWidth - 1] = Instantiate(tilePrefabs[4], new Vector3(gridWidth - 1, tilePrefabs[4].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[row, gridWidth - 1]);
+					grid[row, gridWidth - 1].GetComponent<Tile>().xPos = gridWidth - 1;
+					grid[row, gridWidth - 1].GetComponent<Tile>().zPos = row;
 				}
 			}
 			else
@@ -292,12 +322,16 @@ public class GenerateLevel : MonoBehaviour
 				{
 					grid[row, 0] = Instantiate(tilePrefabs[3], new Vector3(0, tilePrefabs[3].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[row, 0]);
+					grid[row, 0].GetComponent<Tile>().xPos = 0;
+					grid[row, 0].GetComponent<Tile>().zPos = row;
 				}
 
 				if (grid[row, gridWidth - 1] == null)
 				{
 					grid[row, gridWidth - 1] = Instantiate(tilePrefabs[3], new Vector3(gridWidth - 1, tilePrefabs[3].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[row, gridWidth - 1]);
+					grid[row, gridWidth - 1].GetComponent<Tile>().xPos = gridWidth - 1;
+					grid[row, gridWidth - 1].GetComponent<Tile>().zPos = row;
 				}
 			}
 		}
@@ -376,6 +410,8 @@ public class GenerateLevel : MonoBehaviour
 				randomZ = Random.Range(oreZone.zPos, oreZone.zPos + oreZone.height);
 			} while (grid[randomZ, randomX].transform.parent != chosenZone.transform || grid[randomZ, randomX].GetComponent<Tile>().tileType == TileType.Pit || grid[randomZ, randomX].GetComponent<Tile>().occupant != null);
 
+			corePositions.Add(new Vector2Int(randomZ, randomX));
+
 			int numOres = 0;
 			do
 			{
@@ -383,6 +419,8 @@ public class GenerateLevel : MonoBehaviour
 
 				SetGridItem(randomZ, randomX, Instantiate(tilePrefabs[0], new Vector3(randomX, 0, randomZ), tilePrefabs[0].transform.rotation, oreZoneObjs[i].transform));
 				grid[randomZ, randomX].GetComponent<Tile>().occupant = Instantiate(orePrefabs[0], new Vector3(randomX, orePrefabs[0].transform.position.y, randomZ), Quaternion.identity, oreZoneObjs[i].transform);
+				grid[randomZ, randomX].GetComponent<Tile>().xPos = randomX;
+				grid[randomZ, randomX].GetComponent<Tile>().zPos = randomZ;
 
 				if (randomX > oreZone.xPos) validPositions.Add(new Vector2Int(randomX - 1, randomZ));
 				if (randomX < oreZone.xPos + oreZone.width - 1) validPositions.Add(new Vector2Int(randomX + 1, randomZ));
@@ -411,9 +449,104 @@ public class GenerateLevel : MonoBehaviour
 		{
 			for (int col = 0; col < gridWidth; col++)
 			{
-				if (grid[row, col] == null) grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, parentZones[5].transform);
+				if (grid[row, col] == null)
+				{
+					grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, parentZones[5].transform);
+					grid[row, col].GetComponent<Tile>().xPos = col;
+					grid[row, col].GetComponent<Tile>().zPos = row;
+				}
 			}
 		}
 		#endregion
+	}
+
+	/// <summary>
+	/// Runs a modified version of Dijkstra's Algorithm to check if there is a path from the player spawn to all important landmarks in the current level
+	/// </summary>
+	/// <returns>Whether the current level is valid</returns>
+	private bool IsGridValid()
+	{
+		#region Dijkstra's Algorithm
+		//List<GameObject> openList = new List<GameObject> { startTile };
+		//List<GameObject> closedList = new List<GameObject>();
+		List<Vector2Int> openList = new List<Vector2Int> { new Vector2Int(shipPosition.x, shipPosition.y) };
+		List<Vector2Int> closedList = new List<Vector2Int>();
+
+		// Current tile
+		Vector2Int current = openList[0];
+		int currentZ;
+		int currentX;
+
+		// Run until there are no tiles left to search
+		while (openList.Count > 0)
+		{
+			current = openList[0];
+			currentZ = current.x;
+			currentX = current.y;
+
+			// If the item is reached, we are successful
+			if (corePositions.Contains(current))
+			{
+				corePositions.Remove(current);
+			}
+			else if(corePositions.Count == 0)
+			{
+				break;
+			}
+
+			// Check the four cardinal directions
+			for (int i = 0; i < 4; i++)
+			{
+				Vector2Int endTile;
+
+				switch (i)
+				{
+					case 0:
+						if (currentX == gridWidth - 1) continue;
+						endTile = new Vector2Int(currentZ, currentX + 1);
+						break;
+					case 1:
+						if (currentZ == 0) continue;
+						endTile = new Vector2Int(currentZ - 1, currentX);
+						break;
+					case 2:
+						if (currentX == 0) continue;
+						endTile = new Vector2Int(currentZ, currentX - 1);
+						break;
+					default:
+						if (currentZ == gridHeight - 1) continue;
+						endTile = new Vector2Int(currentZ + 1, currentX);
+						break;
+				}
+
+				// Add any unsearched tiles
+				if (!openList.Contains(endTile) && !closedList.Contains(endTile) && grid[endTile.x, endTile.y].GetComponent<Tile>().tileType == TileType.Basic)
+				{
+					if (grid[endTile.x, endTile.y].GetComponent<Tile>().occupant == null || grid[endTile.x, endTile.y].GetComponent<Tile>().occupant.tag == "Ore")
+					{
+						openList.Add(endTile);
+					}
+				}
+			}
+			openList.Remove(current);
+			closedList.Add(current);
+		}
+
+		// If the item was never found, we failed
+		if (corePositions.Count > 0)
+		{
+			Debug.Log("-----------------");
+			Debug.Log("MISSED POSITIONS:");
+			Debug.Log("-----------------");
+			corePositions.ForEach(position => {
+				Debug.Log(grid[position.x, position.y].transform.parent);
+				Debug.Log(position);
+				});
+			corePositions.Clear();
+			return false;
+		}
+		#endregion
+
+		return true;
 	}
 }
