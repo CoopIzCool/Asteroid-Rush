@@ -20,7 +20,7 @@ public class ShopManager : MonoBehaviour
     /// <summary>
     /// Checks to see if shop is open
     /// </summary>
-    private bool isShopOpen = false;
+    public bool isShopOpen = false;
 
     private bool gameIsPaused;
 
