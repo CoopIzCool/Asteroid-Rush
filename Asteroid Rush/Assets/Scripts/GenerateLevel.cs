@@ -46,6 +46,7 @@ public class GenerateLevel : MonoBehaviour
 	void Start()
 	{
 		do ResetGrid(); while (!IsGridValid());
+		//ResetGrid();
 	}
 
 	// Update is called once per frame
@@ -54,6 +55,7 @@ public class GenerateLevel : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
 			do ResetGrid(); while (!IsGridValid());
+			//ResetGrid();
 		}
 	}
 
@@ -326,7 +328,8 @@ public class GenerateLevel : MonoBehaviour
 			zone.height = Random.Range(minZoneHeight, Mathf.Clamp(maxZoneHeight, minZoneHeight, gridHeight - z));
 			zone.xPos = x;
 			zone.zPos = z;
-			zone.zoneType = (ZoneTypes)Random.Range(0, 4);
+			zone.zoneType = (ZoneTypes)Random.Range(0, 5);
+			//zone.zoneType = ZoneTypes.Maze;
 			zoneObj.name = zone.zoneType.ToString() + "Zone";
 
 			zone.BuildZone(tilePrefabs, objectPrefabs);
