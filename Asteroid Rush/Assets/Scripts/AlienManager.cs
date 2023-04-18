@@ -7,7 +7,7 @@ public class AlienManager : MonoBehaviour
 {
     [SerializeField] private GameObject alienPrefab;
     [SerializeField] private GameObject spawnZoneContainer;
-    private const int NUM_PER_SPAWN = 3; // should be less than the number of spawn tiles
+    private const int NUM_PER_SPAWN = 1; // should be less than the number of spawn tiles
 
     private static AlienManager instance;
     public static AlienManager Instance { get { return instance; } }
@@ -38,7 +38,7 @@ public class AlienManager : MonoBehaviour
         // spawn new aliens
         turnsBeforeSpawn--;
         if(turnsBeforeSpawn <= 0) {
-            turnsBeforeSpawn = 3;
+            turnsBeforeSpawn = 3000000;
 
             // choose a spawn side
             Transform spawnZones = spawnZoneContainer.gameObject.transform;
@@ -73,52 +73,55 @@ public class AlienManager : MonoBehaviour
                 }
             }
 
-            Vector3 tileTransform = alien.GetComponent<Alien>().CurrentTile.transform.position;
-            Vector2Int currentTile = new Vector2Int((int)tileTransform.x, (int)tileTransform.z);
+            Tile startTile = alien.GetComponent<Alien>().CurrentTile;
+            Vector2Int currentTile = new Vector2Int(startTile.xPos, startTile.zPos);
             Vector2Int targetTile = new Vector2Int((int)closestPlayer.transform.position.x, (int)closestPlayer.transform.position.x);
-
+            currentTile += directionToVector[Direction.Down];
+            Debug.Log(currentTile);
             // simulate stepping one tile at a time
-            for(int i = 0; i < alien.GetComponent<Alien>().Movement; i++) {
-                int dist = Mathf.Abs(currentTile.x - targetTile.x) + Mathf.Abs(currentTile.y - targetTile.y);
-                if(dist <= 1) {
-                    break; // now adjacent to player
-                }
+            //for(int i = 0; i < alien.GetComponent<Alien>().Movement; i++) {
+            //    int dist = Mathf.Abs(currentTile.x - targetTile.x) + Mathf.Abs(currentTile.y - targetTile.y);
+            //    if(dist <= 1) {
+            //        break; // now adjacent to player
+            //    }
 
-                // determine the best order to attempt a move
-                Direction[] directionPriority = new Direction[4];
-                bool leftBetterThanRight = targetTile.x < currentTile.x;
-                bool upBetterThanDown = targetTile.y < currentTile.y;
+            //    // determine the best order to attempt a move
+            //    Direction[] directionPriority = new Direction[4];
+            //    bool leftBetterThanRight = targetTile.x < currentTile.x;
+            //    bool upBetterThanDown = targetTile.y < currentTile.y;
 
-                if(Mathf.Abs(currentTile.x - targetTile.x) > Mathf.Abs(currentTile.y - targetTile.y)) {
-                    // horizontal first
-                    directionPriority[0] = (leftBetterThanRight ? Direction.Left : Direction.Right);
-                    directionPriority[1] = (upBetterThanDown ? Direction.Up : Direction.Down);
-                    directionPriority[2] = (upBetterThanDown ? Direction.Down : Direction.Up);
-                    directionPriority[3] = (leftBetterThanRight ? Direction.Right : Direction.Left);
-                    // ERROR: fails if the character is forced to move backwards
-                } else {
-                    // vertical first
-                    directionPriority[0] = (upBetterThanDown ? Direction.Up : Direction.Down);
-                    directionPriority[1] = (leftBetterThanRight ? Direction.Left : Direction.Right);
-                    directionPriority[2] = (leftBetterThanRight ? Direction.Right : Direction.Left);
-                    directionPriority[3] = (upBetterThanDown ? Direction.Down : Direction.Up);
-                }
+            //    if(Mathf.Abs(currentTile.x - targetTile.x) > Mathf.Abs(currentTile.y - targetTile.y)) {
+            //        // horizontal first
+            //        directionPriority[0] = (leftBetterThanRight ? Direction.Left : Direction.Right);
+            //        directionPriority[1] = (upBetterThanDown ? Direction.Up : Direction.Down);
+            //        directionPriority[2] = (upBetterThanDown ? Direction.Down : Direction.Up);
+            //        directionPriority[3] = (leftBetterThanRight ? Direction.Right : Direction.Left);
+            //        // ERROR: fails if the character is forced to move backwards
+            //    } else {
+            //        // vertical first
+            //        directionPriority[0] = (upBetterThanDown ? Direction.Up : Direction.Down);
+            //        directionPriority[1] = (leftBetterThanRight ? Direction.Left : Direction.Right);
+            //        directionPriority[2] = (leftBetterThanRight ? Direction.Right : Direction.Left);
+            //        directionPriority[3] = (upBetterThanDown ? Direction.Down : Direction.Up);
+            //    }
 
-                foreach(Direction direction in directionPriority) {
-                    // check for an occupied tile in that direction
-                    Vector2Int testTile = currentTile + directionToVector[direction];
-                    GameObject tile = GenerateLevel.GetGridItem(testTile.x, testTile.y);
-                    Debug.Log(tile);
-                    if(tile != null) {
-                        Debug.Log(tile.GetComponent<Tile>());
-                    }
-                    if(tile != null && tile.GetComponent<Tile>().occupant == null) {
-                        currentTile = testTile;
-                    }
-                }
+            //    foreach(Direction direction in directionPriority) {
+            //        // check for an occupied tile in that direction
+            //        Vector2Int testTile = currentTile + directionToVector[direction];
+            //        GameObject tile = GenerateLevel.GetGridItem(testTile.x, testTile.y);
+            //        Debug.Log(tile);
+            //        if(tile != null) {
+            //            Debug.Log(tile.GetComponent<Tile>());
+            //        }
+            //        if(tile != null && tile.GetComponent<Tile>().occupant == null) {
+            //            currentTile = testTile;
+            //        }
+            //    }
+            //}
+            GameObject endTile =GenerateLevel.GetGridItem(currentTile.x, currentTile.y);
+            if(endTile != null) {
+                alien.GetComponent<Alien>().MoveToTile(endTile.GetComponent<Tile>());
             }
-
-            alien.GetComponent<Alien>().MoveToTile(GenerateLevel.GetGridItem(currentTile.x, currentTile.y).GetComponent<Tile>());
         }
     }
 
@@ -129,14 +132,14 @@ public class AlienManager : MonoBehaviour
 
     // helper function to find if a player is in an adjacent tile. If there are multiple, returns the first one found. Null if no adjacent
     private GameObject FindAdjacentPlayer(GameObject alien) {
-        Vector3 tileTransform = alien.GetComponent<Alien>().CurrentTile.transform.position;
-        Vector2Int alienTile = new Vector2Int((int)tileTransform.x, (int)tileTransform.z);
+        Tile tile = alien.GetComponent<Alien>().CurrentTile;
+        Vector2Int alienTile = new Vector2Int(tile.xPos, tile.zPos);
 
         foreach (GameObject player in PlayerCharacters) {
-            tileTransform = player.GetComponent<Character>().CurrentTile.transform.position;
-            Vector2Int playerTile = new Vector2Int((int)tileTransform.x, (int)tileTransform.z);
+            tile = player.GetComponent<Character>().CurrentTile;
+            Vector2Int playerTile = new Vector2Int(tile.xPos, tile.zPos);
 
-            if(Mathf.Abs(alienTile.x - playerTile.x) <= 1 || Mathf.Abs(alienTile.y - playerTile.y) <= 1) {
+            if (Mathf.Abs(alienTile.x - playerTile.x) <= 1 || Mathf.Abs(alienTile.y - playerTile.y) <= 1) {
                 return player;
             }
         }

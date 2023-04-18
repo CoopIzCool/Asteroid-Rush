@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 20
-  movementPoints: 5
+  movementPoints: 1
   currentTile: {fileID: 0}
   moved: 0
   damage: 2

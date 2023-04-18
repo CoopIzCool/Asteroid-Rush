@@ -516,7 +516,7 @@ MonoBehaviour:
   enemyPrefabs:
   - {fileID: 814260038656492310, guid: 5f3df0a2a13772b4aad46467d63d541b, type: 3}
   orePrefabs:
-  - {fileID: 588462291345663680, guid: 65feae1ec07bc744f9e912f56e0fbf03, type: 3}
+  - {fileID: 7438213957681967491, guid: 9d08b86bb74b3e14b813fd798fc73ce2, type: 3}
   spaceshipPrefab: {fileID: 4334381121931400981, guid: 5fbe593229466d44187df133e38e8ed9, type: 3}
   parentZones:
   - {fileID: 1543274258}
