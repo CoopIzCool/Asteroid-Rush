@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Direction {
+	Up,
+	Down,
+	Left,
+	Right
+}
+
 public class GenerateLevel : MonoBehaviour
 {
 	// The grid
@@ -63,8 +70,13 @@ public class GenerateLevel : MonoBehaviour
 	/// </summary>
 	/// <param name="row">The row to access</param>
 	/// <param name="col">The column to access</param>
-	/// <returns>The item at grid[row, col]</returns>
-	public static GameObject GetGridItem(int row, int col) => grid[row, col];
+	/// <returns>The item at grid[row, col]. Returns null if outside the grid. </returns>
+	public static GameObject GetGridItem(int row, int col) {
+		if(row < 0 || col < 0 || row >= grid.GetLength(0) || col >= grid.GetLength(1)) {
+			return null;
+		}
+		return grid[row, col];
+	}
 
 	/// <summary>
 	/// Set the item at the specified position in the grid to the given value.

@@ -6,6 +6,7 @@ using UnityEngine;
 public class AlienManager : MonoBehaviour
 {
     [SerializeField] private GameObject alienPrefab;
+    [SerializeField] private GameObject spawnZoneContainer;
     private const int NUM_PER_SPAWN = 3; // should be less than the number of spawn tiles
 
     private static AlienManager instance;
@@ -13,6 +14,7 @@ public class AlienManager : MonoBehaviour
 
     public GameObject[] PlayerCharacters { get; set; } // set by grid generator
     public GenerateLevel Grid { get; set; } // set by grid generator
+    private Dictionary<Direction, Vector2Int> directionToVector;
 
     private List<GameObject> activeAliens;
     private int turnsBeforeSpawn;
@@ -23,6 +25,12 @@ public class AlienManager : MonoBehaviour
         instance = this;
         activeAliens = new List<GameObject>();
         turnsBeforeSpawn = 3;
+
+        directionToVector = new Dictionary<Direction, Vector2Int>();
+        directionToVector[Direction.Up] = new Vector2Int(0, 1);
+        directionToVector[Direction.Down] = new Vector2Int(0, -1);
+        directionToVector[Direction.Left] = new Vector2Int(-1, 0);
+        directionToVector[Direction.Right] = new Vector2Int(0, 1);
     }
 
     // operates all of the aliens and handles spawning new ones
@@ -33,37 +41,24 @@ public class AlienManager : MonoBehaviour
             turnsBeforeSpawn = 3;
 
             // choose a spawn side
-            GameObject gridObject = Grid.gameObject;
-            int chosenSide = Random.Range(0, gridObject.transform.childCount - 1);
-            Transform spawnZone = gridObject.transform.GetChild(chosenSide);
+            Transform spawnZones = spawnZoneContainer.gameObject.transform;
+            int chosenSide = Random.Range(0, spawnZones.childCount - 1);
+            Transform spawnZone = spawnZones.GetChild(chosenSide);
             for(int i = 0; i < NUM_PER_SPAWN; i++) {
                 Transform tileSpot = spawnZone.GetChild(i);
 
                 GameObject newAlien = Instantiate(alienPrefab);
                 activeAliens.Add(newAlien);
-                alienPrefab.transform.position = tileSpot.position;
+                newAlien.GetComponent<Alien>().MoveToTile(tileSpot.gameObject.GetComponent<Tile>());
             }
         }
 
         // move all aliens
         foreach(GameObject alien in activeAliens) {
-            Vector3 tileTransform = alien.GetComponent<Alien>().CurrentTile.transform.position;
-            Vector2Int alienTile = new Vector2Int((int)tileTransform.x, (int)tileTransform.z);
-
             // attack if next to a player
-            bool attacked = false;
-            foreach(GameObject player in PlayerCharacters) {
-                tileTransform = player.GetComponent<Character>().CurrentTile.transform.position;
-                Vector2Int playerTile = new Vector2Int((int)tileTransform.x, (int)tileTransform.z);
-
-                if(Mathf.Abs(alienTile.x - playerTile.x) <= 1 || Mathf.Abs(alienTile.y - playerTile.y) <= 1) {
-                    player.GetComponent<Character>().TakeDamage(alien.GetComponent<Alien>().Damage);
-                    attacked = true;
-                    break; // only attack one player per turn
-                }
-            }
-
-            if(attacked) {
+            GameObject adjacentPlayer = FindAdjacentPlayer(alien);
+            if(adjacentPlayer != null) {
+                adjacentPlayer.GetComponent<Character>().TakeDamage(alien.GetComponent<Alien>().Damage);
                 continue; // end this alien's turn
             }
 
@@ -78,14 +73,69 @@ public class AlienManager : MonoBehaviour
                 }
             }
 
+            Vector3 tileTransform = alien.GetComponent<Alien>().CurrentTile.transform.position;
+            Vector2Int currentTile = new Vector2Int((int)tileTransform.x, (int)tileTransform.z);
             Vector2Int targetTile = new Vector2Int((int)closestPlayer.transform.position.x, (int)closestPlayer.transform.position.x);
 
-            // currently, simulate stepping one tile at a time
+            // simulate stepping one tile at a time
+            for(int i = 0; i < alien.GetComponent<Alien>().Movement; i++) {
+                int dist = Mathf.Abs(currentTile.x - targetTile.x) + Mathf.Abs(currentTile.y - targetTile.y);
+                if(dist <= 1) {
+                    break; // now adjacent to player
+                }
+
+                // determine the best order to attempt a move
+                Direction[] directionPriority = new Direction[4];
+                bool leftBetterThanRight = targetTile.x < currentTile.x;
+                bool upBetterThanDown = targetTile.y < currentTile.y;
+
+                if(Mathf.Abs(currentTile.x - targetTile.x) > Mathf.Abs(currentTile.y - targetTile.y)) {
+                    // horizontal first
+                    directionPriority[0] = (leftBetterThanRight ? Direction.Left : Direction.Right);
+                    directionPriority[1] = (upBetterThanDown ? Direction.Up : Direction.Down);
+                    directionPriority[2] = (upBetterThanDown ? Direction.Down : Direction.Up);
+                    directionPriority[3] = (leftBetterThanRight ? Direction.Right : Direction.Left);
+                    // ERROR: fails if the character is forced to move backwards
+                } else {
+                    // vertical first
+                    directionPriority[0] = (upBetterThanDown ? Direction.Up : Direction.Down);
+                    directionPriority[1] = (leftBetterThanRight ? Direction.Left : Direction.Right);
+                    directionPriority[2] = (leftBetterThanRight ? Direction.Right : Direction.Left);
+                    directionPriority[3] = (upBetterThanDown ? Direction.Down : Direction.Up);
+                }
+
+                foreach(Direction direction in directionPriority) {
+                    // check for an occupied tile in that direction
+                    Vector2Int testTile = currentTile + directionToVector[direction];
+                    if(GenerateLevel.GetGridItem(testTile.x, testTile.y) == null) {
+                        currentTile = testTile;
+                    }
+                }
+            }
+
+            //alien.GetComponent<Alien>().MoveToTile(currentTile.x, currentTile.y);
         }
     }
 
     public void RemoveAlien(Alien alienScript) {
         activeAliens.Remove(alienScript.gameObject);
         Destroy(alienScript.gameObject);
+    }
+
+    // helper function to find if a player is in an adjacent tile. If there are multiple, returns the first one found. Null if no adjacent
+    private GameObject FindAdjacentPlayer(GameObject alien) {
+        Vector3 tileTransform = alien.GetComponent<Alien>().CurrentTile.transform.position;
+        Vector2Int alienTile = new Vector2Int((int)tileTransform.x, (int)tileTransform.z);
+
+        foreach (GameObject player in PlayerCharacters) {
+            tileTransform = player.GetComponent<Character>().CurrentTile.transform.position;
+            Vector2Int playerTile = new Vector2Int((int)tileTransform.x, (int)tileTransform.z);
+
+            if(Mathf.Abs(alienTile.x - playerTile.x) <= 1 || Mathf.Abs(alienTile.y - playerTile.y) <= 1) {
+                return player;
+            }
+        }
+
+        return null;
     }
 }

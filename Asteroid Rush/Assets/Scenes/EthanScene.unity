@@ -713,6 +713,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   alienPrefab: {fileID: 814260038656492310, guid: 5f3df0a2a13772b4aad46467d63d541b, type: 3}
+  spawnZoneContainer: {fileID: 688619589}
 --- !u!4 &1878648294
 Transform:
   m_ObjectHideFlags: 0
