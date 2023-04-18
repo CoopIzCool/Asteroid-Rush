@@ -25,19 +25,19 @@ public class Zone : MonoBehaviour
 		switch (zoneType)
 		{
 			case ZoneTypes.Field:
-				BuildField(tilePrefabs, objectPrefabs);
+				BuildField(tilePrefabs, objectPrefabs, Random.Range(2, 5), 3, 0.5f);
 				break;
 			case ZoneTypes.Island:
 				BuildIsland(tilePrefabs, objectPrefabs, Random.Range(4, width - 1), Random.Range(1, 4));
 				break;
 			case ZoneTypes.Pit:
-				BuildPit(tilePrefabs, objectPrefabs);
+				BuildPit(tilePrefabs, objectPrefabs, Random.Range(1, 4), Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0]);
 				break;
 			case ZoneTypes.Tunnel:
 				BuildTunnel(tilePrefabs, objectPrefabs, Random.Range(4, width - 1));
 				break;
 			case ZoneTypes.Maze:
-				BuildMaze(tilePrefabs, objectPrefabs);
+				BuildMaze(tilePrefabs, objectPrefabs, Random.Range(6, 9), 4, 1f);
 				break;
 		}
 	}
@@ -45,7 +45,7 @@ public class Zone : MonoBehaviour
 	/// <summary>
 	/// Build a "Field" type zone
 	/// </summary>
-    private void BuildField(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
+    private void BuildField(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int numWalls, int maxWallSize, float newWallOdds)
     {
 		for(int row = zPos; row < zPos + height; row++)
 		{
@@ -61,11 +61,8 @@ public class Zone : MonoBehaviour
 			}
 		}
 
-		int numWalls = Random.Range(3, 6);
-		//int numWalls = (int)Random.Range(tiles.Count * 0.3f, tiles.Count * 0.5f);
-
 		// Bail out early if the zone can't support the maximum number of walls
-		if (tiles.Count < numWalls * 3 + 1) return;
+		if (tiles.Count < numWalls * maxWallSize + 1) return;
 
 		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0];
 
@@ -114,7 +111,7 @@ public class Zone : MonoBehaviour
 				}
 
 				wallSize++;
-			} while (Random.Range(0f, 1f) < 0.5f && wallSize < 3);
+			} while (Random.Range(0f, 1f) <= newWallOdds && wallSize < maxWallSize);
 		}
 	}
 
@@ -182,11 +179,8 @@ public class Zone : MonoBehaviour
 		}
 	}
 
-	private void BuildPit(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
+	private void BuildPit(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int walkableWidth, GameObject obstacle)
 	{
-		int walkableWidth = Random.Range(1, 4);
-		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0];
-
 		for(int row = zPos; row < zPos + height; row++)
 		{
 			for(int col = xPos; col < xPos + width; col++)
@@ -202,17 +196,17 @@ public class Zone : MonoBehaviour
 					}
 					else
 					{
-						if (pitOrWall == objectPrefabs[0])
+						if (obstacle == objectPrefabs[0])
 						{
 							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
-							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().occupant = Instantiate(obstacle, new Vector3(col, obstacle.transform.position.y, row), Quaternion.Euler(obstacle.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
 							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
 							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 						}
 						else
 						{
-							GenerateLevel.SetGridItem(row, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.identity, transform));
+							GenerateLevel.SetGridItem(row, col, Instantiate(obstacle, new Vector3(col, obstacle.transform.position.y, row), Quaternion.identity, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
 							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
 							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
@@ -228,9 +222,9 @@ public class Zone : MonoBehaviour
 		BuildIsland(tilePrefabs, objectPrefabs, tunnelWidth, tunnelWidth);
 	}
 
-	private void BuildMaze(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
+	private void BuildMaze(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int numWalls, int maxWallSize, float newWallOdds)
 	{
-
+		BuildField(tilePrefabs, objectPrefabs, numWalls, maxWallSize, newWallOdds);
 	}
 
 	/// <summary>
