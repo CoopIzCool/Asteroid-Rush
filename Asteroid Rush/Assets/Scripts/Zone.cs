@@ -25,19 +25,19 @@ public class Zone : MonoBehaviour
 		switch (zoneType)
 		{
 			case ZoneTypes.Field:
-				BuildField(tilePrefabs, objectPrefabs);
+				BuildField(tilePrefabs, objectPrefabs, Random.Range(2, 5), 3, 0.5f);
 				break;
 			case ZoneTypes.Island:
-				BuildIsland(tilePrefabs, objectPrefabs);
+				BuildIsland(tilePrefabs, objectPrefabs, Random.Range(4, width - 1), Random.Range(1, 4));
 				break;
 			case ZoneTypes.Pit:
-				BuildPit(tilePrefabs, objectPrefabs);
+				BuildPit(tilePrefabs, objectPrefabs, Random.Range(1, 4), Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0]);
 				break;
 			case ZoneTypes.Tunnel:
-				BuildTunnel(tilePrefabs, objectPrefabs);
+				BuildTunnel(tilePrefabs, objectPrefabs, Random.Range(4, width - 1));
 				break;
 			case ZoneTypes.Maze:
-				BuildMaze(tilePrefabs, objectPrefabs);
+				BuildMaze(tilePrefabs, objectPrefabs, Random.Range(6, 9), 4, 1f);
 				break;
 		}
 	}
@@ -45,7 +45,7 @@ public class Zone : MonoBehaviour
 	/// <summary>
 	/// Build a "Field" type zone
 	/// </summary>
-    private void BuildField(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
+    private void BuildField(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int numWalls, int maxWallSize, float newWallOdds)
     {
 		for(int row = zPos; row < zPos + height; row++)
 		{
@@ -55,14 +55,14 @@ public class Zone : MonoBehaviour
 				{
 					GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
 					tiles.Add(GenerateLevel.GetGridItem(row, col));
+					GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+					GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 				}
 			}
 		}
 
-		int numWalls = Random.Range(3, 5);
-
 		// Bail out early if the zone can't support the maximum number of walls
-		if (tiles.Count < numWalls * 3 + 1) return;
+		if (tiles.Count < numWalls * maxWallSize + 1) return;
 
 		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0];
 
@@ -90,6 +90,8 @@ public class Zone : MonoBehaviour
 					tiles.Remove(GenerateLevel.GetGridItem(randomZ, randomX));
 					GenerateLevel.SetGridItem(randomZ, randomX, Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), Quaternion.identity, transform));
 					tiles.Add(GenerateLevel.GetGridItem(randomZ, randomX));
+					GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().xPos = randomX;
+					GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().zPos = randomZ;
 				}
 
 				if (randomX > xPos && GenerateLevel.GetGridItem(randomZ, randomX - 1).transform.parent == transform) validPositions.Add(new Vector2Int(randomX - 1, randomZ));
@@ -109,89 +111,35 @@ public class Zone : MonoBehaviour
 				}
 
 				wallSize++;
-			} while (Random.Range(0f, 1f) < 0.5f && wallSize < 3);
+			} while (Random.Range(0f, 1f) <= newWallOdds && wallSize < maxWallSize);
 		}
 	}
 
-	private void BuildIsland(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
+	private void BuildIsland(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int islandWidth, int bridgeWidth)
 	{
-		int islandWidth = Random.Range(4, width - 1);
 		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0];
+		bool[] bridges = new bool[4];
+		int numBridges = 0;
 
 		for(int i = 0; i < 4; i++)
 		{
-			Vector2Int bridge = new Vector2Int(0, 0);
-			int bridgeWidth = Random.Range(1, 4);
-			if(Random.Range(0f, 1f) < 0.5f)
+			if (Random.Range(0f, 1f) < 0.5f)
 			{
-				switch (i)
-				{
-					case 0:
-						bridge.x = Random.Range(xPos + width / 2 - islandWidth / 2, xPos + width / 2 + islandWidth / 2 - bridgeWidth + 1);
-						bridge.y = zPos + height / 2 + islandWidth / 2;
-
-						for(int row = bridge.y; row < zPos + height; row++)
-						{
-							for(int col = bridge.x; col < bridge.x + bridgeWidth; col++)
-							{
-								if(GenerateLevel.GetGridItem(row, col) == null)
-								{
-									GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
-									tiles.Add(GenerateLevel.GetGridItem(row, col));
-								}
-							}
-						}
-						break;
-					case 1:
-						bridge.x = xPos + width / 2 + islandWidth / 2;
-						bridge.y = Random.Range(zPos + height / 2 - islandWidth / 2, zPos + height / 2 + islandWidth / 2);
-
-						for (int row = bridge.y; row < bridge.y + bridgeWidth; row++)
-						{
-							for (int col = bridge.x; col < xPos + width; col++)
-							{
-								if (GenerateLevel.GetGridItem(row, col) == null)
-								{
-									GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
-									tiles.Add(GenerateLevel.GetGridItem(row, col));
-								}
-							}
-						}
-						break;
-					case 2:
-						bridge.x = Random.Range(xPos + width / 2 - islandWidth / 2, xPos + width / 2 + islandWidth / 2 - bridgeWidth + 1);
-						bridge.y = zPos + height / 2 - islandWidth / 2;
-
-						for (int row = zPos; row < bridge.y; row++)
-						{
-							for (int col = bridge.x; col < bridge.x + bridgeWidth; col++)
-							{
-								if (GenerateLevel.GetGridItem(row, col) == null)
-								{
-									GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
-									tiles.Add(GenerateLevel.GetGridItem(row, col));
-								}
-							}
-						}
-						break;
-					default:
-						bridge.x = xPos + width / 2 - islandWidth / 2;
-						bridge.y = Random.Range(zPos + height / 2 - islandWidth / 2, zPos + height / 2 + islandWidth / 2);
-
-						for (int row = bridge.y; row < bridge.y + bridgeWidth; row++)
-						{
-							for (int col = xPos; col < bridge.x; col++)
-							{
-								if (GenerateLevel.GetGridItem(row, col) == null)
-								{
-									GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
-									tiles.Add(GenerateLevel.GetGridItem(row, col));
-								}
-							}
-						}
-						break;
-				}
+				bridges[i] = true;
+				numBridges++;
+				BuildIslandBridge(i, islandWidth, bridgeWidth, tilePrefabs[0]);
 			}
+		}
+
+		if(numBridges < 2 && !bridges[0])
+		{
+			BuildIslandBridge(0, islandWidth, bridgeWidth, tilePrefabs[0]);
+			numBridges++;
+		}
+
+		if (numBridges < 2 && !bridges[1])
+		{
+			BuildIslandBridge(1, islandWidth, bridgeWidth, tilePrefabs[0]);
 		}
 
 		for (int row = zPos; row < zPos + height; row++)
@@ -207,28 +155,32 @@ public class Zone : MonoBehaviour
 							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
 							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 						}
 						else
 						{
 							tiles.Remove(GenerateLevel.GetGridItem(row, col));
 							GenerateLevel.SetGridItem(row, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.identity, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 						}
 					}
 					else
 					{
 						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
 						tiles.Add(GenerateLevel.GetGridItem(row, col));
+						GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+						GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 					}
 				}
 			}
 		}
 	}
 
-	private void BuildPit(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
+	private void BuildPit(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int walkableWidth, GameObject obstacle)
 	{
-		int walkableWidth = Random.Range(1, 4);
-
 		for(int row = zPos; row < zPos + height; row++)
 		{
 			for(int col = xPos; col < xPos + width; col++)
@@ -239,25 +191,118 @@ public class Zone : MonoBehaviour
 					{
 						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
 						tiles.Add(GenerateLevel.GetGridItem(row, col));
+						GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+						GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 					}
 					else
 					{
-						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[2], new Vector3(col, tilePrefabs[2].transform.position.y, row), tilePrefabs[2].transform.rotation, transform));
-						tiles.Add(GenerateLevel.GetGridItem(row, col));
+						if (obstacle == objectPrefabs[0])
+						{
+							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().occupant = Instantiate(obstacle, new Vector3(col, obstacle.transform.position.y, row), Quaternion.Euler(obstacle.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0));
+							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
+						}
+						else
+						{
+							GenerateLevel.SetGridItem(row, col, Instantiate(obstacle, new Vector3(col, obstacle.transform.position.y, row), Quaternion.identity, transform));
+							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
+						}
 					}
 				}
 			}
 		}
 	}
 
-	private void BuildTunnel(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
+	private void BuildTunnel(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int tunnelWidth)
 	{
-
+		BuildIsland(tilePrefabs, objectPrefabs, tunnelWidth, tunnelWidth);
 	}
 
-	private void BuildMaze(GameObject[] tilePrefabs, GameObject[] objectPrefabs)
+	private void BuildMaze(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int numWalls, int maxWallSize, float newWallOdds)
 	{
+		BuildField(tilePrefabs, objectPrefabs, numWalls, maxWallSize, newWallOdds);
+	}
 
+	/// <summary>
+	/// Generates a bridge for an island
+	/// </summary>
+	/// <param name="direction">The direction to build the bridge in/param>
+	/// <param name="islandWidth">The width of the island</param>
+	/// <param name="tilePrefab">A basic tile prefab</param>
+	private void BuildIslandBridge(int direction, int islandWidth, int bridgeWidth, GameObject tilePrefab)
+	{
+		Vector2Int bridge = new Vector2Int(0, 0);
+		switch (direction)
+		{
+			case 0:
+				bridge.x = Random.Range(xPos + width / 2 - islandWidth / 2, xPos + width / 2 + islandWidth / 2 - bridgeWidth + 1);
+				bridge.y = zPos + height / 2 + islandWidth / 2;
+
+				for (int row = bridge.y; row < zPos + height; row++)
+				{
+					for (int col = bridge.x; col < bridge.x + bridgeWidth; col++)
+					{
+						if (GenerateLevel.GetGridItem(row, col) == null)
+						{
+							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefab, new Vector3(col, 0, row), tilePrefab.transform.rotation, transform));
+							tiles.Add(GenerateLevel.GetGridItem(row, col));
+						}
+					}
+				}
+				break;
+			case 1:
+				bridge.x = xPos + width / 2 + islandWidth / 2;
+				bridge.y = Random.Range(zPos + height / 2 - islandWidth / 2, zPos + height / 2 + islandWidth / 2 - bridgeWidth + 1);
+
+				for (int row = bridge.y; row < bridge.y + bridgeWidth; row++)
+				{
+					for (int col = bridge.x; col < xPos + width; col++)
+					{
+						if (GenerateLevel.GetGridItem(row, col) == null)
+						{
+							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefab, new Vector3(col, 0, row), tilePrefab.transform.rotation, transform));
+							tiles.Add(GenerateLevel.GetGridItem(row, col));
+						}
+					}
+				}
+				break;
+			case 2:
+				bridge.x = Random.Range(xPos + width / 2 - islandWidth / 2, xPos + width / 2 + islandWidth / 2 - bridgeWidth + 1);
+				bridge.y = zPos + height / 2 - islandWidth / 2;
+
+				for (int row = zPos; row < bridge.y; row++)
+				{
+					for (int col = bridge.x; col < bridge.x + bridgeWidth; col++)
+					{
+						if (GenerateLevel.GetGridItem(row, col) == null)
+						{
+							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefab, new Vector3(col, 0, row), tilePrefab.transform.rotation, transform));
+							tiles.Add(GenerateLevel.GetGridItem(row, col));
+						}
+					}
+				}
+				break;
+			default:
+				bridge.x = xPos + width / 2 - islandWidth / 2;
+				bridge.y = Random.Range(zPos + height / 2 - islandWidth / 2, zPos + height / 2 + islandWidth / 2 - bridgeWidth + 1);
+
+				for (int row = bridge.y; row < bridge.y + bridgeWidth; row++)
+				{
+					for (int col = xPos; col < bridge.x; col++)
+					{
+						if (GenerateLevel.GetGridItem(row, col) == null)
+						{
+							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefab, new Vector3(col, 0, row), tilePrefab.transform.rotation, transform));
+							tiles.Add(GenerateLevel.GetGridItem(row, col));
+						}
+					}
+				}
+				break;
+		}
 	}
 
 	// Start is called before the first frame update
