@@ -223,7 +223,7 @@ public class GenerateLevel : MonoBehaviour
 			zone.width = Random.Range(minZoneWidth, maxZoneWidth);
 			zone.height = Random.Range(minZoneHeight, maxZoneHeight);
 			//zone.zoneType = (ZoneTypes)Random.Range(2, 5);
-			zone.zoneType = ZoneTypes.Tunnel;
+			zone.zoneType = ZoneTypes.Maze;
 			zoneObj.name = zone.zoneType.ToString() + "Zone";
 
 			switch (i)
