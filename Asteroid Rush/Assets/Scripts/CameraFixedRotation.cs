@@ -8,6 +8,17 @@ using UnityEngine;
 public class CameraFixedRotation : MonoBehaviour
 {
     #region Fields
+    public enum RotationState
+    {
+        Left,
+        Right,
+        None
+    }
+
+    private RotationState state = RotationState.None;
+    private float rotationCounter;
+    private float goalRotation;
+
     [SerializeField]
     private float radius;
     private float counter;
@@ -57,7 +68,7 @@ public class CameraFixedRotation : MonoBehaviour
         //radius = 12.0f;
         //yPos = transform.position.y;
         counter = 180;
-        xRotate = Mathf.PI / 4;
+        xRotate = Mathf.PI / 6;
         //xRotateSensitivity = 1.0f;
     }
 
@@ -66,79 +77,73 @@ public class CameraFixedRotation : MonoBehaviour
     {
         bool isActive = false;
         //increments counter;
-        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+        if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) && state == RotationState.None )
         {
-            counter += 36.0f * Time.deltaTime;
-            SetActive();
+            //counter += 36.0f * Time.deltaTime;
+            state = RotationState.Left;
+            goalRotation = counter + 90.0f;
         }
-        else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+        else if ((Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) && state == RotationState.None)
         {
-            counter -= 36.0f * Time.deltaTime;
-            SetActive();
+            //counter -= 36.0f * Time.deltaTime;
+            state = RotationState.Right;
+            goalRotation = counter - 90.0f;
         }
 
-        //If the player is not holding an item
-        if(!itemHeld)
+        if(state == RotationState.Left)
         {
-            //camera Zoom
-            if (Input.mouseScrollDelta.y > 0.0f && GetComponent<Camera>().fieldOfView > 20.0f)
+            counter += 144.0f * Time.deltaTime;
+            if(counter >= goalRotation)
             {
-                GetComponent<Camera>().fieldOfView -= 720.0f * Time.deltaTime;
-                //xRotateSensitivity -= 8.00f * Time.deltaTime;
-                SetActive();
+                counter = goalRotation;
+                state = RotationState.None;
             }
-            else if (Input.mouseScrollDelta.y < 0.0f && GetComponent<Camera>().fieldOfView < 90.0f)
-            {
-                GetComponent<Camera>().fieldOfView += 720.0f * Time.deltaTime;
-                //xRotateSensitivity += 8.00f * Time.deltaTime;
-                SetActive();
-            }
-
         }
+        else if(state == RotationState.Right)
+        {
+            counter -= 144.0f * Time.deltaTime;
+            if (counter <= goalRotation)
+            {
+                counter = goalRotation;
+                state = RotationState.None;
+            }
+        }
+
+        
+        //camera Zoom
+        if (Input.mouseScrollDelta.y > 0.0f && GetComponent<Camera>().fieldOfView > 20.0f)
+        {
+            GetComponent<Camera>().fieldOfView -= 720.0f * Time.deltaTime;
+            //xRotateSensitivity -= 8.00f * Time.deltaTime;
+        }
+        else if (Input.mouseScrollDelta.y < 0.0f && GetComponent<Camera>().fieldOfView < 90.0f)
+        {
+            GetComponent<Camera>().fieldOfView += 720.0f * Time.deltaTime;
+            //xRotateSensitivity += 8.00f * Time.deltaTime;
+        }
+
+        
+        
+
         //changes cameras horizantal view
         if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
         {
             xRotate -= 0.6f * Time.deltaTime;
-            SetActive();
         }
         else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
         {
             xRotate += 0.6f * Time.deltaTime;
-            SetActive();
         }
+        
 
         //reset counter for easy calculations
-        
+        /*
         if (counter >= 360.0f || counter <= -360.0f)
         {
             counter = 0.0f;
         }
+        */
 
-        //Code for centerpoint shifting
-        /*
-        //Shift the center Point
-        if(Input.GetKey(KeyCode.I))
-        {
-            float centerShiftAxis = Mathf.Clamp(((centerPointShift * Time.deltaTime) + centerPoint.position.z),0,zShiftIndex * 2);
-
-            centerPoint.position = new Vector3 (centerPoint.position.x, centerPoint.position.z,centerShiftAxis);
-        }
-        else if (Input.GetKey(KeyCode.K))
-        {
-            float centerShiftAxis = Mathf.Clamp((centerPoint.position.z - (centerPointShift * Time.deltaTime)), 0, zShiftIndex * 2);
-            centerPoint.position = new Vector3(centerPoint.position.x, centerPoint.position.z, centerShiftAxis);
-        }
-
-        //Shift the center Point
-        if (Input.GetKey(KeyCode.L))
-        {
-            centerPoint.position += new Vector3(centerPointShift * Time.deltaTime, 0,0);
-        }
-        else if (Input.GetKey(KeyCode.J))
-        {
-            centerPoint.position += new Vector3(centerPointShift * Time.deltaTime * -1.0f, 0, 0);
-        }
-        */ 
 
         //Clamp XRotation to prevent Axis Flipping
         xRotate = Mathf.Clamp(xRotate, 0.1f, Mathf.PI/2);
@@ -162,11 +167,7 @@ public class CameraFixedRotation : MonoBehaviour
         }
     }
 
-    public void SetActive()
-    {
-        camActive = true;
-        activeTimer = 0f;
-    }
+
 
     public void SetRadiusAndCenter()
     {
@@ -175,3 +176,31 @@ public class CameraFixedRotation : MonoBehaviour
         centerPoint.position = new Vector3(xShiftIndex, 2.0f, zShiftIndex);
     }
 }
+
+
+
+//Code for centerpoint shifting
+/*
+//Shift the center Point
+if(Input.GetKey(KeyCode.I))
+{
+    float centerShiftAxis = Mathf.Clamp(((centerPointShift * Time.deltaTime) + centerPoint.position.z),0,zShiftIndex * 2);
+
+    centerPoint.position = new Vector3 (centerPoint.position.x, centerPoint.position.z,centerShiftAxis);
+}
+else if (Input.GetKey(KeyCode.K))
+{
+    float centerShiftAxis = Mathf.Clamp((centerPoint.position.z - (centerPointShift * Time.deltaTime)), 0, zShiftIndex * 2);
+    centerPoint.position = new Vector3(centerPoint.position.x, centerPoint.position.z, centerShiftAxis);
+}
+
+//Shift the center Point
+if (Input.GetKey(KeyCode.L))
+{
+    centerPoint.position += new Vector3(centerPointShift * Time.deltaTime, 0,0);
+}
+else if (Input.GetKey(KeyCode.J))
+{
+    centerPoint.position += new Vector3(centerPointShift * Time.deltaTime * -1.0f, 0, 0);
+}
+*/
