@@ -685,14 +685,14 @@ MonoBehaviour:
   - {fileID: 919129914}
   enemyZoneWidth: 4
   enemyZoneHeight: 4
-  minZoneWidth: 6
-  maxZoneWidth: 6
-  minZoneHeight: 6
-  maxZoneHeight: 6
-  minGridWidth: 20
-  maxGridWidth: 20
-  minGridHeight: 20
-  maxGridHeight: 20
+  minZoneWidth: 7
+  maxZoneWidth: 7
+  minZoneHeight: 7
+  maxZoneHeight: 7
+  minGridWidth: 23
+  maxGridWidth: 23
+  minGridHeight: 23
+  maxGridHeight: 23
   totalOres: 12
   numOresPerZone: 2
   cameraLogic: {fileID: 1478997466}
