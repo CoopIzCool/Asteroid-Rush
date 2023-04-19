@@ -134,16 +134,32 @@ public class CameraFixedRotation : MonoBehaviour
         {
             xRotate += 0.6f * Time.deltaTime;
         }
-        
 
-        //reset counter for easy calculations
-        /*
-        if (counter >= 360.0f || counter <= -360.0f)
+        /* Shift CenterPoint Code, defunct for now.
+        if (Input.GetKey(KeyCode.I))
         {
-            counter = 0.0f;
+            float centerShiftAxis = Mathf.Clamp(((centerPointShift * Time.deltaTime) + centerPoint.position.z), 0, zShiftIndex * 2);
+
+            centerPoint.position = new Vector3(centerPoint.position.x, centerPoint.position.y, centerShiftAxis);
+        }
+        else if (Input.GetKey(KeyCode.K))
+        {
+            float centerShiftAxis = Mathf.Clamp((centerPoint.position.z - (centerPointShift * Time.deltaTime)), 0, zShiftIndex * 2);
+            centerPoint.position = new Vector3(centerPoint.position.x, centerPoint.position.y, centerShiftAxis);
+        }
+
+        //Shift the center Point
+        if (Input.GetKey(KeyCode.L))
+        {
+            float centerShiftAxis = Mathf.Clamp(((centerPointShift * Time.deltaTime) + centerPoint.position.x), 0, xShiftIndex * 2);
+            centerPoint.position = new Vector3(centerShiftAxis, centerPoint.position.y, centerPoint.position.z);
+        }
+        else if (Input.GetKey(KeyCode.J))
+        {
+            float centerShiftAxis = Mathf.Clamp((centerPoint.position.x - (centerPointShift * Time.deltaTime)), 0, xShiftIndex * 2);
+            centerPoint.position = new Vector3(centerShiftAxis, centerPoint.position.y, centerPoint.position.z);
         }
         */
-
 
         //Clamp XRotation to prevent Axis Flipping
         xRotate = Mathf.Clamp(xRotate, 0.1f, Mathf.PI/2);
