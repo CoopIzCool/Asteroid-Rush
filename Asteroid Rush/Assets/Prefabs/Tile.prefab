@@ -229,6 +229,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unlitMaterial: {fileID: 2100000, guid: 1e8c6e0fe6865cc43aab9bea50098587, type: 2}
   selectedMaterial: {fileID: 2100000, guid: 9f1648d6c1888db43bb450371a9eaa5e, type: 2}
+  associatedTile: {fileID: -4424648475518941661}
   selectedArea:
     serializedVersion: 2
     m_Bits: 256
