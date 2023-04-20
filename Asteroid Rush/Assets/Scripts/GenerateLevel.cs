@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 public class GenerateLevel : MonoBehaviour
 {
 	// The grid
-	private static GameObject[,] grid = null;
+	public static GameObject[,] grid = null;
 	private static int gridWidth = 0;
 	private static int gridHeight = 0;
 
@@ -122,14 +122,14 @@ public class GenerateLevel : MonoBehaviour
 	public void ResetGrid()
 	{
 		bool isGridValid;
-		do
-		{
+		//do
+		//{
 			gridWidth = Random.Range(minGridWidth, maxGridWidth);
 			gridHeight = Random.Range(minGridHeight, maxGridHeight);
 			if (grid != null) DestroyGrid();
 			isGridValid = BuildGrid();
-		}
-		while (!isGridValid);
+		//}
+		//while (!isGridValid);
 	}
 
 	/// <summary>
@@ -222,8 +222,8 @@ public class GenerateLevel : MonoBehaviour
 			//zone.zPos = z;
 			zone.width = Random.Range(minZoneWidth, maxZoneWidth);
 			zone.height = Random.Range(minZoneHeight, maxZoneHeight);
-			//zone.zoneType = (ZoneTypes)Random.Range(2, 5);
-			zone.zoneType = ZoneTypes.Maze;
+			zone.zoneType = (ZoneTypes)Random.Range(2, 5);
+			//zone.zoneType = ZoneTypes.Maze;
 			zoneObj.name = zone.zoneType.ToString() + "Zone";
 
 			switch (i)
