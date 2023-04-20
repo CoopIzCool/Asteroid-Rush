@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1794878077526416781}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 20.497248, y: 0.6115894, z: 34.21769}
+  m_LocalPosition: {x: 20.497248, y: 0, z: 34.21769}
   m_LocalScale: {x: 1.6000001, y: 1.6000001, z: 1.6000001}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -100,6 +100,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   occupant: {fileID: 0}
   tileType: 0
+  xPos: 0
+  zPos: 0
 --- !u!65 &7154154064976034411
 BoxCollider:
   m_ObjectHideFlags: 0
