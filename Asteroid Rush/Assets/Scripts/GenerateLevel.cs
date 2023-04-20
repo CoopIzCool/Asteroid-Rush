@@ -122,14 +122,14 @@ public class GenerateLevel : MonoBehaviour
 	public void ResetGrid()
 	{
 		bool isGridValid;
-		//do
-		//{
+		do
+		{
 			gridWidth = Random.Range(minGridWidth, maxGridWidth);
 			gridHeight = Random.Range(minGridHeight, maxGridHeight);
 			if (grid != null) DestroyGrid();
 			isGridValid = BuildGrid();
-		//}
-		//while (!isGridValid);
+	}
+		while (!isGridValid);
 	}
 
 	/// <summary>
@@ -222,7 +222,7 @@ public class GenerateLevel : MonoBehaviour
 			//zone.zPos = z;
 			zone.width = Random.Range(minZoneWidth, maxZoneWidth);
 			zone.height = Random.Range(minZoneHeight, maxZoneHeight);
-			zone.zoneType = (ZoneTypes)Random.Range(2, 5);
+			zone.zoneType = (ZoneTypes)Random.Range(2, 4);
 			//zone.zoneType = ZoneTypes.Maze;
 			zoneObj.name = zone.zoneType.ToString() + "Zone";
 

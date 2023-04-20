@@ -206,7 +206,7 @@ public class TurnHandler : MonoBehaviour
                 }
 
                 //right Tile
-                if (tile.xPos < levelGenerator.GridWidth - 1)
+                if (tile.xPos < GenerateLevel.GridWidth - 1)
                 {
                     Tile adjacentRightTile = GenerateLevel.grid[tile.zPos, tile.xPos + 1].GetComponent<Tile>();
                     if (!moveableTiles.Contains(adjacentRightTile) && adjacentRightTile.IsAvailableTile())
@@ -231,7 +231,7 @@ public class TurnHandler : MonoBehaviour
 
 
                 //top tile
-                if(tile.zPos < levelGenerator.GridHeight - 1)
+                if(tile.zPos < GenerateLevel.GridHeight - 1)
                 {
                     Tile adjacentTopTile = GenerateLevel.grid[tile.zPos + 1, tile.xPos].GetComponent<Tile>();
                     if (!moveableTiles.Contains(adjacentTopTile) && adjacentTopTile.IsAvailableTile())
