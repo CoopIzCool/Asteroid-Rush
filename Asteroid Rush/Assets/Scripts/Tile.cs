@@ -15,6 +15,8 @@ public class Tile : MonoBehaviour
     public TileType tileType;
     public int xPos;
     public int zPos;
+    [SerializeField]
+    private GameObject illumination;
 
     // Start is called before the first frame update
     void Start()
@@ -36,5 +38,10 @@ public class Tile : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    public void SetAvailabillitySelector(bool status)
+    {
+        illumination.SetActive(status);
     }
 }

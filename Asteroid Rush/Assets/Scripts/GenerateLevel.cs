@@ -44,6 +44,17 @@ public class GenerateLevel : MonoBehaviour
 
 	[Header("Camera Logic & Misc")]
 	[SerializeField] CameraFixedRotation cameraLogic;
+
+	#region Properties
+	public int GridWidth
+    {
+        get { return gridWidth; }
+    }
+	public int GridHeight
+    {
+        get { return gridHeight; }
+    }
+	#endregion
 	// Start is called before the first frame update
 	void Start()
 	{
