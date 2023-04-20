@@ -761,7 +761,7 @@ public class GenerateLevel : MonoBehaviour
 			if (badZone) continue;
 
 			SetGridItem(randomZ, randomX, Instantiate(tilePrefabs[0], new Vector3(randomX, 0, randomZ), tilePrefabs[0].transform.rotation, oreZoneObjs[i].transform));
-			grid[randomZ, randomX].GetComponent<Tile>().occupant = Instantiate(orePrefabs[0], new Vector3(randomX, orePrefabs[0].transform.position.y, randomZ), Quaternion.identity, oreZoneObjs[i].transform);
+			grid[randomZ, randomX].GetComponent<Tile>().occupant = Instantiate(orePrefabs[0], new Vector3(randomX, orePrefabs[0].transform.position.y, randomZ), Quaternion.identity, randomZone.transform);
 			grid[randomZ, randomX].GetComponent<Tile>().xPos = randomX;
 			grid[randomZ, randomX].GetComponent<Tile>().zPos = randomZ;
 		}
