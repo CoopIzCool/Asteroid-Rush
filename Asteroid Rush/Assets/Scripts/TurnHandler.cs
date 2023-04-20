@@ -72,9 +72,7 @@ public class TurnHandler : MonoBehaviour
                             tiles.Push(selectedCharacter.GetComponent<Character>().CurrentTile);
                             Vector3 startLocation = selectedCharacter.GetComponent<Character>().CurrentTile.gameObject.transform.position;
                             lineRenderer.SetPosition(0, new Vector3(startLocation.x, startLocation.y + 0.2f, startLocation.z));
-                            startingTile = GenerateLevel.grid[(int)startLocation.z,(int)startLocation.x].GetComponent<Tile>();
-                            FindAvailableTiles();
-
+                            availableTiles = FindAvailableTiles(selectedCharacter.GetComponent<Character>());
                         }
                         else
                         {
@@ -112,9 +110,7 @@ public class TurnHandler : MonoBehaviour
             //Enemy turn
             if (Input.GetKeyDown(KeyCode.P))
             {
-                ClearCurrentPath();
-                currentTurn = TurnOrder.Alien;
-                AlienManager.Instance.TakeTurn();
+                EndPlayerTurn();
             }
         }
         else
@@ -187,11 +183,12 @@ public class TurnHandler : MonoBehaviour
         }
     }
 
-    public void FindAvailableTiles()
+    public List<Tile> FindAvailableTiles(Character chosenCharacter)
     {
-        GridDebugTest();
+        Tile start = chosenCharacter.CurrentTile;
         List<Tile> currentLevelTiles = new List<Tile>();
-        currentLevelTiles.Add(startingTile);
+        List<Tile> moveableTiles = new List<Tile>();
+        currentLevelTiles.Add(start);
         for(int i = 0; i < currentMovement; i++)
         {
             List<Tile> nextLevelTiles = new List<Tile>();
@@ -203,12 +200,11 @@ public class TurnHandler : MonoBehaviour
                 {
                     
                     Tile adjacentLeftTile = GenerateLevel.grid[tile.zPos, tile.xPos - 1].GetComponent<Tile>();
-                    if (!availableTiles.Contains(adjacentLeftTile) && adjacentLeftTile.IsAvailableTile())
+                    if (!moveableTiles.Contains(adjacentLeftTile) && adjacentLeftTile.IsAvailableTile())
                     {
-                        availableTiles.Add(adjacentLeftTile);
+                        moveableTiles.Add(adjacentLeftTile);
                         nextLevelTiles.Add(adjacentLeftTile);
                         adjacentLeftTile.SetAvailabillitySelector(true);
-                        Debug.Log("This tiles: " + tile.xPos + " leftmost neighbor: " + adjacentLeftTile.xPos + " is activated");
                     }
                 }
 
@@ -216,9 +212,9 @@ public class TurnHandler : MonoBehaviour
                 if (tile.xPos < levelGenerator.GridWidth - 1)
                 {
                     Tile adjacentRightTile = GenerateLevel.grid[tile.zPos, tile.xPos + 1].GetComponent<Tile>();
-                    if (!availableTiles.Contains(adjacentRightTile) && adjacentRightTile.IsAvailableTile())
+                    if (!moveableTiles.Contains(adjacentRightTile) && adjacentRightTile.IsAvailableTile())
                     {
-                        availableTiles.Add(adjacentRightTile);
+                        moveableTiles.Add(adjacentRightTile);
                         nextLevelTiles.Add(adjacentRightTile);
                         adjacentRightTile.SetAvailabillitySelector(true);
                     }
@@ -228,9 +224,9 @@ public class TurnHandler : MonoBehaviour
                 if(tile.zPos > 0)
                 {
                     Tile adjacentBottomTile = GenerateLevel.grid[tile.zPos - 1, tile.xPos].GetComponent<Tile>();
-                    if (!availableTiles.Contains(adjacentBottomTile) && adjacentBottomTile.IsAvailableTile())
+                    if (!moveableTiles.Contains(adjacentBottomTile) && adjacentBottomTile.IsAvailableTile())
                     {
-                        availableTiles.Add(adjacentBottomTile);
+                        moveableTiles.Add(adjacentBottomTile);
                         nextLevelTiles.Add(adjacentBottomTile);
                         adjacentBottomTile.SetAvailabillitySelector(true);
                     }
@@ -241,9 +237,9 @@ public class TurnHandler : MonoBehaviour
                 if(tile.zPos < levelGenerator.GridHeight - 1)
                 {
                     Tile adjacentTopTile = GenerateLevel.grid[tile.zPos + 1, tile.xPos].GetComponent<Tile>();
-                    if (!availableTiles.Contains(adjacentTopTile) && adjacentTopTile.IsAvailableTile())
+                    if (!moveableTiles.Contains(adjacentTopTile) && adjacentTopTile.IsAvailableTile())
                     {
-                        availableTiles.Add(adjacentTopTile);
+                        moveableTiles.Add(adjacentTopTile);
                         nextLevelTiles.Add(adjacentTopTile);
                         adjacentTopTile.SetAvailabillitySelector(true);
                     }
@@ -259,7 +255,7 @@ public class TurnHandler : MonoBehaviour
             nextLevelTiles.Clear();
         }
 
-        
+        return moveableTiles;
     }
 
     private void ClearAvailableTiles()
@@ -271,15 +267,9 @@ public class TurnHandler : MonoBehaviour
         availableTiles.Clear();
     }
 
-    private void GridDebugTest()
+    public void EndPlayerTurn()
     {
-        for(int i = 0; i < levelGenerator.GridWidth; i++)
-        {
-            for(int j = 0; j < levelGenerator.GridHeight; j++)
-            {
-                Debug.Log(i + " XPos is " + GenerateLevel.grid[j, i].GetComponent<Tile>().xPos);
-                Debug.Log(j + " ZPos is " + GenerateLevel.grid[j, i].GetComponent<Tile>().zPos);
-            }
-        }
+        ClearCurrentPath();
+        currentTurn = TurnOrder.Alien;
     }
 }

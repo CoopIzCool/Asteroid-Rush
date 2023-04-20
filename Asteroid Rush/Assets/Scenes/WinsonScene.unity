@@ -999,7 +999,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1754467248}
   m_HandleRect: {fileID: 1754467247}
   m_Direction: 0
-  m_Value: 0
+  m_Value: -0.00000028257017
   m_Size: 0.88105726
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3708,7 +3708,7 @@ MonoBehaviour:
   ItemID: 4
   PriceText: {fileID: 897597182}
   QuantityText: {fileID: 125158709}
-  itemName: Potion
+  itemName: Portable Bridge
   ShopManager: {fileID: 1885287966}
 --- !u!114 &879985843
 MonoBehaviour:
@@ -4625,7 +4625,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2, y: 8}
+  m_AnchoredPosition: {x: 2, y: -7}
   m_SizeDelta: {x: 15.101, y: 13.493}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &1058541271
@@ -4669,7 +4669,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: af9b943d043851244984f6fc11ea2952, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8e016669a4d2e1e418ff8c375411daca, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -5688,7 +5688,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 763, y: 307.80365}
+  m_AnchoredPosition: {x: 763, y: 331}
   m_SizeDelta: {x: 160, y: 180}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1269041448
