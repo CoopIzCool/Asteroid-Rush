@@ -57,7 +57,9 @@ public class Character : MonoBehaviour
     {
         transform.position = tile.transform.position;
         transform.position += tileOffset;
-        currentTile.occupant = null;
+        if(currentTile != null) {
+            currentTile.occupant = null;
+        }
         tile.occupant = gameObject;
         currentTile = tile;
     }

@@ -35,13 +35,17 @@ public class TurnHandler : MonoBehaviour
         set { selectedCharacter = value; }
     }
     #endregion
+
+    private static TurnHandler instance;
+    public static TurnHandler Instance {  get { return instance; } }
+
     // Start is called before the first frame update
     void Start()
     {
         raycastManager = gameObject.GetComponent<RaycastManager>();
         lineRenderer = gameObject.GetComponent<LineRenderer>();
         currentTurn = TurnOrder.Player;
-
+        instance = this;
     }
 
     // Update is called once per frame
@@ -73,6 +77,7 @@ public class TurnHandler : MonoBehaviour
                             Vector3 startLocation = selectedCharacter.GetComponent<Character>().CurrentTile.gameObject.transform.position;
                             lineRenderer.SetPosition(0, new Vector3(startLocation.x, startLocation.y + 0.2f, startLocation.z));
                             availableTiles = FindAvailableTiles(selectedCharacter.GetComponent<Character>());
+                            // highlight available tiles
                         }
                         else
                         {
@@ -114,6 +119,9 @@ public class TurnHandler : MonoBehaviour
         else
         {
             //Fill in enemy behavior here
+            
+
+            // TEMP: immediately go back to player turn
             currentTurn = TurnOrder.Player;
             SetUpPlayerTurn();
         }
@@ -184,7 +192,7 @@ public class TurnHandler : MonoBehaviour
         List<Tile> currentLevelTiles = new List<Tile>();
         List<Tile> moveableTiles = new List<Tile>();
         currentLevelTiles.Add(start);
-        for(int i = 0; i < currentMovement; i++)
+        for(int i = 0; i < chosenCharacter.Movement; i++)
         {
             List<Tile> nextLevelTiles = new List<Tile>();
             foreach (Tile tile in currentLevelTiles)
@@ -199,7 +207,7 @@ public class TurnHandler : MonoBehaviour
                     {
                         moveableTiles.Add(adjacentLeftTile);
                         nextLevelTiles.Add(adjacentLeftTile);
-                        adjacentLeftTile.SetAvailabillitySelector(true);
+                        //adjacentLeftTile.SetAvailabillitySelector(true);
                     }
                 }
 
@@ -211,7 +219,7 @@ public class TurnHandler : MonoBehaviour
                     {
                         moveableTiles.Add(adjacentRightTile);
                         nextLevelTiles.Add(adjacentRightTile);
-                        adjacentRightTile.SetAvailabillitySelector(true);
+                        //adjacentRightTile.SetAvailabillitySelector(true);
                     }
                 }
 
@@ -223,7 +231,7 @@ public class TurnHandler : MonoBehaviour
                     {
                         moveableTiles.Add(adjacentBottomTile);
                         nextLevelTiles.Add(adjacentBottomTile);
-                        adjacentBottomTile.SetAvailabillitySelector(true);
+                        //adjacentBottomTile.SetAvailabillitySelector(true);
                     }
                 }
 
@@ -236,7 +244,7 @@ public class TurnHandler : MonoBehaviour
                     {
                         moveableTiles.Add(adjacentTopTile);
                         nextLevelTiles.Add(adjacentTopTile);
-                        adjacentTopTile.SetAvailabillitySelector(true);
+                        //adjacentTopTile.SetAvailabillitySelector(true);
                     }
                 }
 
@@ -266,6 +274,7 @@ public class TurnHandler : MonoBehaviour
     {
         ClearCurrentPath();
         currentTurn = TurnOrder.Alien;
+        AlienManager.Instance.TakeTurn();
     }
 
     private void MoveToTile()
