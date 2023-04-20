@@ -68,9 +68,10 @@ public class GenerateLevel : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		ResetGrid();
+		
 		AlienManager.Instance.Grid = this;
 		//do ResetGrid(); while (!IsGridValid());
+		ResetGrid();
 	}
 
 	// Update is called once per frame

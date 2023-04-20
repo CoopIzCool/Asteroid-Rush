@@ -73,9 +73,10 @@ public class AlienManager : MonoBehaviour
                 }
             }
 
+            Debug.Log(alien.GetComponent<Character>().CurrentTile.xPos + ", " + alien.GetComponent<Character>().CurrentTile.zPos);
             List<Tile> movableTiles = TurnHandler.Instance.FindAvailableTiles(alien.GetComponent<Character>());
+            Debug.Log(movableTiles.Count);
             if(movableTiles.Count <= 0) {
-                Debug.Log("oops nowhere to move");
                 continue; // no where to move
             }
 
@@ -100,14 +101,12 @@ public class AlienManager : MonoBehaviour
 
     // helper function to find if a player is in an adjacent tile. If there are multiple, returns the first one found. Null if no adjacent
     private GameObject FindAdjacentPlayer(GameObject alien) {
-        Tile tile = alien.GetComponent<Alien>().CurrentTile;
-        Vector2Int alienTile = new Vector2Int(tile.xPos, tile.zPos);
+        Tile alienTile = alien.GetComponent<Alien>().CurrentTile;
 
         foreach (GameObject player in PlayerCharacters) {
-            tile = player.GetComponent<Character>().CurrentTile;
-            Vector2Int playerTile = new Vector2Int(tile.xPos, tile.zPos);
+            Tile playerTile = player.GetComponent<Character>().CurrentTile;
 
-            if (Mathf.Abs(alienTile.x - playerTile.x) <= 1 || Mathf.Abs(alienTile.y - playerTile.y) <= 1) {
+            if (Mathf.Abs(alienTile.xPos - playerTile.xPos) <= 1 && Mathf.Abs(alienTile.zPos - playerTile.zPos) <= 1) {
                 return player;
             }
         }
