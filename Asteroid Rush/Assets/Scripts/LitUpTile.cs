@@ -7,11 +7,20 @@ public class LitUpTile : MonoBehaviour
     #region Fields
     [SerializeField] private Material unlitMaterial;
     [SerializeField] private Material selectedMaterial;
+    [SerializeField] private Tile associatedTile;
     [Header("Raycast Components:")]
     private Ray mouseRay;
     private RaycastHit hitInfo;
     [SerializeField]
     private LayerMask selectedArea;
+    #endregion
+
+    #region Properties
+    public Tile AssociatedTile
+    {
+        get { return associatedTile; }
+    }
+
     #endregion
     // Start is called before the first frame update
     void Start()
