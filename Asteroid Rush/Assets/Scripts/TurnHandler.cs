@@ -35,13 +35,17 @@ public class TurnHandler : MonoBehaviour
         set { selectedCharacter = value; }
     }
     #endregion
+
+    private static TurnHandler instance;
+    public static TurnHandler Instance {  get { return instance; } }
+
     // Start is called before the first frame update
     void Start()
     {
         raycastManager = gameObject.GetComponent<RaycastManager>();
         lineRenderer = gameObject.GetComponent<LineRenderer>();
         currentTurn = TurnOrder.Player;
-
+        instance = this;
     }
 
     // Update is called once per frame
@@ -271,5 +275,6 @@ public class TurnHandler : MonoBehaviour
     {
         ClearCurrentPath();
         currentTurn = TurnOrder.Alien;
+        AlienManager.Instance.TakeTurn();
     }
 }

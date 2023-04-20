@@ -38,7 +38,7 @@ public class AlienManager : MonoBehaviour
         // spawn new aliens
         turnsBeforeSpawn--;
         if(turnsBeforeSpawn <= 0) {
-            turnsBeforeSpawn = 3000000;
+            turnsBeforeSpawn = 3;
 
             // choose a spawn side
             Transform spawnZones = spawnZoneContainer.gameObject.transform;
@@ -73,55 +73,23 @@ public class AlienManager : MonoBehaviour
                 }
             }
 
-            Tile startTile = alien.GetComponent<Alien>().CurrentTile;
-            Tile endTile = closestPlayer.GetComponent<Character>().CurrentTile;
-            Vector2Int currentTile = new Vector2Int(startTile.xPos, startTile.zPos);
-            Vector2Int targetTile = new Vector2Int(endTile.xPos, endTile.zPos);
-            // simulate stepping one tile at a time
-            for(int i = 0; i < alien.GetComponent<Alien>().Movement; i++) {
-                int dist = Mathf.Abs(currentTile.x - targetTile.x) + Mathf.Abs(currentTile.y - targetTile.y);
-                if(dist <= 1) {
-                    break; // now adjacent to player
-                }
+            List<Tile> movableTiles = TurnHandler.Instance.FindAvailableTiles(alien.GetComponent<Character>());
+            if(movableTiles.Count <= 0) {
+                Debug.Log("oops nowhere to move");
+                continue; // no where to move
+            }
 
-                // determine the best order to attempt a move
-                Direction[] directionPriority = new Direction[4];
-                bool leftBetterThanRight = targetTile.x < currentTile.x;
-                bool upBetterThanDown = targetTile.y < currentTile.y;
-
-                if(Mathf.Abs(currentTile.x - targetTile.x) > Mathf.Abs(currentTile.y - targetTile.y)) {
-                    // horizontal first
-                    directionPriority[0] = (leftBetterThanRight ? Direction.Left : Direction.Right);
-                    directionPriority[1] = (upBetterThanDown ? Direction.Up : Direction.Down);
-                    directionPriority[2] = (upBetterThanDown ? Direction.Down : Direction.Up);
-                    directionPriority[3] = (leftBetterThanRight ? Direction.Right : Direction.Left);
-                    // ERROR: fails if the character is forced to move backwards
-                } else {
-                    // vertical first
-                    directionPriority[0] = (upBetterThanDown ? Direction.Up : Direction.Down);
-                    directionPriority[1] = (leftBetterThanRight ? Direction.Left : Direction.Right);
-                    directionPriority[2] = (leftBetterThanRight ? Direction.Right : Direction.Left);
-                    directionPriority[3] = (upBetterThanDown ? Direction.Down : Direction.Up);
-                }
-
-                foreach(Direction direction in directionPriority) {
-                    // check for an occupied tile in that direction
-                    Vector2Int testTile = currentTile + directionToVector[direction];
-                    GameObject tile = GenerateLevel.GetGridItem(testTile.x, testTile.y);
-                    Debug.Log(tile);
-                    if(tile != null) {
-                        Debug.Log(tile.GetComponent<Tile>());
-                    }
-                    if(tile != null && tile.GetComponent<Tile>().occupant == null) {
-                        currentTile = testTile;
-                    }
+            Tile closestTile = movableTiles[0];
+            closestDistance = Vector3.Distance(closestPlayer.transform.position, closestTile.gameObject.transform.position);
+            foreach(Tile tile in movableTiles) {
+                float distance = Vector3.Distance(closestPlayer.transform.position, closestTile.gameObject.transform.position);
+                if(distance < closestDistance) {
+                    distance = closestDistance;
+                    closestTile = tile;
                 }
             }
 
-            GameObject newTile = GenerateLevel.GetGridItem(currentTile.y, currentTile.x);
-            if(newTile != null) {
-                alien.GetComponent<Alien>().MoveToTile(newTile.GetComponent<Tile>());
-            }
+            alien.GetComponent<Character>().MoveToTile(closestTile);
         }
     }
 
