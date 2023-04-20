@@ -38,7 +38,7 @@ public class AlienManager : MonoBehaviour
         // spawn new aliens
         turnsBeforeSpawn--;
         if(turnsBeforeSpawn <= 0) {
-            turnsBeforeSpawn = 3;
+            turnsBeforeSpawn = 300000;
 
             // choose a spawn side
             Transform spawnZones = spawnZoneContainer.gameObject.transform;
@@ -55,14 +55,7 @@ public class AlienManager : MonoBehaviour
 
         // move all aliens
         foreach(GameObject alien in activeAliens) {
-            // attack if next to a player
-            GameObject adjacentPlayer = FindAdjacentPlayer(alien);
-            if(adjacentPlayer != null) {
-                adjacentPlayer.GetComponent<Character>().TakeDamage(alien.GetComponent<Alien>().Damage);
-                continue; // end this alien's turn
-            }
-
-            // move if not attacking
+            // move toward the closest player character
             GameObject closestPlayer = PlayerCharacters[0];
             float closestDistance = Vector3.Distance(closestPlayer.transform.position, alien.transform.position);
             for(int i = 1; i < PlayerCharacters.Length; i++) {
@@ -73,24 +66,27 @@ public class AlienManager : MonoBehaviour
                 }
             }
 
-            Debug.Log(alien.GetComponent<Character>().CurrentTile.xPos + ", " + alien.GetComponent<Character>().CurrentTile.zPos);
             List<Tile> movableTiles = TurnHandler.Instance.FindAvailableTiles(alien.GetComponent<Character>());
-            Debug.Log(movableTiles.Count);
-            if(movableTiles.Count <= 0) {
-                continue; // no where to move
-            }
-
-            Tile closestTile = movableTiles[0];
-            closestDistance = Vector3.Distance(closestPlayer.transform.position, closestTile.gameObject.transform.position);
-            foreach(Tile tile in movableTiles) {
-                float distance = Vector3.Distance(closestPlayer.transform.position, closestTile.gameObject.transform.position);
-                if(distance < closestDistance) {
-                    distance = closestDistance;
-                    closestTile = tile;
+            Debug.Log(movableTiles.Count + " movable tiles");
+            if(movableTiles.Count > 0) {
+                Tile closestTile = movableTiles[0];
+                closestDistance = Vector3.Distance(closestPlayer.transform.position, closestTile.gameObject.transform.position);
+                foreach(Tile tile in movableTiles) {
+                    float distance = Vector3.Distance(closestPlayer.transform.position, tile.gameObject.transform.position);
+                    if(distance < closestDistance) {
+                        distance = closestDistance;
+                        closestTile = tile;
+                    }
                 }
+
+                alien.GetComponent<Character>().MoveToTile(closestTile);
             }
 
-            alien.GetComponent<Character>().MoveToTile(closestTile);
+            // attack if next to a player
+            GameObject adjacentPlayer = FindAdjacentPlayer(alien);
+            if(adjacentPlayer != null) {
+                adjacentPlayer.GetComponent<Character>().TakeDamage(alien.GetComponent<Alien>().Damage);
+            }
         }
     }
 
