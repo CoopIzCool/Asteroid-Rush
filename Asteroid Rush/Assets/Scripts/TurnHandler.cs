@@ -21,6 +21,11 @@ public class TurnHandler : MonoBehaviour
     private Stack<Tile> tiles = new Stack<Tile>();
     private LineRenderer lineRenderer;
     private float lineYOffset = 0.2f;
+
+    [Header("New Movement Components")]
+    [SerializeField] private GenerateLevel levelGenerator;
+    [SerializeField]private List<Tile> availableTiles = new List<Tile>();
+    private Tile startingTile;
     #endregion
 
     #region Properties
@@ -67,6 +72,9 @@ public class TurnHandler : MonoBehaviour
                             tiles.Push(selectedCharacter.GetComponent<Character>().CurrentTile);
                             Vector3 startLocation = selectedCharacter.GetComponent<Character>().CurrentTile.gameObject.transform.position;
                             lineRenderer.SetPosition(0, new Vector3(startLocation.x, startLocation.y + 0.2f, startLocation.z));
+                            startingTile = GenerateLevel.grid[(int)startLocation.z,(int)startLocation.x].GetComponent<Tile>();
+                            FindAvailableTiles();
+
                         }
                         else
                         {
@@ -93,6 +101,10 @@ public class TurnHandler : MonoBehaviour
                     ClearCurrentPath();
                 }
 
+                if(Input.GetKeyDown(KeyCode.C))
+                {
+                    ClearAvailableTiles();
+                }
 
             }
 
@@ -156,7 +168,7 @@ public class TurnHandler : MonoBehaviour
 
     private bool TileCheck(Tile tileInQuestion)
     {
-        if(tileInQuestion.tileType == TileType.Basic && tileInQuestion.occupant == null)
+        if(tileInQuestion.IsAvailableTile())
         {
             //Distance so tiles are orthoganally adjacent
             if(Vector3.Distance(tileInQuestion.gameObject.transform.position,tiles.Peek().transform.position) < 1.2)
@@ -175,5 +187,99 @@ public class TurnHandler : MonoBehaviour
         }
     }
 
+    public void FindAvailableTiles()
+    {
+        GridDebugTest();
+        List<Tile> currentLevelTiles = new List<Tile>();
+        currentLevelTiles.Add(startingTile);
+        for(int i = 0; i < currentMovement; i++)
+        {
+            List<Tile> nextLevelTiles = new List<Tile>();
+            foreach (Tile tile in currentLevelTiles)
+            {
+                Debug.Log(tile.gameObject);
+                //left tile to current tile
+                if (tile.xPos > 0)
+                {
+                    
+                    Tile adjacentLeftTile = GenerateLevel.grid[tile.zPos, tile.xPos - 1].GetComponent<Tile>();
+                    if (!availableTiles.Contains(adjacentLeftTile) && adjacentLeftTile.IsAvailableTile())
+                    {
+                        availableTiles.Add(adjacentLeftTile);
+                        nextLevelTiles.Add(adjacentLeftTile);
+                        adjacentLeftTile.SetAvailabillitySelector(true);
+                        Debug.Log("This tiles: " + tile.xPos + " leftmost neighbor: " + adjacentLeftTile.xPos + " is activated");
+                    }
+                }
 
+                //right Tile
+                if (tile.xPos < levelGenerator.GridWidth - 1)
+                {
+                    Tile adjacentRightTile = GenerateLevel.grid[tile.zPos, tile.xPos + 1].GetComponent<Tile>();
+                    if (!availableTiles.Contains(adjacentRightTile) && adjacentRightTile.IsAvailableTile())
+                    {
+                        availableTiles.Add(adjacentRightTile);
+                        nextLevelTiles.Add(adjacentRightTile);
+                        adjacentRightTile.SetAvailabillitySelector(true);
+                    }
+                }
+
+                //bottom tile
+                if(tile.zPos > 0)
+                {
+                    Tile adjacentBottomTile = GenerateLevel.grid[tile.zPos - 1, tile.xPos].GetComponent<Tile>();
+                    if (!availableTiles.Contains(adjacentBottomTile) && adjacentBottomTile.IsAvailableTile())
+                    {
+                        availableTiles.Add(adjacentBottomTile);
+                        nextLevelTiles.Add(adjacentBottomTile);
+                        adjacentBottomTile.SetAvailabillitySelector(true);
+                    }
+                }
+
+
+                //top tile
+                if(tile.zPos < levelGenerator.GridHeight - 1)
+                {
+                    Tile adjacentTopTile = GenerateLevel.grid[tile.zPos + 1, tile.xPos].GetComponent<Tile>();
+                    if (!availableTiles.Contains(adjacentTopTile) && adjacentTopTile.IsAvailableTile())
+                    {
+                        availableTiles.Add(adjacentTopTile);
+                        nextLevelTiles.Add(adjacentTopTile);
+                        adjacentTopTile.SetAvailabillitySelector(true);
+                    }
+                }
+
+            }
+
+            currentLevelTiles.Clear();
+            foreach (Tile tile in nextLevelTiles)
+            {
+                currentLevelTiles.Add(tile);
+            }
+            nextLevelTiles.Clear();
+        }
+
+        
+    }
+
+    private void ClearAvailableTiles()
+    {
+        foreach (Tile tile in availableTiles)
+        {
+            tile.SetAvailabillitySelector(false);
+        }
+        availableTiles.Clear();
+    }
+
+    private void GridDebugTest()
+    {
+        for(int i = 0; i < levelGenerator.GridWidth; i++)
+        {
+            for(int j = 0; j < levelGenerator.GridHeight; j++)
+            {
+                Debug.Log(i + " XPos is " + GenerateLevel.grid[j, i].GetComponent<Tile>().xPos);
+                Debug.Log(j + " ZPos is " + GenerateLevel.grid[j, i].GetComponent<Tile>().zPos);
+            }
+        }
+    }
 }

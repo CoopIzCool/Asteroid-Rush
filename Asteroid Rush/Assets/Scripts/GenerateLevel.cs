@@ -11,7 +11,7 @@ public enum Direction {
 public class GenerateLevel : MonoBehaviour
 {
 	// The grid
-	private static GameObject[,] grid = null;
+	public static GameObject[,] grid = null;
 	private int gridWidth = 0;
 	private int gridHeight = 0;
 
@@ -51,6 +51,17 @@ public class GenerateLevel : MonoBehaviour
 
 	[Header("Camera Logic & Misc")]
 	[SerializeField] CameraFixedRotation cameraLogic;
+
+	#region Properties
+	public int GridWidth
+    {
+        get { return gridWidth; }
+    }
+	public int GridHeight
+    {
+        get { return gridHeight; }
+    }
+	#endregion
 	// Start is called before the first frame update
 	void Start()
 	{
