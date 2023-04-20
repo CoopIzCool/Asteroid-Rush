@@ -50,6 +50,7 @@ public class RaycastManager : MonoBehaviour
         //we are only checking for tiles so we need a different layerMask
         if (Physics.Raycast(mouseRay, out hitInfo, tileLayerMask))
         {
+            /*
             GameObject hitObject = hitInfo.collider.gameObject;
             Debug.Log(hitObject.name);
             Debug.Log(hitObject.layer);
@@ -60,7 +61,9 @@ public class RaycastManager : MonoBehaviour
             else if(hitObject.GetComponent<Character>())
             {
                 return hitObject.GetComponent<Character>().CurrentTile;
-            }
+            }*/
+            GameObject hitObject = hitInfo.collider.gameObject;
+            return hitObject.GetComponent<LitUpTile>().AssociatedTile;
         }
         return null;
     }

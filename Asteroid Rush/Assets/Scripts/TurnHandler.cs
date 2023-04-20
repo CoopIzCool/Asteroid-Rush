@@ -58,8 +58,8 @@ public class TurnHandler : MonoBehaviour
                 if (selectedCharacter != null)
                 {
 
-                    AddTile();
-
+                    //AddTile();
+                    MoveToTile();
 
                 }
                 //If character is not selected, look for one to select
@@ -93,9 +93,7 @@ public class TurnHandler : MonoBehaviour
                 //Move Player to selected tile
                 if (Input.GetKeyDown(KeyCode.M))
                 {
-                    selectedCharacter.gameObject.GetComponent<Character>().MoveToTile(tiles.Peek());
-                    selectedCharacter.gameObject.GetComponent<Character>().Moved = true;
-                    ClearCurrentPath();
+
                 }
 
                 //Clear current path but do not move
@@ -199,7 +197,7 @@ public class TurnHandler : MonoBehaviour
             List<Tile> nextLevelTiles = new List<Tile>();
             foreach (Tile tile in currentLevelTiles)
             {
-                Debug.Log(tile.gameObject);
+                //Debug.Log(tile.gameObject);
                 //left tile to current tile
                 if (tile.xPos > 0)
                 {
@@ -277,5 +275,26 @@ public class TurnHandler : MonoBehaviour
         ClearCurrentPath();
         currentTurn = TurnOrder.Alien;
         AlienManager.Instance.TakeTurn();
+    }
+
+    private void MoveToTile()
+    {
+        Tile selectedTile = raycastManager.TileRaycast();
+        if (selectedTile != null)
+        {
+            MoveCharacter(selectedTile);
+        }
+    }
+
+    private void MoveCharacter(Tile selectedTile)
+    {
+        foreach(Tile tile in availableTiles)
+        {
+            tile.SetAvailabillitySelector(false);
+        }
+        Debug.Log("Moving");
+        selectedCharacter.gameObject.GetComponent<Character>().MoveToTile(selectedTile);
+        selectedCharacter.gameObject.GetComponent<Character>().Moved = true;
+        ClearCurrentPath();
     }
 }
