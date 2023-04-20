@@ -21,6 +21,10 @@ public class TurnHandler : MonoBehaviour
     private Stack<Tile> tiles = new Stack<Tile>();
     private LineRenderer lineRenderer;
     private float lineYOffset = 0.2f;
+
+    [Header("New Movement Components")]
+    private List<Tile> availableTiles = new List<Tile>();
+    private Tile startingTile;
     #endregion
 
     #region Properties
@@ -152,7 +156,7 @@ public class TurnHandler : MonoBehaviour
 
     private bool TileCheck(Tile tileInQuestion)
     {
-        if(tileInQuestion.tileType == TileType.Basic && tileInQuestion.occupant == null)
+        if(tileInQuestion.IsAvailableTile())
         {
             //Distance so tiles are orthoganally adjacent
             if(Vector3.Distance(tileInQuestion.gameObject.transform.position,tiles.Peek().transform.position) < 1.2)
@@ -171,5 +175,51 @@ public class TurnHandler : MonoBehaviour
         }
     }
 
+    public void FindAvailableTiles()
+    {
+        List<Tile> currentLevelTiles = new List<Tile>();
+        currentLevelTiles.Add(startingTile);
+        for(int i = 0; i <= currentMovement; i++)
+        {
+            List<Tile> nextLevelTiles = new List<Tile>();
+            foreach (Tile tile in currentLevelTiles)
+            {
+                //left tile to current tile
+                Tile adjacentLeftTile = GenerateLevel.grid[tile.xPos - 1, tile.zPos].GetComponent<Tile>();
+                if(!availableTiles.Contains(adjacentLeftTile))
+                {
+                    availableTiles.Add(adjacentLeftTile);
+                    nextLevelTiles.Add(adjacentLeftTile);
+                }
 
+                //right Tile
+                Tile adjacentRightTile = GenerateLevel.grid[tile.xPos + 1, tile.zPos].GetComponent<Tile>();
+                if (!availableTiles.Contains(adjacentRightTile))
+                {
+                    availableTiles.Add(adjacentRightTile);
+                    nextLevelTiles.Add(adjacentRightTile);
+                }
+
+                //bottom tile
+                Tile adjacentBottomTile = GenerateLevel.grid[tile.xPos, tile.zPos - 1].GetComponent<Tile>();
+                if (!availableTiles.Contains(adjacentBottomTile))
+                {
+                    availableTiles.Add(adjacentBottomTile);
+                    nextLevelTiles.Add(adjacentBottomTile);
+                }
+
+                //top tile
+                Tile adjacentTopTile = GenerateLevel.grid[tile.xPos, tile.zPos + 1].GetComponent<Tile>();
+                if (!availableTiles.Contains(adjacentTopTile))
+                {
+                    availableTiles.Add(adjacentTopTile);
+                    nextLevelTiles.Add(adjacentTopTile);
+                }
+            }
+
+            currentLevelTiles.Clear();
+            currentLevelTiles = nextLevelTiles;
+            nextLevelTiles.Clear();
+        }
+    }
 }

@@ -27,4 +27,14 @@ public class Tile : MonoBehaviour
     {
         
     }
+
+    public bool IsAvailableTile()
+    {
+        if(occupant == null)
+        {
+            if (tileType == TileType.Basic)
+                return true;
+        }
+        return false;
+    }
 }

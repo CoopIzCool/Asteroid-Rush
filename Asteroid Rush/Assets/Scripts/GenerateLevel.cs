@@ -4,7 +4,7 @@ using UnityEngine;
 public class GenerateLevel : MonoBehaviour
 {
 	// The grid
-	private static GameObject[,] grid = null;
+	public static GameObject[,] grid = null;
 	private int gridWidth = 0;
 	private int gridHeight = 0;
 
