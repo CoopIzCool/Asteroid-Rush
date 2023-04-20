@@ -1087,6 +1087,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1942460243909495762, guid: 8f7012e3fc19ea34f8adb2d94662ff38, type: 3}
+      propertyPath: levelGenerator
+      value: 
+      objectReference: {fileID: 558748785}
     - target: {fileID: 1942460243909495763, guid: 8f7012e3fc19ea34f8adb2d94662ff38, type: 3}
       propertyPath: m_Name
       value: Turn Manager
