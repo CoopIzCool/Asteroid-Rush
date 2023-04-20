@@ -795,6 +795,8 @@ public class Zone : MonoBehaviour
 						{
 							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefab, new Vector3(col, 0, row), tilePrefab.transform.rotation, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 						}
 					}
 				}
@@ -811,6 +813,8 @@ public class Zone : MonoBehaviour
 						{
 							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefab, new Vector3(col, 0, row), tilePrefab.transform.rotation, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 						}
 					}
 				}
@@ -827,6 +831,8 @@ public class Zone : MonoBehaviour
 						{
 							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefab, new Vector3(col, 0, row), tilePrefab.transform.rotation, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 						}
 					}
 				}
@@ -843,6 +849,8 @@ public class Zone : MonoBehaviour
 						{
 							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefab, new Vector3(col, 0, row), tilePrefab.transform.rotation, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 						}
 					}
 				}
@@ -876,6 +884,8 @@ public class Zone : MonoBehaviour
 						{
 							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefab, new Vector3(col, 0, row), tilePrefab.transform.rotation, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 						}
 					}
 				}
@@ -892,6 +902,8 @@ public class Zone : MonoBehaviour
 						{
 							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefab, new Vector3(col, 0, row), tilePrefab.transform.rotation, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 						}
 					}
 				}
@@ -908,6 +920,8 @@ public class Zone : MonoBehaviour
 						{
 							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefab, new Vector3(col, 0, row), tilePrefab.transform.rotation, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 						}
 					}
 				}
@@ -924,6 +938,8 @@ public class Zone : MonoBehaviour
 						{
 							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefab, new Vector3(col, 0, row), tilePrefab.transform.rotation, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().xPos = col;
+							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().zPos = row;
 						}
 					}
 				}
