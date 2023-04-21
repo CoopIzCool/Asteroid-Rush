@@ -112,4 +112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   occupant: {fileID: 0}
-  tileType: 0
+  tileType: 3
+  xPos: 0
+  zPos: 0
+  illumination: {fileID: 0}
