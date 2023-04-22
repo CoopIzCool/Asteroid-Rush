@@ -26,6 +26,7 @@ public class TurnHandler : MonoBehaviour
     [SerializeField] private GenerateLevel levelGenerator;
     [SerializeField]private List<Tile> availableTiles = new List<Tile>();
     private Tile startingTile;
+    private List<UnrefinedOre> oresWithDrillBots;
     #endregion
 
     #region Properties
@@ -272,6 +273,16 @@ public class TurnHandler : MonoBehaviour
 
     public void EndPlayerTurn()
     {
+        // drill bots deal damage at the end of each turn
+        for(int i = 0; i < oresWithDrillBots.Count; i++) {
+            bool destroyed = oresWithDrillBots[i].DealDrillBotDamage();
+            if(destroyed) {
+                oresWithDrillBots.RemoveAt(i);
+                i--;
+                // TODO: add ore somewhere
+            }
+        }
+
         ClearCurrentPath();
         currentTurn = TurnOrder.Alien;
         AlienManager.Instance.TakeTurn();
@@ -296,5 +307,9 @@ public class TurnHandler : MonoBehaviour
         selectedCharacter.gameObject.GetComponent<Character>().MoveToTile(selectedTile);
         selectedCharacter.gameObject.GetComponent<Character>().Moved = true;
         ClearCurrentPath();
+    }
+
+    public void AddDrillingOre(UnrefinedOre ore) {
+        oresWithDrillBots.Add(ore);
     }
 }

@@ -7,7 +7,9 @@ public class AlienManager : MonoBehaviour
 {
     [SerializeField] private GameObject alienPrefab;
     [SerializeField] private GameObject spawnZoneContainer;
-    private const int NUM_PER_SPAWN = 1; // should be less than the number of spawn tiles
+    [SerializeField] private GameObject trapPrefab;
+    [SerializeField] private GameObject slowZonePrefab;
+    private const int NUM_PER_SPAWN = 3; // should be less than the number of spawn tiles
 
     private static AlienManager instance;
     public static AlienManager Instance { get { return instance; } }
@@ -16,6 +18,8 @@ public class AlienManager : MonoBehaviour
     public GenerateLevel Grid { get; set; } // set by grid generator
     private Dictionary<Direction, Vector2Int> directionToVector;
 
+    private List<GameObject> slowZones;
+    private List<GameObject> traps;
     private List<GameObject> activeAliens;
     private int turnsBeforeSpawn;
 
@@ -38,7 +42,7 @@ public class AlienManager : MonoBehaviour
         // spawn new aliens
         turnsBeforeSpawn--;
         if(turnsBeforeSpawn <= 0) {
-            turnsBeforeSpawn = 300000;
+            turnsBeforeSpawn = 5;
 
             // choose a spawn side
             Transform spawnZones = spawnZoneContainer.gameObject.transform;
@@ -67,8 +71,7 @@ public class AlienManager : MonoBehaviour
             }
 
             List<Tile> movableTiles = TurnHandler.Instance.FindAvailableTiles(alien.GetComponent<Character>());
-            Debug.Log(movableTiles.Count + " movable tiles");
-            if(movableTiles.Count > 0) {
+            if(movableTiles.Count > 0 && Vector3.Distance(closestPlayer.transform.position, alien.transform.position) > 1) {
                 Tile closestTile = movableTiles[0];
                 closestDistance = Vector3.Distance(closestPlayer.transform.position, closestTile.gameObject.transform.position);
                 foreach(Tile tile in movableTiles) {
@@ -108,5 +111,21 @@ public class AlienManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    // fighter's trap ability
+    public void AddTrap(Tile placement) {
+        GameObject trap = Instantiate(trapPrefab);
+        traps.Add(trap);
+        trap.transform.position = placement.transform.position;
+        trap.GetComponent<Trap>().Tile = placement;
+    }
+
+    // supporter's slow zone ability
+    public void AddSlowZone(Tile placement) {
+        GameObject slowZone = Instantiate(slowZonePrefab);
+        traps.Add(slowZone);
+        slowZone.transform.position = placement.transform.position;
+        slowZone.GetComponent<SlowZone>().Tile = placement;
     }
 }

@@ -4,15 +4,8 @@ using UnityEngine;
 
 public class Fighter : Character
 {
-    // Start is called before the first frame update
-    void Start()
+    public override void SpecialAction()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        AlienManager.Instance.AddTrap(CurrentTile);
     }
 }
