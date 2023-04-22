@@ -27,7 +27,7 @@ public class Zone : MonoBehaviour
 		switch (zoneType)
 		{
 			case ZoneTypes.Field:
-				BuildField(tilePrefabs, objectPrefabs, Random.Range(2, 5), 3, 0.5f);
+				BuildField(tilePrefabs, objectPrefabs, Random.Range(2, 5), 2);
 				break;
 			case ZoneTypes.Pit:
 				BuildPit(tilePrefabs, objectPrefabs, Random.Range(1, 4), Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0]);
@@ -44,7 +44,7 @@ public class Zone : MonoBehaviour
 		}
 	}
 
-	private void BuildField(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int numWalls, int maxWallSize, float newWallOdds)
+	private void BuildField(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int numWalls, int maxWallSize)
 	{
 		for (int row = zPos; row < zPos + height; row++)
 		{
@@ -58,9 +58,6 @@ public class Zone : MonoBehaviour
 			}
 		}
 
-		// Bail out early if the zone can't support the maximum number of walls
-		if (tiles.Count < numWalls * maxWallSize + 1) return;
-
 		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0];
 
 		for (int i = 0; i < numWalls; i++)
@@ -71,9 +68,9 @@ public class Zone : MonoBehaviour
 			{
 				randomX = Random.Range(xPos, xPos + width);
 				randomZ = Random.Range(zPos, zPos + height);
-			} while (GenerateLevel.GetGridItem(randomZ, randomX).transform.parent != transform || GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().tileType == TileType.Pit || GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().occupant != null);
+			} while (!GenerateLevel.IsTileWalkable(randomX, randomZ));
 
-			int wallSize = 0;
+			int wallSize = Random.Range(1, maxWallSize + 1);
 
 			do
 			{
@@ -87,8 +84,6 @@ public class Zone : MonoBehaviour
 					tiles.Remove(GenerateLevel.GetGridItem(randomZ, randomX));
 					GenerateLevel.SetGridItem(randomZ, randomX, Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), Quaternion.identity, transform));
 					tiles.Add(GenerateLevel.GetGridItem(randomZ, randomX));
-					GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().xPos = randomX;
-					GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().zPos = randomZ;
 				}
 
 				if (randomX > xPos && GenerateLevel.GetGridItem(randomZ, randomX - 1).transform.parent == transform) validPositions.Add(new Vector2Int(randomX - 1, randomZ));
@@ -107,8 +102,8 @@ public class Zone : MonoBehaviour
 					break;
 				}
 
-				wallSize++;
-			} while (Random.Range(0f, 1f) <= newWallOdds && wallSize < maxWallSize);
+				wallSize--;
+			} while (wallSize > 0);
 		}
 	}
 
@@ -318,20 +313,6 @@ public class Zone : MonoBehaviour
 	private void BuildMaze(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int numWalls)
 	{
 		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0];
-		// Choose a random length, width, and position for the wall
-		int wallWidth;
-		int wallLength;
-		int wallX;
-		int wallZ;
-
-		do
-		{
-			wallWidth = Random.Range(2, width / 2);
-			wallLength = Random.Range(2, height / 2);
-			wallX = Random.Range(xPos + 1, xPos + width - 1 - wallWidth);
-			wallZ = Random.Range(zPos + 1, zPos + height - 1 - wallLength);
-		}
-		while (TileExists(wallX, wallZ, wallWidth, wallLength));
 
 		#region Set Up Enemy Spawns
 		int randomBottom = zPos == 1 ? -1 : Random.Range(0f, 1f) < 0.5f ? Random.Range(xPos + 1, xPos + width - 1) : xPos - 1;
@@ -473,60 +454,7 @@ public class Zone : MonoBehaviour
 		}
 		#endregion
 
-		// Add walls until we reach or exceed our maximum
-		while (numWalls > 0)
-		{
-			// Add the wall to the world, replacing the tiles that already exist
-			for (int row = wallZ; row < wallZ + wallLength; row++)
-			{
-				for (int col = wallX; col < wallX + wallWidth; col++)
-				{
-					tiles.Remove(GenerateLevel.GetGridItem(row, col));
-					if (pitOrWall == objectPrefabs[0])
-					{
-						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, tilePrefabs[0].transform.position.y, row), tilePrefabs[0].transform.rotation, transform));
-						GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
-					}
-					else
-					{
-						GenerateLevel.SetGridItem(row, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.identity, transform));
-					}
-
-					tiles.Add(GenerateLevel.GetGridItem(row, col));
-				}
-			}
-
-			numWalls -= wallLength * wallWidth;
-
-			int timesRun = 0;
-			do
-			{
-				if (timesRun > 10) break;
-				wallWidth = Random.Range(2, width / 2);
-				wallLength = Random.Range(2, height / 2);
-				wallX = Random.Range(xPos + 1, xPos + width - 1 - wallWidth);
-				wallZ = Random.Range(zPos + 1, zPos + height - 1 - wallLength);
-
-				timesRun++;
-			}
-			while (TileExists(wallX, wallZ, wallWidth, wallLength));
-		}
-
-		for (int row = zPos; row < zPos + height; row++)
-		{
-			for (int col = xPos; col < xPos + width; col++)
-			{
-				if (GenerateLevel.GetGridItem(row, col) == null)
-				{
-					if ((row == zPos && col == randomBottom) || (row == zPos + height - 1 && col == randomTop) || (col == xPos && row == randomLeft) || (col == xPos + width - 1 && row == randomRight))
-					{
-						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, tilePrefabs[0].transform.position.y, row), tilePrefabs[0].transform.rotation, transform));
-						tiles.Add(GenerateLevel.GetGridItem(row, col));
-					}
-				}
-			}
-		}
-
+		#region Set Up Zone Border
 		for (int row = zPos; row < zPos + height; row++)
 		{
 			for (int col = xPos; col < xPos + width; col++)
@@ -554,6 +482,9 @@ public class Zone : MonoBehaviour
 				}
 			}
 		}
+		#endregion
+	
+		
 	}
 
 	private bool TileExists(int x, int z)
