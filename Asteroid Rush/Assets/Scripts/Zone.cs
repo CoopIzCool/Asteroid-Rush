@@ -39,7 +39,7 @@ public class Zone : MonoBehaviour
 				BuildTunnel(tilePrefabs, objectPrefabs, Random.Range(2, width - 1), Random.Range(2, height - 1));
 				break;
 			case ZoneTypes.Maze:
-				BuildMaze(tilePrefabs, objectPrefabs, (int)Random.Range((width - 1) * (height - 1) * 0.3f, (width - 1) * (height - 1) * 0.5f));
+				BuildMaze(tilePrefabs, objectPrefabs, 2);
 				break;
 		}
 	}
@@ -466,25 +466,93 @@ public class Zone : MonoBehaviour
 
 					if (row == zPos || row == zPos + height - 1 || col == xPos || col == xPos + width - 1)
 					{
-						tiles.Remove(GenerateLevel.GetGridItem(row, col));
-						if (pitOrWall == objectPrefabs[0])
+						if ((row == randomLeft && col == xPos) || (row == randomRight && col == xPos + width - 1) || (row == zPos && col == randomBottom) || (row == zPos + height - 1 && col == randomTop))
 						{
+							tiles.Remove(GenerateLevel.GetGridItem(row, col));
 							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, tilePrefabs[0].transform.position.y, row), tilePrefabs[0].transform.rotation, transform));
-							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
+							tiles.Add(GenerateLevel.GetGridItem(row, col));
 						}
 						else
 						{
-							GenerateLevel.SetGridItem(row, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.identity, transform));
-						}
+							tiles.Remove(GenerateLevel.GetGridItem(row, col));
+							if (pitOrWall == objectPrefabs[0])
+							{
+								GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, tilePrefabs[0].transform.position.y, row), tilePrefabs[0].transform.rotation, transform));
+								GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
+							}
+							else
+							{
+								GenerateLevel.SetGridItem(row, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.identity, transform));
+							}
 
-						tiles.Add(GenerateLevel.GetGridItem(row, col));
+							tiles.Add(GenerateLevel.GetGridItem(row, col));
+						}
 					}
 				}
 			}
 		}
 		#endregion
-	
-		
+
+		#region Set Up Obstacle Area
+		List<Vector2Int> validObstaclePositions = new List<Vector2Int>();
+		for(int row = zPos + 2; row < zPos + height - 2; row++)
+		{
+			for(int col = xPos + 2; col < xPos + width - 2; col++)
+			{
+				validObstaclePositions.Add(new Vector2Int(row, col));
+			}
+		}
+
+		for (int i = 0; i < numWalls; i++)
+		{
+			int randomX;
+			int randomZ;
+			do
+			{
+				randomX = Random.Range(xPos + 2, xPos + width - 2);
+				randomZ = Random.Range(zPos + 2, zPos + height - 2);
+			} while (!validObstaclePositions.Contains(new Vector2Int(randomZ, randomX)));
+
+			int wallSize = 2;
+
+			do
+			{
+				List<Vector2Int> validPositions = new List<Vector2Int>();
+				if (pitOrWall == objectPrefabs[0])
+				{
+					GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
+				}
+				else
+				{
+					tiles.Remove(GenerateLevel.GetGridItem(randomZ, randomX));
+					GenerateLevel.SetGridItem(randomZ, randomX, Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), Quaternion.identity, transform));
+					tiles.Add(GenerateLevel.GetGridItem(randomZ, randomX));
+				}
+
+				if (validObstaclePositions.Contains(new Vector2Int(randomZ, randomX - 1))) validPositions.Add(new Vector2Int(randomX - 1, randomZ));
+				if (validObstaclePositions.Contains(new Vector2Int(randomZ, randomX + 1))) validPositions.Add(new Vector2Int(randomX + 1, randomZ));
+				if (validObstaclePositions.Contains(new Vector2Int(randomZ - 1, randomX))) validPositions.Add(new Vector2Int(randomX, randomZ - 1));
+				if (validObstaclePositions.Contains(new Vector2Int(randomZ + 1, randomX))) validPositions.Add(new Vector2Int(randomX, randomZ + 1));
+
+				for(int row = randomZ - 1; row <= randomZ + 1; row++)
+				{
+					for(int col = randomX - 1; col <= randomX + 1; col++)
+					{
+						validObstaclePositions.Remove(new Vector2Int(row, col));
+					}
+				}
+
+				if (validPositions.Count > 0)
+				{
+					Vector2Int chosenPosition = validPositions[Random.Range(0, validPositions.Count)];
+					randomX = chosenPosition.x;
+					randomZ = chosenPosition.y;
+				}
+
+				wallSize--;
+			} while (wallSize > 0);
+		}
+		#endregion
 	}
 
 	private bool TileExists(int x, int z)

@@ -105,15 +105,15 @@ public class GenerateLevel : MonoBehaviour
 	public void ResetGrid()
 	{
 		bool hasGoodZones;
-		do
-		{
+		//do
+		//{
 			corePositions.Clear();
 			gridWidth = Random.Range(minGridWidth, maxGridWidth);
 			gridHeight = Random.Range(minGridHeight, maxGridHeight);
 			if (grid != null) DestroyGrid();
 			hasGoodZones = BuildGrid();
-		}
-		while (!hasGoodZones || !IsGridValid());
+		//}
+		//while (!hasGoodZones || !IsGridValid());
 	}
 
 	/// <summary>
