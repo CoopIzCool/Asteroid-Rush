@@ -79,7 +79,6 @@ public class GenerateLevel : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
-			//do ResetGrid(); while (!IsGridValid());
 			ResetGrid();
 		}
 	}
@@ -111,23 +110,8 @@ public class GenerateLevel : MonoBehaviour
 			Destroy(grid[row, col]);
 		}
 		grid[row, col] = value;
-	}
-
-	/// <summary>
-	/// Spawns the given prefab at a random unoccupied location in the grid
-	/// </summary>
-	/// <param name="prefab">The prefab to spawn</param>
-	private void SpawnEntityAtRandom(GameObject prefab)
-	{
-		// Select random positions on the grid until one that is unoccupied is found
-		Vector2Int randomPos;
-		do
-		{
-			randomPos = new Vector2Int(Random.Range(0, gridWidth), Random.Range(0, gridHeight));
-		}
-		while (grid[randomPos.y, randomPos.x].GetComponent<Tile>().tileType != TileType.Basic && grid[randomPos.y, randomPos.x].GetComponent<Tile>().occupant != null);
-
-		grid[randomPos.y, randomPos.x].GetComponent<Tile>().occupant = Instantiate(prefab, new Vector3(randomPos.x, prefab.transform.position.y, randomPos.y), prefab.transform.rotation);
+		grid[row, col].GetComponent<Tile>().xPos = col;
+		grid[row, col].GetComponent<Tile>().zPos = row;
 	}
 
 	/// <summary>
@@ -135,15 +119,16 @@ public class GenerateLevel : MonoBehaviour
 	/// </summary>
 	public void ResetGrid()
 	{
-		bool isGridValid;
+		bool hasGoodZones;
 		do
 		{
+			corePositions.Clear();
 			gridWidth = Random.Range(minGridWidth, maxGridWidth);
 			gridHeight = Random.Range(minGridHeight, maxGridHeight);
 			if (grid != null) DestroyGrid();
-			isGridValid = BuildGrid();
+			hasGoodZones = BuildGrid();
 	}
-		while (!isGridValid);
+		while (!hasGoodZones || !IsGridValid());
 	}
 
 	/// <summary>
@@ -151,7 +136,7 @@ public class GenerateLevel : MonoBehaviour
 	/// </summary>
 	private void DestroyGrid()
 	{
-		for(int row = 0; row < grid.GetLength(0); row++)
+		for (int row = 0; row < grid.GetLength(0); row++)
 		{
 			for (int col = 0; col < grid.GetLength(1); col++)
 			{
@@ -163,9 +148,9 @@ public class GenerateLevel : MonoBehaviour
 			}
 		}
 
-		foreach(GameObject parentZone in parentZones)
+		foreach (GameObject parentZone in parentZones)
 		{
-			for(int i = 0; i < parentZone.transform.childCount; i++)
+			for (int i = 0; i < parentZone.transform.childCount; i++)
 			{
 				Destroy(parentZone.transform.GetChild(i).gameObject);
 			}
@@ -190,17 +175,16 @@ public class GenerateLevel : MonoBehaviour
 
 		// Create spaceship / player spawn zone in center
 		#region Spaceship Zone
-		GameObject shipZoneObj = new GameObject("ShipZone");
-		shipZoneObj.transform.parent = parentZones[0].transform;
-		Zone shipZone = shipZoneObj.AddComponent<Zone>();
-		shipZone.width = Random.Range(minZoneWidth, maxZoneWidth) - 1;
-		shipZone.height = Random.Range(minZoneHeight, maxZoneHeight) - 1;
-		shipZone.xPos = gridWidth / 2 - shipZone.width / 2 + shipZone.width % 2;
-		shipZone.zPos = gridHeight / 2 - shipZone.height / 2 + shipZone.height % 2;
+		GameObject shipZoneObj = new GameObject();
+		int shipZoneWidth = Random.Range(minZoneWidth, maxZoneWidth);
+		int shipZoneHeight = Random.Range(minZoneHeight, maxZoneHeight);
+		int shipZoneXPos = gridWidth / 2 - shipZoneWidth / 2;
+		int shipZoneZPos = gridHeight / 2 - shipZoneHeight / 2;
+		Zone shipZone = InitializeZone(shipZoneObj, "ShipZone", parentZones[0].transform, shipZoneXPos, shipZoneZPos, shipZoneWidth, shipZoneHeight);
 
-		for (int row = shipZone.zPos; row <= shipZone.zPos + shipZone.height; row++)
+		for (int row = shipZone.zPos; row < shipZone.zPos + shipZone.height; row++)
 		{
-			for (int col = shipZone.xPos; col <= shipZone.xPos + shipZone.width; col++)
+			for (int col = shipZone.xPos; col < shipZone.xPos + shipZone.width; col++)
 			{
 				grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, shipZoneObj.transform);
 				shipZone.tiles.Add(grid[row, col]);
@@ -220,60 +204,45 @@ public class GenerateLevel : MonoBehaviour
 		//Set initial character tile to players
 		grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>().occupant.GetComponent<Character>().CurrentTile = grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>();
 		grid[gridHeight / 2 + 1, gridWidth / 2 + 1].GetComponent<Tile>().occupant.GetComponent<Character>().CurrentTile = grid[gridHeight / 2 + 1, gridWidth / 2 + 1].GetComponent<Tile>();
-		
+
 		#endregion
 
-		// Create general zones that can potentially exist on top of the core zones
+		// Create travel zones orthogonally adjacent to the spaceship zone
 		#region Travel Zones
-		//int z = 1;
-		//int x = 1;
-		//while (z < gridHeight - minZoneHeight)
 		for (int i = 0; i < 4; i++)
 		{
-			GameObject zoneObj = new GameObject();
-			zoneObj.transform.parent = parentZones[3].transform;
-			Zone zone = zoneObj.AddComponent<Zone>();
-			//zone.width = Random.Range(minZoneWidth, Mathf.Clamp(maxZoneWidth, minZoneWidth, gridWidth - x));
-			//zone.height = Random.Range(minZoneHeight, Mathf.Clamp(maxZoneHeight, minZoneHeight, gridHeight - z));
-			//zone.xPos = x;
-			//zone.zPos = z;
-			zone.width = Random.Range(minZoneWidth, maxZoneWidth);
-			zone.height = Random.Range(minZoneHeight, maxZoneHeight);
-			zone.zoneType = (ZoneTypes)Random.Range(2, 4);
-			//zone.zoneType = ZoneTypes.Maze;
-			zoneObj.name = zone.zoneType.ToString() + "Zone";
+			GameObject travelZoneObj = new GameObject();
+			int travelZoneWidth = Random.Range(minZoneWidth, maxZoneWidth);
+			int travelZoneHeight = Random.Range(minZoneHeight, maxZoneHeight);
+			int travelZoneXPos;
+			int travelZoneZPos;
+			ZoneTypes zoneType = (ZoneTypes)Random.Range(2, 5);
+			//ZoneTypes zoneType = ZoneTypes.Tunnel;
 
 			switch (i)
 			{
 				case 0:
-					zone.xPos = zone.width + 1;
-					zone.zPos = 1;
+					travelZoneXPos = travelZoneWidth + 1;
+					travelZoneZPos = 1;
 					break;
 				case 1:
-					zone.xPos = zone.width + 1;
-					zone.zPos = gridHeight - 1 - zone.height;
+					travelZoneXPos = travelZoneWidth + 1;
+					travelZoneZPos = gridHeight - 1 - travelZoneHeight;
 					break;
 				case 2:
-					zone.xPos = 1;
-					zone.zPos = zone.height + 1;
+					travelZoneXPos = 1;
+					travelZoneZPos = travelZoneHeight + 1;
 					break;
 				default:
-					zone.xPos = gridWidth - 1 - zone.width;
-					zone.zPos = zone.height + 1;
+					travelZoneXPos = gridWidth - 1 - travelZoneWidth;
+					travelZoneZPos = travelZoneWidth + 1;
 					break;
 			}
 
-			zone.BuildZone(tilePrefabs, objectPrefabs);
+			Zone travelZone = InitializeZone(travelZoneObj, zoneType.ToString() + "Zone", parentZones[3].transform, travelZoneXPos, travelZoneZPos, travelZoneWidth, travelZoneHeight);
+			travelZone.zoneType = zoneType;
 
-			//if (gridWidth - (x + zone.width + 1) >= minZoneWidth)
-			//{
-			//	x += zone.width;
-			//}
-			//else
-			//{
-			//	z += grid[z, 1].transform.parent.GetComponent<Zone>().height;
-			//	x = 1;
-			//}
+			travelZone.BuildZone(tilePrefabs, objectPrefabs);
 		}
 		#endregion
 
@@ -282,24 +251,22 @@ public class GenerateLevel : MonoBehaviour
 		GameObject[] enemyZoneObjs = new GameObject[4];
 		for (int i = 0; i < enemyZoneObjs.Length; i++)
 		{
-			enemyZoneObjs[i] = new GameObject("EnemyZone");
-			enemyZoneObjs[i].transform.parent = parentZones[1].transform;
-			enemyZoneObjs[i].AddComponent<Zone>();
-			enemyZoneObjs[i].GetComponent<Zone>().width = enemyZoneWidth;
-			enemyZoneObjs[i].GetComponent<Zone>().height = enemyZoneHeight;
+			enemyZoneObjs[i] = new GameObject();
+			InitializeZone(enemyZoneObjs[i], "EnemyZone", parentZones[1].transform, 0, 0, enemyZoneWidth, enemyZoneHeight);
 		}
 
-		//int randomPos = gridWidth / 2 - enemyZoneWidth / 2;
-		//corePositions.Add(new Vector2Int(0, randomPos));
 		int travelZonePos = parentZones[3].transform.GetChild(0).GetComponent<Zone>().xPos;
 		int travelZoneDim = parentZones[3].transform.GetChild(0).GetComponent<Zone>().width;
 		Tile tile;
 		for (int col = travelZonePos; col < travelZonePos + travelZoneDim; col++)
 		{
-			if (enemyZoneObjs[0].transform.childCount == enemyZoneWidth) break;
+			if (enemyZoneObjs[0].transform.childCount == enemyZoneWidth)
+			{
+				corePositions.Add(new Vector2Int(0, col - 1));
+				break;
+			}
 
-			tile = grid[1, col].GetComponent<Tile>();
-			if (tile.tileType == TileType.Basic && tile.occupant == null)
+			if (IsTileWalkable(col, 1))
 			{
 				grid[0, col] = Instantiate(tilePrefabs[1], new Vector3(col, 0, 0), tilePrefabs[1].transform.rotation, enemyZoneObjs[0].transform);
 				enemyZoneObjs[0].GetComponent<Zone>().tiles.Add(grid[0, col]);
@@ -308,16 +275,17 @@ public class GenerateLevel : MonoBehaviour
 			}
 		}
 
-		//randomPos = gridWidth / 2 - enemyZoneWidth / 2;
-		//corePositions.Add(new Vector2Int(gridHeight - 1, randomPos));
 		travelZonePos = parentZones[3].transform.GetChild(1).GetComponent<Zone>().xPos;
 		travelZoneDim = parentZones[3].transform.GetChild(1).GetComponent<Zone>().width;
 		for (int col = travelZonePos; col < travelZonePos + travelZoneDim; col++)
 		{
-			if (enemyZoneObjs[2].transform.childCount == enemyZoneWidth) break;
+			if (enemyZoneObjs[2].transform.childCount == enemyZoneWidth)
+			{
+				corePositions.Add(new Vector2Int(gridHeight - 1, col - 1));
+				break;
+			}
 
-			tile = grid[gridHeight - 2, col].GetComponent<Tile>();
-			if (tile.tileType == TileType.Basic && tile.occupant == null)
+			if (IsTileWalkable(col, gridHeight - 2))
 			{
 				grid[gridHeight - 1, col] = Instantiate(tilePrefabs[1], new Vector3(col, 0, gridHeight - 1), tilePrefabs[1].transform.rotation, enemyZoneObjs[2].transform);
 				enemyZoneObjs[2].GetComponent<Zone>().tiles.Add(grid[gridHeight - 1, col]);
@@ -326,16 +294,18 @@ public class GenerateLevel : MonoBehaviour
 			}
 		}
 
-		//randomPos = gridHeight / 2 - enemyZoneWidth / 2;
-		//corePositions.Add(new Vector2Int(randomPos, 0));
 		travelZonePos = parentZones[3].transform.GetChild(2).GetComponent<Zone>().zPos;
 		travelZoneDim = parentZones[3].transform.GetChild(2).GetComponent<Zone>().height;
 		for (int row = travelZonePos; row < travelZonePos + travelZoneDim; row++)
 		{
-			if (enemyZoneObjs[1].transform.childCount == enemyZoneWidth) break;
+			if (enemyZoneObjs[1].transform.childCount == enemyZoneWidth)
+			{
+				corePositions.Add(new Vector2Int(row - 1, 0));
+				break;
+			}
 
 			tile = grid[row, 1].GetComponent<Tile>();
-			if (tile.tileType == TileType.Basic && tile.occupant == null)
+			if (IsTileWalkable(1, row))
 			{
 				grid[row, 0] = Instantiate(tilePrefabs[1], new Vector3(0, 0, row), tilePrefabs[1].transform.rotation, enemyZoneObjs[1].transform);
 				enemyZoneObjs[1].GetComponent<Zone>().tiles.Add(grid[row, 0]);
@@ -344,16 +314,18 @@ public class GenerateLevel : MonoBehaviour
 			}
 		}
 
-		//randomPos = gridHeight / 2 - enemyZoneWidth / 2;
-		//corePositions.Add(new Vector2Int(randomPos, gridWidth - 1));
 		travelZonePos = parentZones[3].transform.GetChild(3).GetComponent<Zone>().zPos;
 		travelZoneDim = parentZones[3].transform.GetChild(3).GetComponent<Zone>().height;
 		for (int row = travelZonePos; row < travelZonePos + travelZoneDim; row++)
 		{
-			if (enemyZoneObjs[3].transform.childCount == enemyZoneWidth) break;
+			if (enemyZoneObjs[3].transform.childCount == enemyZoneWidth)
+			{
+				corePositions.Add(new Vector2Int(row - 1, gridWidth - 1));
+				break;
+			}
 
 			tile = grid[row, gridWidth - 2].GetComponent<Tile>();
-			if (tile.tileType == TileType.Basic && tile.occupant == null)
+			if (IsTileWalkable(gridWidth - 2, row))
 			{
 				grid[row, gridWidth - 1] = Instantiate(tilePrefabs[1], new Vector3(gridWidth - 1, 0, row), tilePrefabs[1].transform.rotation, enemyZoneObjs[3].transform);
 				enemyZoneObjs[3].GetComponent<Zone>().tiles.Add(grid[row, gridWidth - 1]);
@@ -365,11 +337,8 @@ public class GenerateLevel : MonoBehaviour
 
 		// Create borders along edges
 		#region Borders
-		GameObject borderZoneObj = new GameObject("BorderZone");
-		borderZoneObj.transform.parent = parentZones[2].transform;
-		Zone borderZone = borderZoneObj.AddComponent<Zone>();
-		borderZone.width = gridWidth;
-		borderZone.height = gridHeight;
+		GameObject borderZoneObj = new GameObject();
+		Zone borderZone = InitializeZone(borderZoneObj, "BorderZone", parentZones[2].transform, 0, 0, gridWidth, gridHeight);
 
 		for (int col = 0; col < gridWidth; col++)
 		{
@@ -452,277 +421,57 @@ public class GenerateLevel : MonoBehaviour
 		}
 		#endregion
 
-		// Create ore spawn zones a set distance away from the spaceship zone
+		// Create ore spawn zones in the corners of the level
 		#region Ore Zones
 		GameObject[] oreZoneObjs = new GameObject[4];
 		for (int i = 0; i < oreZoneObjs.Length; i++)
 		{
-			oreZoneObjs[i] = new GameObject("OreZone");
-			oreZoneObjs[i].transform.parent = parentZones[4].transform;
-			Zone oreZone = oreZoneObjs[i].AddComponent<Zone>();
-			oreZone.width = Random.Range(minZoneWidth, maxZoneWidth);
-			oreZone.height = Random.Range(minZoneHeight, maxZoneHeight);
+			oreZoneObjs[i] = new GameObject();
+			Zone oreZone = InitializeZone(oreZoneObjs[i], "OreZone", parentZones[4].transform, 0, 0, Random.Range(minZoneWidth, maxZoneWidth), Random.Range(minZoneHeight, maxZoneHeight));
 			oreZone.zoneType = (ZoneTypes)Random.Range(0, 2);
+			bool isOreClose;
+			int oreX;
+			int oreZ;
 
-			//Vector2Int randomEdge = new Vector2Int();
-			//do
-			//{
-			//	if (Random.Range(0f, 1f) < 0.5f)
-			//	{
-			//		randomEdge.x = Random.Range(1, gridWidth - 1);
-			//		randomEdge.y = Random.Range(0f, 1f) < 0.5f ? 1 : gridHeight - 2;
-			//	}
-			//	else
-			//	{
-			//		randomEdge.x = Random.Range(0f, 1f) < 0.5f ? 1 : gridWidth - 2;
-			//		randomEdge.y = Random.Range(1, gridHeight - 1);
-			//	}
-			//} while (grid[randomEdge.y, randomEdge.x] == null || grid[randomEdge.y, randomEdge.x].transform.parent.GetComponent<Zone>().isOreZone);
-
-			//Zone chosenZone = grid[randomEdge.y, randomEdge.x].transform.parent.GetComponent<Zone>();
-			//chosenZone.isOreZone = true;
-
-			//oreZone.xPos = chosenZone.xPos;
-			//oreZone.zPos = chosenZone.zPos;
-			//oreZone.width = chosenZone.width;
-			//oreZone.height = chosenZone.height;
-			//oreZone.zoneType = chosenZone.zoneType;
-			//oreZone.isOreZone = chosenZone.isOreZone;
-
-			Tuple<Zone, Zone> adjacentZones;
-			bool oreToTravel = false;
-			bool travelToShip = false;
 			switch (i)
 			{
 				case 0:
-					oreZone.xPos = 1;
-					oreZone.zPos = 1;
-					adjacentZones = new Tuple<Zone, Zone>(grid[oreZone.height + 1, 1].transform.parent.GetComponent<Zone>(), grid[1, oreZone.width + 1].transform.parent.GetComponent<Zone>());
-
-					for(int col = adjacentZones.Item1.xPos; col < adjacentZones.Item1.xPos + adjacentZones.Item1.width; col++)
-					{
-						Tile adjacentTile = grid[adjacentZones.Item1.zPos, col].GetComponent<Tile>();
-						if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-						{
-							oreToTravel = true;
-							break;
-						}
-					}
-
-					for (int row = adjacentZones.Item1.zPos; row < adjacentZones.Item1.zPos + adjacentZones.Item1.height; row++)
-					{
-						Tile adjacentTile = grid[row, adjacentZones.Item1.xPos + adjacentZones.Item1.width - 1].GetComponent<Tile>();
-						if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-						{
-							travelToShip = true;
-							break;
-						}
-					}
-
-					if(!oreToTravel || !travelToShip)
-					{
-						oreToTravel = false;
-						travelToShip = false;
-						for (int row = adjacentZones.Item2.zPos; row < adjacentZones.Item2.zPos + adjacentZones.Item2.height; row++)
-						{
-							Tile adjacentTile = grid[row, adjacentZones.Item2.xPos].GetComponent<Tile>();
-							if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-							{
-								oreToTravel = true;
-								break;
-							}
-						}
-
-						for (int col = adjacentZones.Item2.xPos; col < adjacentZones.Item2.xPos + adjacentZones.Item2.width; col++)
-						{
-							Tile adjacentTile = grid[adjacentZones.Item2.zPos + adjacentZones.Item2.height - 1, col].GetComponent<Tile>();
-							if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-							{
-								travelToShip = true;
-								break;
-							}
-						}
-					}
-
-					if (!oreToTravel || !travelToShip) return false;
+					oreX = 1;
+					oreZ = 1;
+					isOreClose = IsOreClose(oreZone, oreX, oreZ, grid[oreZone.height + 1, oreX].transform.parent.GetComponent<Zone>(), grid[oreZ, oreZone.width + 1].transform.parent.GetComponent<Zone>(), i);
 					break;
 				case 1:
-					oreZone.xPos = 1;
-					oreZone.zPos = gridHeight - 1 - oreZone.height;
-					adjacentZones = new Tuple<Zone, Zone>(grid[oreZone.zPos - 1, 1].transform.parent.GetComponent<Zone>(), grid[oreZone.zPos, oreZone.width + 1].transform.parent.GetComponent<Zone>());
-
-					for (int col = adjacentZones.Item1.xPos; col < adjacentZones.Item1.xPos + adjacentZones.Item1.width; col++)
-					{
-						Tile adjacentTile = grid[adjacentZones.Item1.zPos + adjacentZones.Item1.height - 1, col].GetComponent<Tile>();
-						if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-						{
-							oreToTravel = true;
-							break;
-						}
-					}
-
-					for (int row = adjacentZones.Item1.zPos; row < adjacentZones.Item1.zPos + adjacentZones.Item1.height; row++)
-					{
-						Tile adjacentTile = grid[row, adjacentZones.Item1.xPos + adjacentZones.Item1.width - 1].GetComponent<Tile>();
-						if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-						{
-							travelToShip = true;
-							break;
-						}
-					}
-
-					if (!oreToTravel || !travelToShip)
-					{
-						oreToTravel = false;
-						travelToShip = false;
-						for (int row = adjacentZones.Item2.zPos; row < adjacentZones.Item2.zPos + adjacentZones.Item2.height; row++)
-						{
-							Tile adjacentTile = grid[row, adjacentZones.Item2.xPos].GetComponent<Tile>();
-							if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-							{
-								oreToTravel = true;
-								break;
-							}
-						}
-
-						for (int col = adjacentZones.Item2.xPos; col < adjacentZones.Item2.xPos + adjacentZones.Item2.width; col++)
-						{
-							Tile adjacentTile = grid[adjacentZones.Item2.zPos, col].GetComponent<Tile>();
-							if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-							{
-								travelToShip = true;
-								break;
-							}
-						}
-					}
-
-					if (!oreToTravel || !travelToShip) return false;
+					oreX = 1;
+					oreZ = gridHeight - 1 - oreZone.height;
+					isOreClose = IsOreClose(oreZone, oreX, oreZ, grid[oreZ - 1, oreX].transform.parent.GetComponent<Zone>(), grid[oreZ, oreZone.width + 1].transform.parent.GetComponent<Zone>(), i);
 					break;
 				case 2:
-					oreZone.xPos = gridWidth - 1 - oreZone.width;
-					oreZone.zPos = gridHeight - 1 - oreZone.height;
-					adjacentZones = new Tuple<Zone, Zone>(grid[oreZone.zPos - 1, oreZone.xPos].transform.parent.GetComponent<Zone>(), grid[oreZone.zPos, oreZone.xPos - 1].transform.parent.GetComponent<Zone>());
-
-					for (int col = adjacentZones.Item1.xPos; col < adjacentZones.Item1.xPos + adjacentZones.Item1.width; col++)
-					{
-						Tile adjacentTile = grid[adjacentZones.Item1.zPos + adjacentZones.Item1.height - 1, col].GetComponent<Tile>();
-						if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-						{
-							oreToTravel = true;
-							break;
-						}
-					}
-
-					for (int row = adjacentZones.Item1.zPos; row < adjacentZones.Item1.zPos + adjacentZones.Item1.height; row++)
-					{
-						Tile adjacentTile = grid[row, adjacentZones.Item1.xPos].GetComponent<Tile>();
-						if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-						{
-							travelToShip = true;
-							break;
-						}
-					}
-
-					if (!oreToTravel || !travelToShip)
-					{
-						oreToTravel = false;
-						travelToShip = false;
-						for (int row = adjacentZones.Item2.zPos; row < adjacentZones.Item2.zPos + adjacentZones.Item2.height; row++)
-						{
-							Tile adjacentTile = grid[row, adjacentZones.Item2.xPos + adjacentZones.Item2.width - 1].GetComponent<Tile>();
-							if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-							{
-								oreToTravel = true;
-								break;
-							}
-						}
-
-						for (int col = adjacentZones.Item2.xPos; col < adjacentZones.Item2.xPos + adjacentZones.Item2.width; col++)
-						{
-							Tile adjacentTile = grid[adjacentZones.Item2.zPos, col].GetComponent<Tile>();
-							if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-							{
-								travelToShip = true;
-								break;
-							}
-						}
-					}
-
-					if (!oreToTravel || !travelToShip) return false;
+					oreX = gridWidth - 1 - oreZone.width;
+					oreZ = gridHeight - 1 - oreZone.height;
+					isOreClose = IsOreClose(oreZone, oreX, oreZ, grid[oreZ - 1, oreX].transform.parent.GetComponent<Zone>(), grid[oreZ, oreX - 1].transform.parent.GetComponent<Zone>(), i);
 					break;
 				default:
-					oreZone.xPos = gridWidth - 1 - oreZone.width;
-					oreZone.zPos = 1;
-					adjacentZones = new Tuple<Zone, Zone>(grid[oreZone.height + 1, oreZone.xPos].transform.parent.GetComponent<Zone>(), grid[1, oreZone.xPos - 1].transform.parent.GetComponent<Zone>());
-
-					for (int col = adjacentZones.Item1.xPos; col < adjacentZones.Item1.xPos + adjacentZones.Item1.width; col++)
-					{
-						Tile adjacentTile = grid[adjacentZones.Item1.zPos, col].GetComponent<Tile>();
-						if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-						{
-							oreToTravel = true;
-							break;
-						}
-					}
-
-					for (int row = adjacentZones.Item1.zPos; row < adjacentZones.Item1.zPos + adjacentZones.Item1.height; row++)
-					{
-						Tile adjacentTile = grid[row, adjacentZones.Item1.xPos].GetComponent<Tile>();
-						if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-						{
-							travelToShip = true;
-							break;
-						}
-					}
-
-					if (!oreToTravel || !travelToShip)
-					{
-						oreToTravel = false;
-						travelToShip = false;
-						for (int row = adjacentZones.Item2.zPos; row < adjacentZones.Item2.zPos + adjacentZones.Item2.height; row++)
-						{
-							Tile adjacentTile = grid[row, adjacentZones.Item2.xPos + adjacentZones.Item2.width - 1].GetComponent<Tile>();
-							if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-							{
-								oreToTravel = true;
-								break;
-							}
-						}
-
-						for (int col = adjacentZones.Item2.xPos; col < adjacentZones.Item2.xPos + adjacentZones.Item2.width; col++)
-						{
-							Tile adjacentTile = grid[adjacentZones.Item2.zPos + adjacentZones.Item2.height - 1, col].GetComponent<Tile>();
-							if (adjacentTile.tileType == TileType.Basic && adjacentTile.occupant == null)
-							{
-								travelToShip = true;
-								break;
-							}
-						}
-					}
-
-					if (!oreToTravel || !travelToShip) return false;
+					oreX = gridWidth - 1 - oreZone.width;
+					oreZ = 1;
+					isOreClose = IsOreClose(oreZone, oreX, oreZ, grid[oreZone.height + 1, oreX].transform.parent.GetComponent<Zone>(), grid[oreZ, oreX - 1].transform.parent.GetComponent<Zone>(), i);
 					break;
 			}
+
+			if (!isOreClose) return false;
 
 			oreZone.BuildZone(tilePrefabs, objectPrefabs);
 
 			int randomX;
 			int randomZ;
-
-			//do
-			//{
-			//	randomX = Random.Range(oreZone.xPos, oreZone.xPos + oreZone.width);
-			//	randomZ = Random.Range(oreZone.zPos, oreZone.zPos + oreZone.height);
-			//} while (grid[randomZ, randomX].transform.parent != chosenZone.transform || grid[randomZ, randomX].GetComponent<Tile>().tileType == TileType.Pit || grid[randomZ, randomX].GetComponent<Tile>().occupant != null);
-
 			int numOres = 0;
+
 			do
 			{
 				do
 				{
 					randomX = Random.Range(oreZone.xPos, oreZone.xPos + oreZone.width);
 					randomZ = Random.Range(oreZone.zPos, oreZone.zPos + oreZone.height);
-				} while (grid[randomZ, randomX].GetComponent<Tile>().tileType == TileType.Pit || grid[randomZ, randomX].GetComponent<Tile>().occupant != null);
+				} while (!IsTileWalkable(randomX, randomZ));
 
 				SetGridItem(randomZ, randomX, Instantiate(tilePrefabs[0], new Vector3(randomX, 0, randomZ), tilePrefabs[0].transform.rotation, oreZoneObjs[i].transform));
 				grid[randomZ, randomX].GetComponent<Tile>().occupant = Instantiate(orePrefabs[0], new Vector3(randomX, orePrefabs[0].transform.position.y, randomZ), Quaternion.identity, oreZoneObjs[i].transform);
@@ -736,7 +485,7 @@ public class GenerateLevel : MonoBehaviour
 		}
 
 		int remainingOres = totalOres / (numOresPerZone * oreZoneObjs.Length);
-		for(int i = 0; i < remainingOres; i++)
+		for (int i = 0; i < remainingOres; i++)
 		{
 			Zone randomZone = oreZoneObjs[Random.Range(0, oreZoneObjs.Length)].GetComponent<Zone>();
 			int randomX;
@@ -756,9 +505,13 @@ public class GenerateLevel : MonoBehaviour
 				}
 
 				timesRun++;
-			} while (grid[randomZ, randomX].GetComponent<Tile>().tileType == TileType.Pit || grid[randomZ, randomX].GetComponent<Tile>().occupant != null);
+			} while (!IsTileWalkable(randomX, randomZ));
 
-			if (badZone) continue;
+			if (badZone)
+			{
+				i--;
+				continue;
+			}
 
 			SetGridItem(randomZ, randomX, Instantiate(tilePrefabs[0], new Vector3(randomX, 0, randomZ), tilePrefabs[0].transform.rotation, oreZoneObjs[i].transform));
 			grid[randomZ, randomX].GetComponent<Tile>().occupant = Instantiate(orePrefabs[0], new Vector3(randomX, orePrefabs[0].transform.position.y, randomZ), Quaternion.identity, randomZone.transform);
@@ -767,23 +520,104 @@ public class GenerateLevel : MonoBehaviour
 		}
 		#endregion
 
-		//Spawn tiles anywhere that doesn't have them
-		#region Filler Tiles
-		//for (int row = 0; row < gridHeight; row++)
-		//{
-		//	for (int col = 0; col < gridWidth; col++)
-		//	{
-		//		if (grid[row, col] == null)
-		//		{
-		//			grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, parentZones[5].transform);
-		//			grid[row, col].GetComponent<Tile>().xPos = col;
-		//			grid[row, col].GetComponent<Tile>().zPos = row;
-		//		}
-		//	}
-		//}
-		#endregion
-
 		return true;
+	}
+
+	private Zone InitializeZone(GameObject zoneObj, string name, Transform parent, int xPos, int zPos, int width, int height)
+	{
+		zoneObj.name = name;
+		zoneObj.transform.parent = parent;
+		Zone zone = zoneObj.AddComponent<Zone>();
+		zone.xPos = xPos;
+		zone.zPos = zPos;
+		zone.width = width;
+		zone.height = height;
+
+		return zone;
+	}
+
+	private bool IsOreClose(Zone oreZone, int oreZoneXPos, int oreZoneZPos, Zone adjacentZone1, Zone adjacentZone2, int location)
+	{
+		Tuple<Zone, Zone> adjacentZones = new Tuple<Zone, Zone>(adjacentZone1, adjacentZone2);
+		bool oreToTravel = false;
+		bool travelToShip = false;
+
+		int[] modifiers;
+
+		switch (location)
+		{
+			case 0:
+				modifiers = new int[] { 0, adjacentZones.Item1.width - 1, 0, adjacentZones.Item2.height - 1 };
+				break;
+			case 1:
+				modifiers = new int[] { adjacentZones.Item1.height - 1, adjacentZones.Item1.width - 1, 0, 0 };
+				break;
+			case 2:
+				modifiers = new int[] { adjacentZones.Item1.height - 1, 0, adjacentZones.Item2.width - 1, 0 };
+				break;
+			default:
+				modifiers = new int[] { 0, 0, adjacentZones.Item2.width - 1, adjacentZones.Item2.height - 1 };
+				break;
+		}
+
+		oreZone.xPos = oreZoneXPos;
+		oreZone.zPos = oreZoneZPos;
+
+		for (int col = adjacentZones.Item1.xPos; col < adjacentZones.Item1.xPos + adjacentZones.Item1.width; col++)
+		{
+			if (IsTileWalkable(col, adjacentZones.Item1.zPos + modifiers[0]))
+			{
+				oreToTravel = true;
+				break;
+			}
+		}
+
+		for (int row = adjacentZones.Item1.zPos; row < adjacentZones.Item1.zPos + adjacentZones.Item1.height; row++)
+		{
+			if (IsTileWalkable(adjacentZones.Item1.xPos + modifiers[1], row))
+			{
+				travelToShip = true;
+				break;
+			}
+		}
+
+		if (!oreToTravel || !travelToShip)
+		{
+			oreToTravel = false;
+			travelToShip = false;
+			for (int row = adjacentZones.Item2.zPos; row < adjacentZones.Item2.zPos + adjacentZones.Item2.height; row++)
+			{
+				if (IsTileWalkable(adjacentZones.Item2.xPos + modifiers[2], row))
+				{
+					oreToTravel = true;
+					break;
+				}
+			}
+
+			for (int col = adjacentZones.Item2.xPos; col < adjacentZones.Item2.xPos + adjacentZones.Item2.width; col++)
+			{
+				if (IsTileWalkable(col, adjacentZones.Item2.zPos + modifiers[3]))
+				{
+					travelToShip = true;
+					break;
+				}
+			}
+		}
+
+		if (!oreToTravel || !travelToShip) return false;
+		return true;
+	}
+
+	/// <summary>
+	/// Returns whether a tile can be occupied
+	/// </summary>
+	/// <param name="xPos">The x-position of the tile</param>
+	/// <param name="zPos">The z-position of the tile</param>
+	/// <returns>True if a tile can be occupied, false otherwise</returns>
+	public static bool IsTileWalkable(int xPos, int zPos)
+	{
+		Tile tile = grid[zPos, xPos].GetComponent<Tile>();
+		return tile.tileType == TileType.Basic && tile.occupant == null;
 	}
 
 	/// <summary>
@@ -793,8 +627,6 @@ public class GenerateLevel : MonoBehaviour
 	private bool IsGridValid()
 	{
 		#region Dijkstra's Algorithm
-		//List<GameObject> openList = new List<GameObject> { startTile };
-		//List<GameObject> closedList = new List<GameObject>();
 		List<Vector2Int> openList = new List<Vector2Int> { new Vector2Int(shipPosition.x, shipPosition.y) };
 		List<Vector2Int> closedList = new List<Vector2Int>();
 
@@ -869,7 +701,6 @@ public class GenerateLevel : MonoBehaviour
 				Debug.Log(grid[position.x, position.y].transform.parent);
 				Debug.Log(position);
 			});
-			corePositions.Clear();
 			return false;
 		}
 		#endregion
