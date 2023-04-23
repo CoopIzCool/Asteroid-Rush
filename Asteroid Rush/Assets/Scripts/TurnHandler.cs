@@ -47,6 +47,7 @@ public class TurnHandler : MonoBehaviour
         lineRenderer = gameObject.GetComponent<LineRenderer>();
         currentTurn = TurnOrder.Player;
         instance = this;
+        oresWithDrillBots = new List<UnrefinedOre>();
     }
 
     // Update is called once per frame

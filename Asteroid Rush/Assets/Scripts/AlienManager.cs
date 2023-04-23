@@ -28,6 +28,8 @@ public class AlienManager : MonoBehaviour
     {
         instance = this;
         activeAliens = new List<GameObject>();
+        slowZones = new List<GameObject>();
+        traps = new List<GameObject>();
         turnsBeforeSpawn = 3;
 
         directionToVector = new Dictionary<Direction, Vector2Int>();
@@ -39,6 +41,16 @@ public class AlienManager : MonoBehaviour
 
     // operates all of the aliens and handles spawning new ones
     public void TakeTurn() {
+        // manage traps and slow zones
+        for(int i = 0; i < slowZones.Count; i++) {
+            slowZones[i].GetComponent<SlowZone>().TurnsLeft--;
+            if(slowZones[i].GetComponent<SlowZone>().TurnsLeft < 0) {
+                Destroy(slowZones[i]);
+                slowZones.RemoveAt(i);
+                i--;
+            }
+        }
+
         // spawn new aliens
         turnsBeforeSpawn--;
         if(turnsBeforeSpawn <= 0) {
