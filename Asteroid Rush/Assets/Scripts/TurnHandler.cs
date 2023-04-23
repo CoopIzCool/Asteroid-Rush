@@ -78,6 +78,7 @@ public class TurnHandler : MonoBehaviour
                             Vector3 startLocation = selectedCharacter.GetComponent<Character>().CurrentTile.gameObject.transform.position;
                             lineRenderer.SetPosition(0, new Vector3(startLocation.x, startLocation.y + 0.2f, startLocation.z));
                             availableTiles = FindAvailableTiles(selectedCharacter.GetComponent<Character>());
+                            SetAvailableTiles();
                             // highlight available tiles
                         }
                         else
@@ -269,6 +270,14 @@ public class TurnHandler : MonoBehaviour
             tile.SetAvailabillitySelector(false);
         }
         availableTiles.Clear();
+    }
+
+    private void SetAvailableTiles()
+    {
+        foreach (Tile tile in availableTiles)
+        {
+            tile.SetAvailabillitySelector(true);
+        }
     }
 
     public void EndPlayerTurn()

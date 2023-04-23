@@ -5,7 +5,8 @@ using UnityEngine;
 public enum TileType { 
     Basic,
     Pit,
-    Border
+    Border,
+    EnemySpawn
 }
 
 public class Tile : MonoBehaviour

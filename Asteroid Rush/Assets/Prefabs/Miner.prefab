@@ -109,6 +109,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 10
   movementPoints: 6
+  damage: 5
   currentTile: {fileID: 0}
   moved: 0
   mineSpeed: 2
