@@ -105,15 +105,15 @@ public class GenerateLevel : MonoBehaviour
 	public void ResetGrid()
 	{
 		bool hasGoodZones;
-		//do
-		//{
+		do
+		{
 			corePositions.Clear();
 			gridWidth = Random.Range(minGridWidth, maxGridWidth);
 			gridHeight = Random.Range(minGridHeight, maxGridHeight);
 			if (grid != null) DestroyGrid();
 			hasGoodZones = BuildGrid();
-		//}
-		//while (!hasGoodZones || !IsGridValid());
+	}
+		while (!hasGoodZones || !IsGridValid());
 	}
 
 	/// <summary>
@@ -189,7 +189,7 @@ public class GenerateLevel : MonoBehaviour
 
 		#endregion
 
-		// Create general zones that can potentially exist on top of the core zones
+		// Create travel zones orthogonally adjacent to the spaceship zone
 		#region Travel Zones
 		for (int i = 0; i < 4; i++)
 		{
@@ -199,7 +199,7 @@ public class GenerateLevel : MonoBehaviour
 			int travelZoneXPos;
 			int travelZoneZPos;
 			ZoneTypes zoneType = (ZoneTypes)Random.Range(2, 5);
-			//ZoneTypes zoneType = ZoneTypes.Maze;
+			//ZoneTypes zoneType = ZoneTypes.Tunnel;
 
 			switch (i)
 			{
@@ -403,7 +403,7 @@ public class GenerateLevel : MonoBehaviour
 		}
 		#endregion
 
-		// Create ore spawn zones a set distance away from the spaceship zone
+		// Create ore spawn zones in the corners of the level
 		#region Ore Zones
 		GameObject[] oreZoneObjs = new GameObject[4];
 		for (int i = 0; i < oreZoneObjs.Length; i++)
