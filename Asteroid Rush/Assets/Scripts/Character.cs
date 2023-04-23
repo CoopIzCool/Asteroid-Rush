@@ -11,6 +11,8 @@ public class Character : MonoBehaviour
     private int maxHealth;
     [SerializeField]
     private int movementPoints;
+    [SerializeField]
+    private int damage;
 
     [Header("Movement Components:")]
     [SerializeField] private Tile currentTile;
@@ -48,6 +50,11 @@ public class Character : MonoBehaviour
         
     }
 
+    public virtual void Attack(Character opponent)
+    {
+
+    }
+
     public virtual void SpecialAction()
     {
 
@@ -63,6 +70,8 @@ public class Character : MonoBehaviour
         tile.occupant = gameObject;
         currentTile = tile;
     }
+
+
     #region Damage and Death
     public void TakeDamage(int damage)
     {
