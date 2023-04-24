@@ -21,6 +21,9 @@ public class ShipButton : MonoBehaviour
         isLevelScreenOpen = false;
     }
 
+    /// <summary>
+    /// Opens a different UI depending on which button was pressed
+    /// </summary>
     private void OnMouseUpAsButton()
     {
         //If levels button
@@ -42,8 +45,21 @@ public class ShipButton : MonoBehaviour
                 CloseLevelScreen();
             }
         }
+
+        //If equip button
+        if (buttonID == 3)
+        {
+            if (spManager.isShopOpen == false)
+            {
+                spManager.OpenEquipMenu();
+                CloseLevelScreen();
+            }
+        }
     }
 
+    /// <summary>
+    /// Highlights text when mouse is over button
+    /// </summary>
     private void OnMouseOver()
     {
         if(spManager.isShopOpen == false)
@@ -60,6 +76,9 @@ public class ShipButton : MonoBehaviour
         buttonText.fontStyle = FontStyles.Normal;
     }
 
+    /// <summary>
+    /// Shows the three level buttons
+    /// </summary>
     private void OpenLevelScreen()
     {
         isLevelScreenOpen = true;

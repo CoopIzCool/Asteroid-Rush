@@ -11,6 +11,9 @@ public class LevelButton : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Highlights color when mouse is over button
+    /// </summary>
     private void OnMouseOver()
     {
         gameObject.GetComponent<Renderer>().material.color = new Color(0.78f,0,0,1);

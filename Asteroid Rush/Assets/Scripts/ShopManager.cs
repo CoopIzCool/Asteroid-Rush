@@ -30,6 +30,8 @@ public class ShopManager : MonoBehaviour
     public GameObject itemScrollView;
     public GameObject equipmentScrollView;
 
+    public GameObject equipMenu;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -187,5 +189,15 @@ public class ShopManager : MonoBehaviour
 
         itemScrollView.SetActive(true);
         equipmentScrollView.SetActive(false);
+    }
+
+    public void OpenEquipMenu()
+    {
+        equipMenu.SetActive(true);
+    }
+
+    public void CloseEquipMenu()
+    {
+        equipMenu.SetActive(false);
     }
 }
