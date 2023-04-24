@@ -29,7 +29,7 @@ public class ShipButton : MonoBehaviour
         //If levels button
         if(buttonID == 1)
         {
-           if(spManager.isShopOpen == false)
+           if (spManager.isShopOpen == false && spManager.isEquipMenuOpen == false)
            {
                 OpenLevelScreen();
            }
@@ -39,7 +39,7 @@ public class ShipButton : MonoBehaviour
         //If shop button
         if(buttonID == 2)
         {
-            if(spManager.isShopOpen == false)
+            if (spManager.isShopOpen == false && spManager.isEquipMenuOpen == false)
             {
                 spManager.ToggleShop();
                 CloseLevelScreen();
@@ -49,7 +49,7 @@ public class ShipButton : MonoBehaviour
         //If equip button
         if (buttonID == 3)
         {
-            if (spManager.isShopOpen == false)
+            if (spManager.isShopOpen == false && spManager.isEquipMenuOpen == false)
             {
                 spManager.OpenEquipMenu();
                 CloseLevelScreen();
@@ -62,7 +62,7 @@ public class ShipButton : MonoBehaviour
     /// </summary>
     private void OnMouseOver()
     {
-        if(spManager.isShopOpen == false)
+        if (spManager.isShopOpen == false && spManager.isEquipMenuOpen == false)
         {
             buttonText.color = Color.red;
             buttonText.fontStyle = FontStyles.Underline;

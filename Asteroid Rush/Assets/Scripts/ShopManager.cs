@@ -21,6 +21,7 @@ public class ShopManager : MonoBehaviour
     /// Checks to see if shop is open
     /// </summary>
     public bool isShopOpen = false;
+    public bool isEquipMenuOpen = false;
 
     private bool gameIsPaused;
 
@@ -193,6 +194,9 @@ public class ShopManager : MonoBehaviour
         equipmentScrollView.SetActive(false);
     }
 
+    /// <summary>
+    /// Opens the equip menu interface
+    /// </summary>
     public void OpenEquipMenu()
     {
         equipMenu.SetActive(true);
@@ -200,19 +204,32 @@ public class ShopManager : MonoBehaviour
         characterScrollView.SetActive(true);
         minerScrollView.SetActive(false);
         minerEquipScrollView.SetActive(false);
+
+        isEquipMenuOpen = true;
     }
 
+    /// <summary>
+    /// Closes the equip menu
+    /// </summary>
     public void CloseEquipMenu()
     {
         equipMenu.SetActive(false);
+
+        isEquipMenuOpen = false;
     }
 
+    /// <summary>
+    /// Opens the Miner's section
+    /// </summary>
     public void OpenMinerMenu()
     {
         characterScrollView.SetActive(false);
         minerScrollView.SetActive(true);
     }
 
+    /// <summary>
+    /// Open's the Miner's equipment
+    /// </summary>
     public void OpenMinerEquipment()
     {
         characterScrollView.SetActive(false);
