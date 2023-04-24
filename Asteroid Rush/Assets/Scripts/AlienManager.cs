@@ -9,14 +9,13 @@ public class AlienManager : MonoBehaviour
     [SerializeField] private GameObject spawnZoneContainer;
     [SerializeField] private GameObject trapPrefab;
     [SerializeField] private GameObject slowZonePrefab;
-    private const int NUM_PER_SPAWN = 3; // should be less than the number of spawn tiles
+    private const int NUM_PER_SPAWN = 2; // should be less than the number of spawn tiles
 
     private static AlienManager instance;
     public static AlienManager Instance { get { return instance; } }
 
     public GameObject[] PlayerCharacters { get; set; } // set by grid generator
     public GenerateLevel Grid { get; set; } // set by grid generator
-    private Dictionary<Direction, Vector2Int> directionToVector;
 
     private List<GameObject> slowZones;
     private List<GameObject> traps;
@@ -31,12 +30,6 @@ public class AlienManager : MonoBehaviour
         slowZones = new List<GameObject>();
         traps = new List<GameObject>();
         turnsBeforeSpawn = 3;
-
-        directionToVector = new Dictionary<Direction, Vector2Int>();
-        directionToVector[Direction.Up] = new Vector2Int(0, 1);
-        directionToVector[Direction.Down] = new Vector2Int(0, -1);
-        directionToVector[Direction.Left] = new Vector2Int(-1, 0);
-        directionToVector[Direction.Right] = new Vector2Int(0, 1);
     }
 
     // operates all of the aliens and handles spawning new ones
@@ -75,6 +68,27 @@ public class AlienManager : MonoBehaviour
             GameObject closestPlayer = PlayerCharacters[0];
             float closestDistance = Vector3.Distance(closestPlayer.transform.position, alien.transform.position);
             for(int i = 1; i < PlayerCharacters.Length; i++) {
+                // check for an open tile next to the character because otherwise there will be no path
+                List<Vector2Int> testDirections = new List<Vector2Int>() {
+                    new Vector2Int(1, 0),
+                    new Vector2Int(-1, 0),
+                    new Vector2Int(0, 1),
+                    new Vector2Int(0, -1),
+                };
+                Tile playerTile = PlayerCharacters[i].GetComponent<Character>().CurrentTile;
+                bool openSpot = false;
+                foreach(Vector2Int testDirection in testDirections) {
+                    GameObject tileObject = GenerateLevel.GetGridItem(playerTile.zPos + testDirection.y, playerTile.xPos + testDirection.x);
+                    if(tileObject != null && tileObject.GetComponent<Tile>().IsAvailableTile()) {
+                        openSpot = true;
+                        break;
+                    }
+                }
+                if(!openSpot) {
+                    continue;
+                }
+
+                // check if this player is closer
                 float distance = Vector3.Distance(PlayerCharacters[i].transform.position, alien.transform.position);
                 if(distance < closestDistance) {
                     closestDistance = distance;
@@ -82,19 +96,16 @@ public class AlienManager : MonoBehaviour
                 }
             }
 
-            List<Tile> movableTiles = TurnHandler.Instance.FindAvailableTiles(alien.GetComponent<Character>());
-            if(movableTiles.Count > 0 && Vector3.Distance(closestPlayer.transform.position, alien.transform.position) > 1) {
-                Tile closestTile = movableTiles[0];
-                closestDistance = Vector3.Distance(closestPlayer.transform.position, closestTile.gameObject.transform.position);
-                foreach(Tile tile in movableTiles) {
-                    float distance = Vector3.Distance(closestPlayer.transform.position, tile.gameObject.transform.position);
-                    if(distance < closestDistance) {
-                        distance = closestDistance;
-                        closestTile = tile;
-                    }
+            List<Tile> path = GenerateLevel.FindPath(alien.GetComponent<Character>().CurrentTile, closestPlayer.GetComponent<Character>().CurrentTile);
+            if(path != null) {
+                Tile nextTile = null;
+                if(alien.GetComponent<Alien>().Movement >= path.Count - 1) {
+                    nextTile = path[path.Count - 2]; // the last element is the tile the player is on
+                } else {
+                    nextTile = path[alien.GetComponent<Alien>().Movement];
                 }
 
-                alien.GetComponent<Character>().MoveToTile(closestTile);
+                alien.GetComponent<Alien>().MoveToTile(nextTile);
             }
 
             // attack if next to a player
@@ -116,8 +127,7 @@ public class AlienManager : MonoBehaviour
 
         foreach (GameObject player in PlayerCharacters) {
             Tile playerTile = player.GetComponent<Character>().CurrentTile;
-
-            if (Mathf.Abs(alienTile.xPos - playerTile.xPos) <= 1 && Mathf.Abs(alienTile.zPos - playerTile.zPos) <= 1) {
+            if(player.GetComponent<Character>().CurrentTile.IsAdjacent(alienTile)) {
                 return player;
             }
         }

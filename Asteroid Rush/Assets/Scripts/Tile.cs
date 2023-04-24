@@ -45,4 +45,8 @@ public class Tile : MonoBehaviour
     {
         illumination.SetActive(status);
     }
+
+    public bool IsAdjacent(Tile other) {
+        return Mathf.Abs(xPos - other.xPos) + Mathf.Abs(zPos - other.zPos) <= 1;
+    }
 }

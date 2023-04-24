@@ -113,6 +113,81 @@ public class GenerateLevel : MonoBehaviour
 		grid[row, col] = value;
 	}
 
+	// finds a path of tiles from the start tile to the end tile avoiding obstacles and occupied tiles.
+	// Returns the tiles in the path in order including the start and end tiles. Returns null if no valid path
+	public static List<Tile> FindPath(Tile start, Tile end) {
+		List<Tile> path = new List<Tile>() { start };
+		List<Tile> visited = new List<Tile>() { start };
+		Stack<Tile> checkOrder = new Stack<Tile>();
+		checkOrder.Push(start);
+
+		// simulate stepping one tile at a time
+		while(checkOrder.Count > 0) {
+			Tile current = checkOrder.Pop();
+			visited.Add(current);
+
+			// go back to the shortest way to get to this tile
+			for(int i = 0; i < path.Count - 1; i++) {
+				if(path[i].IsAdjacent(current)) {
+					path.RemoveRange(i + 1, path.Count - i - 1);
+					break;
+				}
+			}
+			path.Add(current);
+
+			// determine the best order to attempt a move
+			Direction[] directionPriority = new Direction[4];
+		    bool leftBetterThanRight = end.xPos < current.xPos;
+		    bool upBetterThanDown = end.zPos > current.zPos;
+
+		    if(Mathf.Abs(current.xPos - end.xPos) > Mathf.Abs(current.zPos - end.zPos)) {
+		        // horizontal first
+		        directionPriority[0] = (leftBetterThanRight ? Direction.Left : Direction.Right);
+		        directionPriority[1] = (upBetterThanDown ? Direction.Up : Direction.Down);
+		        directionPriority[2] = (upBetterThanDown ? Direction.Down : Direction.Up);
+		        directionPriority[3] = (leftBetterThanRight ? Direction.Right : Direction.Left);
+		    } else {
+		        // vertical first
+		        directionPriority[0] = (upBetterThanDown ? Direction.Up : Direction.Down);
+		        directionPriority[1] = (leftBetterThanRight ? Direction.Left : Direction.Right);
+		        directionPriority[2] = (leftBetterThanRight ? Direction.Right : Direction.Left);
+		        directionPriority[3] = (upBetterThanDown ? Direction.Down : Direction.Up);
+		    }
+
+			// find the next tile to check
+			Tile nextTile = null;
+		    for(int i = 3; i >= 0; i--) {
+				Direction direction = directionPriority[i];
+		        // check for a valid tile in each direction
+		        int nextX = current.xPos + (direction == Direction.Left ? -1 : 0) + (direction == Direction.Right ? 1 : 0);
+				int nextZ = current.zPos + (direction == Direction.Down ? -1 : 0) + (direction == Direction.Up ? 1 : 0);
+				
+				GameObject testTileObject = GetGridItem(nextZ, nextX);
+				if(testTileObject == null) {
+					continue; // tile is outside the grid
+				}
+
+				Tile testTile = testTileObject.GetComponent<Tile>();
+				if((testTile != end && !testTile.IsAvailableTile()) || visited.Contains(testTile)) {
+					continue; // tile is not walkable or already checked
+				}
+
+				checkOrder.Push(testTile);
+				nextTile = testTile;
+		    }
+
+			if(nextTile == null && checkOrder.Count == 0) {
+				return null; // no valid path
+			}
+			else if(nextTile == end) {
+				path.Add(nextTile);
+				break;
+			}
+		}
+
+		return path;
+	}
+
 	/// <summary>
 	/// Spawns the given prefab at a random unoccupied location in the grid
 	/// </summary>
