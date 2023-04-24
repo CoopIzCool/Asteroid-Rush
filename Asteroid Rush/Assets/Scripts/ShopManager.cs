@@ -226,32 +226,23 @@ public class ShopManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Open's the Miner's equipment
+    /// Closes the character's menu
     /// </summary>
-    public void OpenMinerEquipment()
-    {
-        characterScrollView.SetActive(false);
-        minerScrollView.SetActive(false);
-        minerEquipScrollView.SetActive(true);
-    }
-
-    public void OpenAttackerEquipment()
-    {
-        characterScrollView.SetActive(false);
-        attackerScrollView.SetActive(false);
-        attackerEquipScrollView.SetActive(true);
-    }
-
-    public void OpenSupporterEquipment()
-    {
-        characterScrollView.SetActive(false);
-        supportScrollView.SetActive(false);
-        supportEquipScrollView.SetActive(true);
-    }
-
     public void OpenCharacterMenu(GameObject roleScrollView)
     {
         characterScrollView.SetActive(false);
         roleScrollView.SetActive(true);
+    }
+
+    /// <summary>
+    /// Opens the equipment UI for each character
+    /// </summary>
+    public void OpenCharacterEquipment(GameObject roleEquipScrollView)
+    {
+        characterScrollView.SetActive(false);
+        minerScrollView.SetActive(false);
+        attackerScrollView.SetActive(false);
+        supportScrollView.SetActive(false);
+        roleEquipScrollView.SetActive(true);
     }
 }
