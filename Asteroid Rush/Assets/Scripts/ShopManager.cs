@@ -24,13 +24,15 @@ public class ShopManager : MonoBehaviour
 
     private bool gameIsPaused;
 
-    //public GameObject itemViewport;
-    //public GameObject equipmentViewport;
-
+    //shop
     public GameObject itemScrollView;
     public GameObject equipmentScrollView;
 
+    //equip
     public GameObject equipMenu;
+    public GameObject characterScrollView;
+    public GameObject minerScrollView;
+    public GameObject minerEquipScrollView;
 
     // Start is called before the first frame update
     void Start()
@@ -194,10 +196,27 @@ public class ShopManager : MonoBehaviour
     public void OpenEquipMenu()
     {
         equipMenu.SetActive(true);
+
+        characterScrollView.SetActive(true);
+        minerScrollView.SetActive(false);
+        minerEquipScrollView.SetActive(false);
     }
 
     public void CloseEquipMenu()
     {
         equipMenu.SetActive(false);
+    }
+
+    public void OpenMinerMenu()
+    {
+        characterScrollView.SetActive(false);
+        minerScrollView.SetActive(true);
+    }
+
+    public void OpenMinerEquipment()
+    {
+        characterScrollView.SetActive(false);
+        minerScrollView.SetActive(false);
+        minerEquipScrollView.SetActive(true);
     }
 }
