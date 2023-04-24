@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class Fighter : Character
 {
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         
     }
+
+
     public override void SpecialAction()
     {
         AlienManager.Instance.AddTrap(CurrentTile);

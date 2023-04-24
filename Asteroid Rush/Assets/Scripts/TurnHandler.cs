@@ -28,6 +28,7 @@ public class TurnHandler : MonoBehaviour
     private List<UnrefinedOre> oresWithDrillBots;
 
     [Header("Attacking Components")]
+    [SerializeField]
     private List<Tile> attackableTiles = new List<Tile>();
     #endregion
 
@@ -72,10 +73,6 @@ public class TurnHandler : MonoBehaviour
                     {
                         AttackAtTile();
                     }
-                    else
-                    {
-                        ClearAttackPath();
-                    }
 
                 }
                 //If character is not selected, look for one to select
@@ -106,6 +103,11 @@ public class TurnHandler : MonoBehaviour
             //If there is a player selected
             if (selectedCharacter != null)
             {
+                if(selectedCharacter.GetComponent<Character>().Moved && attackableTiles.Count == 0)
+                {
+                    selectedCharacter = null;
+                }
+                /*
                 //Move Player to selected tile
                 if (Input.GetKeyDown(KeyCode.M))
                 {
@@ -117,6 +119,7 @@ public class TurnHandler : MonoBehaviour
                 {
                     ClearCurrentPath();
                 }
+                */
 
                 if(Input.GetKeyDown(KeyCode.C))
                 {
@@ -276,7 +279,7 @@ public class TurnHandler : MonoBehaviour
                 if (tile.xPos < GenerateLevel.GridWidth - 1)
                 {
                     Tile adjacentRightTile = GenerateLevel.grid[tile.zPos, tile.xPos + 1].GetComponent<Tile>();
-                    if (!attackableTiles.Contains(adjacentRightTile) && adjacentRightTile.IsAttackable(chosenCharacter.IsPlayer))
+                    if (!attackableTiles.Contains(adjacentRightTile) && adjacentRightTile.IsAvailableTile())
                     {
                         nextLevelTiles.Add(adjacentRightTile);
                         //adjacentRightTile.SetAvailabillitySelector(true);
@@ -291,7 +294,7 @@ public class TurnHandler : MonoBehaviour
                 if (tile.zPos > 0)
                 {
                     Tile adjacentBottomTile = GenerateLevel.grid[tile.zPos - 1, tile.xPos].GetComponent<Tile>();
-                    if (!attackableTiles.Contains(adjacentBottomTile) && adjacentBottomTile.IsAttackable(chosenCharacter.IsPlayer))
+                    if (!attackableTiles.Contains(adjacentBottomTile) && adjacentBottomTile.IsAvailableTile())
                     {
                         nextLevelTiles.Add(adjacentBottomTile);
                         //adjacentBottomTile.SetAvailabillitySelector(true);
@@ -307,7 +310,7 @@ public class TurnHandler : MonoBehaviour
                 if (tile.zPos < GenerateLevel.GridHeight - 1)
                 {
                     Tile adjacentTopTile = GenerateLevel.grid[tile.zPos + 1, tile.xPos].GetComponent<Tile>();
-                    if (!attackableTiles.Contains(adjacentTopTile) && adjacentTopTile.IsAttackable(chosenCharacter.IsPlayer))
+                    if (!attackableTiles.Contains(adjacentTopTile) && adjacentTopTile.IsAvailableTile())
                     {
                         nextLevelTiles.Add(adjacentTopTile);
                         //adjacentTopTile.SetAvailabillitySelector(true);

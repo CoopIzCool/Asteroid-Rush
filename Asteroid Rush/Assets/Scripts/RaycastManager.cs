@@ -46,7 +46,6 @@ public class RaycastManager : MonoBehaviour
 
     public Tile TileRaycast()
     {
-        Debug.Log("we called the raycast method");
         mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         //we are only checking for tiles so we need a different layerMask
         if (Physics.Raycast(mouseRay, out hitInfo, tileLayerMask))
@@ -63,9 +62,7 @@ public class RaycastManager : MonoBehaviour
             {
                 return hitObject.GetComponent<Character>().CurrentTile;
             }*/
-            Debug.Log("Hit something");
             GameObject hitObject = hitInfo.collider.gameObject;
-            Debug.Log(hitObject.name);
             if(hitObject.GetComponent<LitUpTile>())
             {
                 Debug.Log("Found Tile");

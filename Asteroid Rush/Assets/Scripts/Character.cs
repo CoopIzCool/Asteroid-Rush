@@ -53,7 +53,7 @@ public class Character : MonoBehaviour
     }
     #endregion
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
         health = maxHealth;
     }
@@ -66,7 +66,7 @@ public class Character : MonoBehaviour
 
     public virtual void Attack(Character opponent)
     {
-
+        opponent.TakeDamage(damage);
     }
 
     public virtual void SpecialAction()
@@ -90,6 +90,7 @@ public class Character : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
+        Debug.Log(gameObject.name + " has taken " + damage + " damage. They now have " + health + " health");
         if(health <= 0)
         {
             health = 0;
@@ -99,7 +100,7 @@ public class Character : MonoBehaviour
 
     protected virtual void Death()
     {
-
+        Destroy(gameObject);
     }
     #endregion
 }
