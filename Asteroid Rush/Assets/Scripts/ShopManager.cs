@@ -32,8 +32,18 @@ public class ShopManager : MonoBehaviour
     //equip
     public GameObject equipMenu;
     public GameObject characterScrollView;
+
+    //miner
     public GameObject minerScrollView;
     public GameObject minerEquipScrollView;
+
+    //attacker
+    public GameObject attackerScrollView;
+    public GameObject attackerEquipScrollView;
+
+    //supporter
+    public GameObject supportScrollView;
+    public GameObject supportEquipScrollView;
 
     // Start is called before the first frame update
     void Start()
@@ -108,7 +118,7 @@ public class ShopManager : MonoBehaviour
             //Decreases the amount of money
             ChangeCoins(-shopItems[2, ButtonRef.GetComponent<ButtonInfo>().ItemID]);
 
-            //Increases the quantity/level of upgrade
+            //Increases the quantity
             shopItems[3, ButtonRef.GetComponent<ButtonInfo>().ItemID]++;
 
             CoinsText.text = "Currency: " + coins.ToString(); 
@@ -166,7 +176,6 @@ public class ShopManager : MonoBehaviour
         {
             ToggleShop();
         }
-
         PauseGame();
     }
 
@@ -175,9 +184,6 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     public void OpenEquipmentTab()
     {
-        //itemViewport.SetActive(false);
-        //equipmentViewport.SetActive(true);
-
         itemScrollView.SetActive(false);
         equipmentScrollView.SetActive(true);
     }
@@ -187,9 +193,6 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     public void OpenItemTab()
     {
-        //itemViewport.SetActive(true);
-        //equipmentViewport.SetActive(false);
-
         itemScrollView.SetActive(true);
         equipmentScrollView.SetActive(false);
     }
@@ -204,6 +207,10 @@ public class ShopManager : MonoBehaviour
         characterScrollView.SetActive(true);
         minerScrollView.SetActive(false);
         minerEquipScrollView.SetActive(false);
+        attackerScrollView.SetActive(false);
+        attackerEquipScrollView.SetActive(false);
+        supportScrollView.SetActive(false);
+        supportEquipScrollView.SetActive(false);
 
         isEquipMenuOpen = true;
     }
@@ -219,15 +226,6 @@ public class ShopManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Opens the Miner's section
-    /// </summary>
-    public void OpenMinerMenu()
-    {
-        characterScrollView.SetActive(false);
-        minerScrollView.SetActive(true);
-    }
-
-    /// <summary>
     /// Open's the Miner's equipment
     /// </summary>
     public void OpenMinerEquipment()
@@ -235,5 +233,25 @@ public class ShopManager : MonoBehaviour
         characterScrollView.SetActive(false);
         minerScrollView.SetActive(false);
         minerEquipScrollView.SetActive(true);
+    }
+
+    public void OpenAttackerEquipment()
+    {
+        characterScrollView.SetActive(false);
+        attackerScrollView.SetActive(false);
+        attackerEquipScrollView.SetActive(true);
+    }
+
+    public void OpenSupporterEquipment()
+    {
+        characterScrollView.SetActive(false);
+        supportScrollView.SetActive(false);
+        supportEquipScrollView.SetActive(true);
+    }
+
+    public void OpenCharacterMenu(GameObject roleScrollView)
+    {
+        characterScrollView.SetActive(false);
+        roleScrollView.SetActive(true);
     }
 }
