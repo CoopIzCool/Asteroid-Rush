@@ -18,7 +18,6 @@ public class TurnHandler : MonoBehaviour
 
     [Header("Movement Components:")]
     private int currentMovement;
-    private Stack<Tile> tiles = new Stack<Tile>();
     private LineRenderer lineRenderer;
     private float lineYOffset = 0.2f;
 
@@ -27,6 +26,9 @@ public class TurnHandler : MonoBehaviour
     [SerializeField]private List<Tile> availableTiles = new List<Tile>();
     private Tile startingTile;
     private List<UnrefinedOre> oresWithDrillBots;
+
+    [Header("Attacking Components")]
+    private List<Tile> attackableTiles = new List<Tile>();
     #endregion
 
     #region Properties
@@ -59,9 +61,21 @@ public class TurnHandler : MonoBehaviour
             {
                 if (selectedCharacter != null)
                 {
-
+                    Debug.Log("Hell we ain't found shit");
                     //AddTile();
-                    MoveToTile();
+                    if (!selectedCharacter.GetComponent<Character>().Moved)
+                    {
+                        Debug.Log("The character hasn't moved");
+                        MoveToTile();
+                    }
+                    else if(attackableTiles.Count > 0)
+                    {
+                        AttackAtTile();
+                    }
+                    else
+                    {
+                        ClearAttackPath();
+                    }
 
                 }
                 //If character is not selected, look for one to select
@@ -75,7 +89,6 @@ public class TurnHandler : MonoBehaviour
                             //select character for moving and set up line renderer
                             currentMovement = selectedCharacter.GetComponent<Character>().Movement;
                             lineRenderer.positionCount = 1;
-                            tiles.Push(selectedCharacter.GetComponent<Character>().CurrentTile);
                             Vector3 startLocation = selectedCharacter.GetComponent<Character>().CurrentTile.gameObject.transform.position;
                             lineRenderer.SetPosition(0, new Vector3(startLocation.x, startLocation.y + 0.2f, startLocation.z));
                             availableTiles = FindAvailableTiles(selectedCharacter.GetComponent<Character>());
@@ -131,52 +144,19 @@ public class TurnHandler : MonoBehaviour
 
     }
 
-    public void AddTile()
-    {
-        Tile selectedTile = raycastManager.TileRaycast();
-        if (selectedTile != null)
-        {
-            if (selectedTile != tiles.Peek() && tiles.Count <= currentMovement && TileCheck(selectedTile))
-            {
-                tiles.Push(selectedTile);
-                lineRenderer.positionCount++;
-                Vector3 tilePos = selectedTile.transform.position;
-                lineRenderer.SetPosition(tiles.Count - 1, new Vector3(tilePos.x, tilePos.y + lineYOffset, tilePos.z));
-            }
-            else if(selectedTile.occupant == SelectedCharacter)
-            {
-                ClearCurrentPath();
-            }
-            else if(selectedTile == tiles.Peek())
-            {
-                tiles.Pop();
-                lineRenderer.positionCount = lineRenderer.positionCount - 1;
-                if (tiles.Count <= 0)
-                {
-                    ClearCurrentPath();
-                }
-            }
-            
-        }
-    }
-
     private void ClearCurrentPath()
     {
-        selectedCharacter = null;
-        tiles.Clear();
+        //selectedCharacter = null;
+        availableTiles.Clear();
+        
         lineRenderer.positionCount = 0;
         currentMovement = 0;
     }
 
-    private bool TileCheck(Tile tileInQuestion)
+    private void ClearAttackPath()
     {
-        if(tileInQuestion.IsAvailableTile())
-        {
-            //Distance so tiles are orthoganally adjacent
-            if(Vector3.Distance(tileInQuestion.gameObject.transform.position,tiles.Peek().transform.position) < 1.2)
-            return true;
-        }
-        return false;
+        selectedCharacter = null;
+        attackableTiles.Clear();
     }
 
     private void SetUpPlayerTurn()
@@ -264,6 +244,93 @@ public class TurnHandler : MonoBehaviour
         return moveableTiles;
     }
 
+    public List<Tile> FindAvailableAttackingTiles(Character chosenCharacter)
+    {
+        Tile start = chosenCharacter.CurrentTile;
+        List<Tile> currentLevelTiles = new List<Tile>();
+        List<Tile> attackableTiles = new List<Tile>();
+        currentLevelTiles.Add(start);
+        for (int i = 0; i < chosenCharacter.Range; i++)
+        {
+            List<Tile> nextLevelTiles = new List<Tile>();
+            foreach (Tile tile in currentLevelTiles)
+            {
+                //Debug.Log(tile.gameObject);
+                //left tile to current tile
+                if (tile.xPos > 0)
+                {
+
+                    Tile adjacentLeftTile = GenerateLevel.grid[tile.zPos, tile.xPos - 1].GetComponent<Tile>();
+                    if (!attackableTiles.Contains(adjacentLeftTile) && adjacentLeftTile.IsAvailableTile())
+                    {
+                        nextLevelTiles.Add(adjacentLeftTile);
+                        //adjacentLeftTile.SetAvailabillitySelector(true);
+                    }
+                    else if(!attackableTiles.Contains(adjacentLeftTile) && adjacentLeftTile.IsAttackable(chosenCharacter.IsPlayer))
+                    {
+                        attackableTiles.Add(adjacentLeftTile);
+                    }
+                }
+
+                //right Tile
+                if (tile.xPos < GenerateLevel.GridWidth - 1)
+                {
+                    Tile adjacentRightTile = GenerateLevel.grid[tile.zPos, tile.xPos + 1].GetComponent<Tile>();
+                    if (!attackableTiles.Contains(adjacentRightTile) && adjacentRightTile.IsAttackable(chosenCharacter.IsPlayer))
+                    {
+                        nextLevelTiles.Add(adjacentRightTile);
+                        //adjacentRightTile.SetAvailabillitySelector(true);
+                    }
+                    else if (!attackableTiles.Contains(adjacentRightTile) && adjacentRightTile.IsAttackable(chosenCharacter.IsPlayer))
+                    {
+                        attackableTiles.Add(adjacentRightTile);
+                    }
+                }
+
+                //bottom tile
+                if (tile.zPos > 0)
+                {
+                    Tile adjacentBottomTile = GenerateLevel.grid[tile.zPos - 1, tile.xPos].GetComponent<Tile>();
+                    if (!attackableTiles.Contains(adjacentBottomTile) && adjacentBottomTile.IsAttackable(chosenCharacter.IsPlayer))
+                    {
+                        nextLevelTiles.Add(adjacentBottomTile);
+                        //adjacentBottomTile.SetAvailabillitySelector(true);
+                    }
+                    else if (!attackableTiles.Contains(adjacentBottomTile) && adjacentBottomTile.IsAttackable(chosenCharacter.IsPlayer))
+                    {
+                        attackableTiles.Add(adjacentBottomTile);
+                    }
+                }
+
+
+                //top tile
+                if (tile.zPos < GenerateLevel.GridHeight - 1)
+                {
+                    Tile adjacentTopTile = GenerateLevel.grid[tile.zPos + 1, tile.xPos].GetComponent<Tile>();
+                    if (!attackableTiles.Contains(adjacentTopTile) && adjacentTopTile.IsAttackable(chosenCharacter.IsPlayer))
+                    {
+                        nextLevelTiles.Add(adjacentTopTile);
+                        //adjacentTopTile.SetAvailabillitySelector(true);
+                    }
+                    else if (!attackableTiles.Contains(adjacentTopTile) && adjacentTopTile.IsAttackable(chosenCharacter.IsPlayer))
+                    {
+                        attackableTiles.Add(adjacentTopTile);
+                    }
+                }
+
+            }
+
+            currentLevelTiles.Clear();
+            foreach (Tile tile in nextLevelTiles)
+            {
+                currentLevelTiles.Add(tile);
+            }
+            nextLevelTiles.Clear();
+        }
+
+        return attackableTiles;
+    }
+
     private void ClearAvailableTiles()
     {
         foreach (Tile tile in availableTiles)
@@ -280,6 +347,15 @@ public class TurnHandler : MonoBehaviour
             tile.SetAvailabillitySelector(true);
         }
     }
+
+    private void SetAttackableTiles()
+    {
+        foreach(Tile tile in attackableTiles)
+        {
+            tile.SetAvailabillitySelector(true);
+        }
+    }
+
 
     public void EndPlayerTurn()
     {
@@ -307,6 +383,16 @@ public class TurnHandler : MonoBehaviour
         }
     }
 
+    private void AttackAtTile()
+    {
+        Tile selectedTile = raycastManager.TileRaycast();
+        if (selectedTile != null)
+        {
+            AttackEnemy(selectedTile);
+        }
+    }
+
+
     private void MoveCharacter(Tile selectedTile)
     {
         foreach(Tile tile in availableTiles)
@@ -316,10 +402,70 @@ public class TurnHandler : MonoBehaviour
         Debug.Log("Moving");
         selectedCharacter.gameObject.GetComponent<Character>().MoveToTile(selectedTile);
         selectedCharacter.gameObject.GetComponent<Character>().Moved = true;
+        attackableTiles = FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>());
+        SetAttackableTiles();
         ClearCurrentPath();
     }
+
+    private void AttackEnemy(Tile selectedTile)
+    {
+        foreach(Tile tile in attackableTiles)
+        {
+            tile.SetAvailabillitySelector(false);
+        }
+        Debug.Log("Attacking");
+        selectedCharacter.gameObject.GetComponent<Character>().Attack(selectedTile.occupant.GetComponent<Character>());
+        ClearAttackPath();
+    }
+
 
     public void AddDrillingOre(UnrefinedOre ore) {
         oresWithDrillBots.Add(ore);
     }
 }
+
+#region Defunct Methods
+/*
+public void AddTile()
+{
+    Tile selectedTile = raycastManager.TileRaycast();
+    if (selectedTile != null)
+    {
+        if (selectedTile != tiles.Peek() && tiles.Count <= currentMovement && TileCheck(selectedTile))
+        {
+            tiles.Push(selectedTile);
+            lineRenderer.positionCount++;
+            Vector3 tilePos = selectedTile.transform.position;
+            lineRenderer.SetPosition(tiles.Count - 1, new Vector3(tilePos.x, tilePos.y + lineYOffset, tilePos.z));
+        }
+        else if(selectedTile.occupant == SelectedCharacter)
+        {
+            ClearCurrentPath();
+        }
+        else if(selectedTile == tiles.Peek())
+        {
+            tiles.Pop();
+            lineRenderer.positionCount = lineRenderer.positionCount - 1;
+            if (tiles.Count <= 0)
+            {
+                ClearCurrentPath();
+            }
+        }
+
+    }
+}
+*/
+
+/*
+private bool TileCheck(Tile tileInQuestion)
+{
+if(tileInQuestion.IsAvailableTile())
+{
+    //Distance so tiles are orthoganally adjacent
+    if(Vector3.Distance(tileInQuestion.gameObject.transform.position,tiles.Peek().transform.position) < 1.2)
+    return true;
+}
+return false;
+}
+*/
+#endregion

@@ -41,6 +41,21 @@ public class Tile : MonoBehaviour
         return false;
     }
 
+    //Check if the tile has a character on it and whether or not the entity trying to attack is on the same side
+    public bool IsAttackable(bool isPlayer)
+    {
+        if(occupant != null)
+        {
+            if(occupant.GetComponent<Character>())
+            {
+                if(occupant.GetComponent<Character>().IsPlayer != isPlayer)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     public void SetAvailabillitySelector(bool status)
     {
         illumination.SetActive(status);

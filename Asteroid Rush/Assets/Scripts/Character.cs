@@ -13,6 +13,10 @@ public class Character : MonoBehaviour
     private int movementPoints;
     [SerializeField]
     protected int damage;
+    [SerializeField]
+    protected int attackRange;
+    [SerializeField]
+    private bool isPlayer;
 
     [Header("Movement Components:")]
     [SerializeField] private Tile currentTile;
@@ -36,6 +40,16 @@ public class Character : MonoBehaviour
     {
         get { return moved; }
         set { moved = value; }
+    }
+
+    public int Range
+    {
+        get { return attackRange; }
+    }
+
+    public bool IsPlayer
+    {
+        get { return isPlayer; }
     }
     #endregion
     // Start is called before the first frame update
