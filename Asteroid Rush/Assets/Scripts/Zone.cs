@@ -197,7 +197,7 @@ public class Zone : MonoBehaviour
 			{
 				if (GenerateLevel.GetGridItem(row, col) == null)
 				{
-					if (row < zPos + height / 2 - islandWidth / 2 || row > zPos + height / 2 + islandWidth / 2 || col < xPos + width / 2 - islandWidth / 2 || col > xPos + width / 2 + islandWidth / 2)
+					if (row < zPos + height / 2 - islandWidth / 2 || row >= zPos + height / 2 + islandWidth / 2 || col < xPos + width / 2 - islandWidth / 2 || col >= xPos + width / 2 + islandWidth / 2)
 					{
 						if (pitOrWall == objectPrefabs[0])
 						{
