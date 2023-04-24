@@ -12,7 +12,7 @@ public class Character : MonoBehaviour
     [SerializeField]
     private int movementPoints;
     [SerializeField]
-    private int damage;
+    protected int damage;
 
     [Header("Movement Components:")]
     [SerializeField] private Tile currentTile;
