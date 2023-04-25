@@ -9,17 +9,7 @@ public class Miner : Character
     [SerializeField]
     private float mineSpeed;
     #endregion
-    // Start is called before the first frame update
-    void Start()
-    {
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public override void SpecialAction()
     {

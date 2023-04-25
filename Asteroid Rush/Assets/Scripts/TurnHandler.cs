@@ -35,6 +35,8 @@ public class TurnHandler : MonoBehaviour
         get { return selectedCharacter; }
         set { selectedCharacter = value; }
     }
+
+    public TurnOrder CurrentTurn { get { return currentTurn; } }
     #endregion
 
     private static TurnHandler instance;
@@ -121,12 +123,7 @@ public class TurnHandler : MonoBehaviour
         }
         else
         {
-            //Fill in enemy behavior here
-            
-
-            // TEMP: immediately go back to player turn
-            currentTurn = TurnOrder.Player;
-            SetUpPlayerTurn();
+            AlienManager.Instance.UpdateTurn();
         }
 
     }
@@ -298,6 +295,11 @@ public class TurnHandler : MonoBehaviour
         AlienManager.Instance.TakeTurn();
     }
 
+    public void EndAlienTurn() {
+        currentTurn = TurnOrder.Player;
+        SetUpPlayerTurn();
+    }
+
     private void MoveToTile()
     {
         Tile selectedTile = raycastManager.TileRaycast();
@@ -314,7 +316,9 @@ public class TurnHandler : MonoBehaviour
             tile.SetAvailabillitySelector(false);
         }
         Debug.Log("Moving");
-        selectedCharacter.gameObject.GetComponent<Character>().MoveToTile(selectedTile);
+
+        //selectedCharacter.gameObject.GetComponent<Character>().MoveToTile(selectedTile);
+        selectedCharacter.gameObject.GetComponent<Character>().SetPath(GenerateLevel.FindPath(selectedCharacter.GetComponent<Character>().CurrentTile, selectedTile), 5.0f);
         selectedCharacter.gameObject.GetComponent<Character>().Moved = true;
         ClearCurrentPath();
     }

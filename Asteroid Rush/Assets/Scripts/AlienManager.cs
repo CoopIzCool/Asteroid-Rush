@@ -20,7 +20,12 @@ public class AlienManager : MonoBehaviour
     private List<GameObject> slowZones;
     private List<GameObject> traps;
     private List<GameObject> activeAliens;
+    private List<GameObject> spawnedAliens;
     private int turnsBeforeSpawn;
+
+    // variables for animating a turn
+    int currentAlien; // index of the alien currently moving
+    const float MOVE_SPEED = 8.0f;
 
     // use awake because this is referenced by GenerateLevel.cs Start()
     void Awake()
@@ -31,6 +36,29 @@ public class AlienManager : MonoBehaviour
         traps = new List<GameObject>();
         turnsBeforeSpawn = 3;
     }
+
+   // called every frame during the aliens' turn
+   public void UpdateTurn() {
+        if(!activeAliens[currentAlien].GetComponent<Character>().Animating) {
+            // attack at the end of moving if next to a player
+            GameObject adjacentPlayer = FindAdjacentPlayer(activeAliens[currentAlien]);
+            if(adjacentPlayer != null) {
+                adjacentPlayer.GetComponent<Character>().TakeDamage(activeAliens[currentAlien].GetComponent<Alien>().Damage);
+            }
+
+            currentAlien++;
+
+            if(currentAlien > activeAliens.Count - 1) {
+                if(spawnedAliens != null) {
+                    activeAliens.AddRange(spawnedAliens);
+                    spawnedAliens = null;
+                }
+                TurnHandler.Instance.EndAlienTurn();
+            } else {
+                AssignAlienMovement(activeAliens[currentAlien].GetComponent<Alien>());
+            }
+        }
+   }
 
     // operates all of the aliens and handles spawning new ones
     public void TakeTurn() {
@@ -53,66 +81,67 @@ public class AlienManager : MonoBehaviour
             Transform spawnZones = spawnZoneContainer.gameObject.transform;
             int chosenSide = Random.Range(0, spawnZones.childCount - 1);
             Transform spawnZone = spawnZones.GetChild(chosenSide);
+            spawnedAliens = new List<GameObject>();
             for(int i = 0; i < NUM_PER_SPAWN; i++) {
                 Transform tileSpot = spawnZone.GetChild(i);
 
                 GameObject newAlien = Instantiate(alienPrefab);
-                activeAliens.Add(newAlien);
+                spawnedAliens.Add(newAlien);
                 newAlien.GetComponent<Alien>().MoveToTile(tileSpot.gameObject.GetComponent<Tile>());
             }
         }
 
-        // move all aliens
-        foreach(GameObject alien in activeAliens) {
-            // move toward the closest player character
-            GameObject closestPlayer = PlayerCharacters[0];
-            float closestDistance = Vector3.Distance(closestPlayer.transform.position, alien.transform.position);
-            for(int i = 1; i < PlayerCharacters.Length; i++) {
-                // check for an open tile next to the character because otherwise there will be no path
-                List<Vector2Int> testDirections = new List<Vector2Int>() {
-                    new Vector2Int(1, 0),
-                    new Vector2Int(-1, 0),
-                    new Vector2Int(0, 1),
-                    new Vector2Int(0, -1),
-                };
-                Tile playerTile = PlayerCharacters[i].GetComponent<Character>().CurrentTile;
-                bool openSpot = false;
-                foreach(Vector2Int testDirection in testDirections) {
-                    GameObject tileObject = GenerateLevel.GetGridItem(playerTile.zPos + testDirection.y, playerTile.xPos + testDirection.x);
-                    if(tileObject != null && tileObject.GetComponent<Tile>().IsAvailableTile()) {
-                        openSpot = true;
-                        break;
-                    }
-                }
-                if(!openSpot) {
-                    continue;
-                }
+        // start animating aliens
+        if(activeAliens.Count <= 0) {
+            if(spawnedAliens != null) {
+                activeAliens.AddRange(spawnedAliens);
+                spawnedAliens = null;
+            }
+            TurnHandler.Instance.EndAlienTurn();
+        } else {
+            currentAlien = 0;
+            AssignAlienMovement(activeAliens[currentAlien].GetComponent<Alien>());
+        }
+    }
 
-                // check if this player is closer
-                float distance = Vector3.Distance(PlayerCharacters[i].transform.position, alien.transform.position);
-                if(distance < closestDistance) {
-                    closestDistance = distance;
-                    closestPlayer = PlayerCharacters[i];
+    // helper function to find the closest player and create a path to it
+    private void AssignAlienMovement(Alien alien) {
+        // find the closest player character
+        GameObject closestPlayer = PlayerCharacters[0];
+        float closestDistance = Vector3.Distance(closestPlayer.transform.position, alien.transform.position);
+        for(int i = 1; i < PlayerCharacters.Length; i++) {
+            // check for an open tile next to the character because otherwise there will be no path
+            List<Vector2Int> testDirections = new List<Vector2Int>() {
+                new Vector2Int(1, 0),
+                new Vector2Int(-1, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(0, -1),
+            };
+            Tile playerTile = PlayerCharacters[i].GetComponent<Character>().CurrentTile;
+            bool openSpot = false;
+            foreach(Vector2Int testDirection in testDirections) {
+                GameObject tileObject = GenerateLevel.GetGridItem(playerTile.zPos + testDirection.y, playerTile.xPos + testDirection.x);
+                if(tileObject != null && tileObject.GetComponent<Tile>().IsAvailableTile()) {
+                    openSpot = true;
+                    break;
                 }
             }
-
-            List<Tile> path = GenerateLevel.FindPath(alien.GetComponent<Character>().CurrentTile, closestPlayer.GetComponent<Character>().CurrentTile);
-            if(path != null) {
-                Tile nextTile = null;
-                if(alien.GetComponent<Alien>().Movement >= path.Count - 1) {
-                    nextTile = path[path.Count - 2]; // the last element is the tile the player is on
-                } else {
-                    nextTile = path[alien.GetComponent<Alien>().Movement];
-                }
-
-                alien.GetComponent<Alien>().MoveToTile(nextTile);
+            if(!openSpot) {
+                continue;
             }
 
-            // attack if next to a player
-            GameObject adjacentPlayer = FindAdjacentPlayer(alien);
-            if(adjacentPlayer != null) {
-                adjacentPlayer.GetComponent<Character>().TakeDamage(alien.GetComponent<Alien>().Damage);
+            // check if this player is closer
+            float distance = Vector3.Distance(PlayerCharacters[i].transform.position, alien.transform.position);
+            if(distance < closestDistance) {
+                closestDistance = distance;
+                closestPlayer = PlayerCharacters[i];
             }
+        }
+
+        List<Tile> path = GenerateLevel.FindPath(alien.GetComponent<Character>().CurrentTile, closestPlayer.GetComponent<Character>().CurrentTile);
+        if(path != null) {
+            path.RemoveAt(path.Count - 1); // remove last element because it is the tile the player is standing on
+            alien.SetPath(path, MOVE_SPEED);
         }
     }
 
