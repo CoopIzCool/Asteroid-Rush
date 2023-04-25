@@ -14,7 +14,7 @@ public class TurnHandler : MonoBehaviour
     private RaycastManager raycastManager;
     [SerializeField]private GameObject selectedCharacter;
     private TurnOrder currentTurn;
-    [SerializeField]private GameObject[] characters;
+    public GameObject[] characters;
 
     [Header("Movement Components:")]
     private int currentMovement;
@@ -55,8 +55,17 @@ public class TurnHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(characters.Length);
         if (currentTurn == TurnOrder.Player)
         {
+            // prevent actions while characters are animating
+            foreach(GameObject character in characters) {
+                if(character.GetComponent<Character>().Animating) {
+                    Debug.Log("quitting");
+                    return;
+                }
+            }
+
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 if (selectedCharacter != null)
@@ -178,7 +187,7 @@ public class TurnHandler : MonoBehaviour
 
     private void SetUpPlayerTurn()
     {
-        characters = GameObject.FindGameObjectsWithTag("Character");
+        //characters = GameObject.FindGameObjectsWithTag("Character");
         Debug.Log("Setting up next turn");
         foreach (GameObject character in characters)
         {
