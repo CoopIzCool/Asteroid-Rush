@@ -62,9 +62,7 @@ public class RaycastManager : MonoBehaviour
             {
                 return hitObject.GetComponent<Character>().CurrentTile;
             }*/
-            Debug.Log("Hit something");
             GameObject hitObject = hitInfo.collider.gameObject;
-            Debug.Log(hitObject.name);
             if(hitObject.GetComponent<LitUpTile>())
             {
                 Debug.Log("Found Tile");

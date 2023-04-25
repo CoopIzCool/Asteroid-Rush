@@ -10,6 +10,17 @@ public class Miner : Character
     private float mineSpeed;
     #endregion
 
+    // Start is called before the first frame update
+    protected override void Start()
+    {
+        base.Start();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 
     public override void SpecialAction()
     {
