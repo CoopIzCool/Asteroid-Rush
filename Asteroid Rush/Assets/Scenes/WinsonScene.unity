@@ -1420,6 +1420,7 @@ GameObject:
   - component: {fileID: 195178869}
   - component: {fileID: 195178868}
   - component: {fileID: 195178867}
+  - component: {fileID: 195178870}
   m_Layer: 5
   m_Name: equip2M
   m_TagString: Untagged
@@ -1446,7 +1447,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 650, y: -176.555}
+  m_AnchoredPosition: {x: 540, y: -176.555}
   m_SizeDelta: {x: 160, y: 180}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &195178867
@@ -1493,9 +1494,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1885287967}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: Buy
+      - m_Target: {fileID: 195178870}
+        m_TargetAssemblyTypeName: EquipmentButton, Assembly-CSharp
+        m_MethodName: SelectEquipment
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1543,6 +1544,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 195178864}
   m_CullTransparentMesh: 1
+--- !u!114 &195178870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195178864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 303e25113b3ca994a9ff3e795263ee38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: 1971049395}
+  shopManager: {fileID: 1885287967}
+  shopID: 7
+  altEquipment: {fileID: 904214277}
+  isSelected: 0
 --- !u!1 &195476833
 GameObject:
   m_ObjectHideFlags: 0
@@ -2182,8 +2200,9 @@ GameObject:
   - component: {fileID: 217258774}
   - component: {fileID: 217258773}
   - component: {fileID: 217258772}
+  - component: {fileID: 217258775}
   m_Layer: 5
-  m_Name: equip2M
+  m_Name: equip2S
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2208,7 +2227,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 650, y: -176.555}
+  m_AnchoredPosition: {x: 540, y: -176.555}
   m_SizeDelta: {x: 160, y: 180}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &217258772
@@ -2305,6 +2324,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 217258770}
   m_CullTransparentMesh: 1
+--- !u!114 &217258775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 217258770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 303e25113b3ca994a9ff3e795263ee38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: 858534786}
+  shopManager: {fileID: 1885287967}
+  shopID: 10
+  altEquipment: {fileID: 0}
+  isSelected: 0
 --- !u!1 &224792869
 GameObject:
   m_ObjectHideFlags: 0
@@ -2477,8 +2513,9 @@ GameObject:
   - component: {fileID: 243010492}
   - component: {fileID: 243010491}
   - component: {fileID: 243010490}
+  - component: {fileID: 243010493}
   m_Layer: 5
-  m_Name: equip1M
+  m_Name: equip1A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2503,7 +2540,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 390, y: -176.555}
+  m_AnchoredPosition: {x: 280, y: -176.555}
   m_SizeDelta: {x: 160, y: 180}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &243010490
@@ -2550,9 +2587,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1885287967}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: Buy
+      - m_Target: {fileID: 243010493}
+        m_TargetAssemblyTypeName: EquipmentButton, Assembly-CSharp
+        m_MethodName: SelectEquipment
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2600,6 +2637,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 243010487}
   m_CullTransparentMesh: 1
+--- !u!114 &243010493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 243010487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 303e25113b3ca994a9ff3e795263ee38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: 31921454}
+  shopManager: {fileID: 1885287967}
+  shopID: 8
+  altEquipment: {fileID: 673764790}
+  isSelected: 0
 --- !u!1001 &246665695
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3059,8 +3113,9 @@ GameObject:
   - component: {fileID: 338687458}
   - component: {fileID: 338687457}
   - component: {fileID: 338687456}
+  - component: {fileID: 338687459}
   m_Layer: 5
-  m_Name: equip1M
+  m_Name: equip1S
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3085,7 +3140,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 390, y: -176.555}
+  m_AnchoredPosition: {x: 280, y: -176.555}
   m_SizeDelta: {x: 160, y: 180}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &338687456
@@ -3182,6 +3237,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 338687454}
   m_CullTransparentMesh: 1
+--- !u!114 &338687459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 338687454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 303e25113b3ca994a9ff3e795263ee38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: 438162235}
+  shopManager: {fileID: 1885287967}
+  shopID: 10
+  altEquipment: {fileID: 0}
+  isSelected: 0
 --- !u!4 &354601206 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 439240, guid: 548a40efc092c6f408cc4d1691b171cc, type: 3}
@@ -3346,6 +3418,7 @@ GameObject:
   - component: {fileID: 388533253}
   - component: {fileID: 388533252}
   - component: {fileID: 388533251}
+  - component: {fileID: 388533254}
   m_Layer: 5
   m_Name: equip1
   m_TagString: Untagged
@@ -3469,6 +3542,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 388533248}
   m_CullTransparentMesh: 1
+--- !u!114 &388533254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 388533248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98e0582eaf2724a4e9c2ec9b5e4352e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shopManager: {fileID: 1885287967}
+  shopID: 2
+  icon: {fileID: 1618281000}
 --- !u!1 &388878413
 GameObject:
   m_ObjectHideFlags: 0
@@ -3771,7 +3859,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0.0000076293945, y: 0}
-  m_SizeDelta: {x: -70, y: 353.11}
+  m_SizeDelta: {x: -180, y: 353.11}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &400615722
 MonoBehaviour:
@@ -3786,7 +3874,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 50
+    m_Left: 200
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
@@ -6230,8 +6318,9 @@ GameObject:
   - component: {fileID: 673764789}
   - component: {fileID: 673764788}
   - component: {fileID: 673764787}
+  - component: {fileID: 673764790}
   m_Layer: 5
-  m_Name: equip2M
+  m_Name: equip2A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6256,7 +6345,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 650, y: -176.555}
+  m_AnchoredPosition: {x: 540, y: -176.555}
   m_SizeDelta: {x: 160, y: 180}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &673764787
@@ -6303,9 +6392,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1885287967}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: Buy
+      - m_Target: {fileID: 673764790}
+        m_TargetAssemblyTypeName: EquipmentButton, Assembly-CSharp
+        m_MethodName: SelectEquipment
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6353,6 +6442,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 673764784}
   m_CullTransparentMesh: 1
+--- !u!114 &673764790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673764784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 303e25113b3ca994a9ff3e795263ee38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: 68630991}
+  shopManager: {fileID: 1885287967}
+  shopID: 9
+  altEquipment: {fileID: 243010493}
+  isSelected: 0
 --- !u!1001 &687083310
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6992,7 +7098,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0.0000076293945, y: 0}
-  m_SizeDelta: {x: -70, y: 353.11}
+  m_SizeDelta: {x: -180, y: 353.11}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &760852533
 MonoBehaviour:
@@ -7007,7 +7113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 50
+    m_Left: 200
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
@@ -8495,6 +8601,7 @@ GameObject:
   - component: {fileID: 904214276}
   - component: {fileID: 904214275}
   - component: {fileID: 904214274}
+  - component: {fileID: 904214277}
   m_Layer: 5
   m_Name: equip1M
   m_TagString: Untagged
@@ -8521,7 +8628,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 390, y: -176.555}
+  m_AnchoredPosition: {x: 280, y: -176.555}
   m_SizeDelta: {x: 160, y: 180}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &904214274
@@ -8568,9 +8675,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1885287967}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
-        m_MethodName: Buy
+      - m_Target: {fileID: 904214277}
+        m_TargetAssemblyTypeName: EquipmentButton, Assembly-CSharp
+        m_MethodName: SelectEquipment
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8618,6 +8725,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 904214271}
   m_CullTransparentMesh: 1
+--- !u!114 &904214277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904214271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 303e25113b3ca994a9ff3e795263ee38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: 748408263}
+  shopManager: {fileID: 1885287967}
+  shopID: 6
+  altEquipment: {fileID: 195178870}
+  isSelected: 0
 --- !u!1 &927516405 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 151532, guid: 814f2f52d8dd87948a0fba9364aa412b, type: 3}
@@ -11076,12 +11200,12 @@ GameObject:
   - component: {fileID: 1177762865}
   - component: {fileID: 1177762864}
   m_Layer: 5
-  m_Name: equip0M
+  m_Name: equip0S
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1177762863
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12550,6 +12674,7 @@ GameObject:
   - component: {fileID: 1290467117}
   - component: {fileID: 1290467116}
   - component: {fileID: 1290467115}
+  - component: {fileID: 1290467118}
   m_Layer: 5
   m_Name: equip1
   m_TagString: Untagged
@@ -12673,6 +12798,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1290467112}
   m_CullTransparentMesh: 1
+--- !u!114 &1290467118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1290467112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98e0582eaf2724a4e9c2ec9b5e4352e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shopManager: {fileID: 1885287967}
+  shopID: 0
+  icon: {fileID: 1733129453}
 --- !u!1 &1311395747
 GameObject:
   m_ObjectHideFlags: 0
@@ -16836,7 +16976,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1771984986
 RectTransform:
   m_ObjectHideFlags: 0
@@ -18003,6 +18143,13 @@ MonoBehaviour:
   attackerEquipScrollView: {fileID: 388878413}
   supportScrollView: {fileID: 1856210133}
   supportEquipScrollView: {fileID: 1570780747}
+  equipments:
+  - {fileID: 904214277}
+  - {fileID: 195178870}
+  - {fileID: 243010493}
+  - {fileID: 673764790}
+  - {fileID: 338687459}
+  - {fileID: 217258775}
 --- !u!4 &1885287968
 Transform:
   m_ObjectHideFlags: 0
@@ -18671,7 +18818,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0.0000076293945, y: 0}
-  m_SizeDelta: {x: -70, y: 353.11}
+  m_SizeDelta: {x: -180, y: 353.11}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1968232797
 MonoBehaviour:
@@ -18686,7 +18833,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 50
+    m_Left: 200
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
@@ -19035,12 +19182,12 @@ GameObject:
   - component: {fileID: 2033153037}
   - component: {fileID: 2033153036}
   m_Layer: 5
-  m_Name: equip0M
+  m_Name: equip0A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2033153034
 RectTransform:
   m_ObjectHideFlags: 0

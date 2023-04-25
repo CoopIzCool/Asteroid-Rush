@@ -33,7 +33,6 @@ public class ShipButton : MonoBehaviour
            {
                 OpenLevelScreen();
            }
-         
         }
 
         //If shop button
@@ -85,6 +84,9 @@ public class ShipButton : MonoBehaviour
         levelScreens.SetActive(isLevelScreenOpen);
     }
 
+    /// <summary>
+    /// Closes the level screen
+    /// </summary>
     private void CloseLevelScreen()
     {
         isLevelScreenOpen = false;

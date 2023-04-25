@@ -11,7 +11,7 @@ public class ShopManager : MonoBehaviour
     /// <summary>
     /// Number of coins the player currently has
     /// </summary>
-    private float coins = 100;
+    private float coins = 200;
 
     public Text CoinsText;
     public Text UICoinsText;
@@ -44,6 +44,8 @@ public class ShopManager : MonoBehaviour
     //supporter
     public GameObject supportScrollView;
     public GameObject supportEquipScrollView;
+
+    public EquipmentButton[] equipments;
 
     // Start is called before the first frame update
     void Start()
@@ -177,6 +179,12 @@ public class ShopManager : MonoBehaviour
             ToggleShop();
         }
         PauseGame();
+
+        //for(int i = 0; i < equipments.Length; i++)
+        //{
+        //    Debug.Log(i + " " + equipments[i].isSelected);
+        //}
+      
     }
 
     /// <summary>
