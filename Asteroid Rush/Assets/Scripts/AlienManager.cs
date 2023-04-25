@@ -140,7 +140,12 @@ public class AlienManager : MonoBehaviour
 
         List<Tile> path = GenerateLevel.FindPath(alien.GetComponent<Character>().CurrentTile, closestPlayer.GetComponent<Character>().CurrentTile);
         if(path != null) {
-            path.RemoveAt(path.Count - 1); // remove last element because it is the tile the player is standing on
+            if(alien.GetComponent<Character>().Movement >= path.Count - 1) {
+                path.RemoveAt(path.Count - 1); // remove last element because it is the tile the player is standing on
+            } else {
+                // only travel the movement amount
+                path.RemoveRange(alien.GetComponent<Character>().Movement + 1, path.Count - alien.GetComponent<Character>().Movement - 1);
+            }
             alien.SetPath(path, MOVE_SPEED);
         }
     }

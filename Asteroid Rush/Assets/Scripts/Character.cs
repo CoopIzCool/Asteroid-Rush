@@ -24,7 +24,6 @@ public class Character : MonoBehaviour
     [SerializeField]private bool moved;
 
     // variables for animating movement
-    private int movesLeft;
     private int nextTile;
     private float moveSpeed;
     private List<Tile> currentPath;
@@ -84,12 +83,10 @@ public class Character : MonoBehaviour
                 transform.position = new Vector3(target.transform.position.x, transform.position.y, target.transform.position.z); // snap to position
                 nextTile++;
 
-                if(movesLeft <= 0 || nextTile > currentPath.Count - 1) {
+                if(nextTile > currentPath.Count - 1) {
                     // end travel
                     MoveToTile(currentPath[nextTile - 1]);
                     currentPath = null;
-                } else {
-                    movesLeft--;
                 }
             }
         }
@@ -119,7 +116,6 @@ public class Character : MonoBehaviour
     // used to set up a path for the character to move along
     public void SetPath(List<Tile> path, float moveSpeed) {
         currentPath = path;
-        movesLeft = movementPoints;
         nextTile = 1; // 0 is the starting tile
         this.moveSpeed = moveSpeed;
     }

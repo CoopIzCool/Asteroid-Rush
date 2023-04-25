@@ -45,8 +45,8 @@ public class TurnHandler : MonoBehaviour
     private static TurnHandler instance;
     public static TurnHandler Instance {  get { return instance; } }
 
-    // Start is called before the first frame update
-    void Start()
+    // use awake because this is referenced by GenerateLevel.cs Start()
+    void Awake()
     {
         raycastManager = gameObject.GetComponent<RaycastManager>();
         lineRenderer = gameObject.GetComponent<LineRenderer>();
@@ -64,7 +64,6 @@ public class TurnHandler : MonoBehaviour
             // prevent actions while characters are animating
             foreach(GameObject character in characters) {
                 if(character.GetComponent<Character>().Animating) {
-                    Debug.Log("quitting");
                     return;
                 }
             }
