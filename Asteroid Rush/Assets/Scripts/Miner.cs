@@ -16,11 +16,6 @@ public class Miner : Character
         base.Start();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public override void SpecialAction()
     {

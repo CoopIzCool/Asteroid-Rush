@@ -124,7 +124,10 @@ public class Character : MonoBehaviour
         this.moveSpeed = moveSpeed;
     }
 
-
+    public bool Alive()
+    {
+        return health > 0;
+    }
     #region Damage and Death
     public void TakeDamage(int damage)
     {

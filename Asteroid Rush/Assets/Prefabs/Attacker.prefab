@@ -107,7 +107,7 @@ MonoBehaviour:
   movementPoints: 6
   damage: 5
   attackRange: 5
-  isPlayer: 0
+  isPlayer: 1
   currentTile: {fileID: 0}
   moved: 0
 --- !u!65 &2645745693012693857

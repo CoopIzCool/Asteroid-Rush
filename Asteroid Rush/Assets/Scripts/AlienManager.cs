@@ -155,9 +155,13 @@ public class AlienManager : MonoBehaviour
         Tile alienTile = alien.GetComponent<Alien>().CurrentTile;
 
         foreach (GameObject player in PlayerCharacters) {
-            Tile playerTile = player.GetComponent<Character>().CurrentTile;
-            if(player.GetComponent<Character>().CurrentTile.IsAdjacent(alienTile)) {
-                return player;
+            if(player.GetComponent<Character>().Alive())
+            {
+                Tile playerTile = player.GetComponent<Character>().CurrentTile;
+                if (player.GetComponent<Character>().CurrentTile.IsAdjacent(alienTile))
+                {
+                    return player;
+                }
             }
         }
 

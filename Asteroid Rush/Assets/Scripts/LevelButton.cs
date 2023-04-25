@@ -26,6 +26,6 @@ public class LevelButton : MonoBehaviour
 
     private void OnMouseUpAsButton()
     {
-       SceneManager.LoadScene("NewRyanScene");  
+       SceneManager.LoadScene("NewerRyanScene");  
     }
 }

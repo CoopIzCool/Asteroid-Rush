@@ -58,7 +58,7 @@ public class TurnHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(characters.Length);
+        //Debug.Log(characters.Length);
         if (currentTurn == TurnOrder.Player)
         {
             // prevent actions while characters are animating
@@ -73,11 +73,9 @@ public class TurnHandler : MonoBehaviour
             {
                 if (selectedCharacter != null)
                 {
-                    Debug.Log("Hell we ain't found shit");
                     //AddTile();
                     if (!selectedCharacter.GetComponent<Character>().Moved)
                     {
-                        Debug.Log("The character hasn't moved");
                         MoveToTile();
                     }
                     else if(attackableTiles.Count > 0)
