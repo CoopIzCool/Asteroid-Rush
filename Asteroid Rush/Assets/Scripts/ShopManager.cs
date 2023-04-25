@@ -11,7 +11,7 @@ public class ShopManager : MonoBehaviour
     /// <summary>
     /// Number of coins the player currently has
     /// </summary>
-    private float coins = 200;
+    private float coins = 300;
 
     public Text CoinsText;
     public Text UICoinsText;
@@ -117,6 +117,15 @@ public class ShopManager : MonoBehaviour
         //If the player has enough money
         if (coins >= shopItems[2, ButtonRef.GetComponent<ButtonInfo>().ItemID])
         {
+            //Prevents the player from buying each equipment more than once
+            if(shopItems[1, ButtonRef.GetComponent<ButtonInfo>().ItemID] >= 6)
+            {
+                if (shopItems[3, ButtonRef.GetComponent<ButtonInfo>().ItemID] >= 1)
+                {
+                    return;
+                }
+            }
+                
             //Decreases the amount of money
             ChangeCoins(-shopItems[2, ButtonRef.GetComponent<ButtonInfo>().ItemID]);
 
