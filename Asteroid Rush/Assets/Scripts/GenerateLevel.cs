@@ -292,6 +292,7 @@ public class GenerateLevel : MonoBehaviour
 		GameObject player2 = Instantiate(playerPrefabs[1], new Vector3(gridWidth / 2 + 1, playerPrefabs[1].transform.position.y, gridHeight / 2 + 1), playerPrefabs[1].transform.rotation, shipZoneObj.transform);
 		grid[gridHeight / 2 + 1, gridWidth / 2 + 1].GetComponent<Tile>().occupant = player2;
 		AlienManager.Instance.PlayerCharacters = new GameObject[2] { player1, player2 };
+		TurnHandler.Instance.characters = new GameObject[2] { player1, player2 };
 
 		//Set initial character tile to players
 		grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>().occupant.GetComponent<Character>().CurrentTile = grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>();
