@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class ShopManager : MonoBehaviour
 {
-    public int[,] shopItems = new int[4, 11];
+    public int[,] shopItems = new int[4, 12];
 
     /// <summary>
     /// Number of coins the player currently has
@@ -93,6 +93,7 @@ public class ShopManager : MonoBehaviour
         shopItems[2, 8] = 100;
         shopItems[2, 9] = 100;
         shopItems[2, 10] = 100;
+        shopItems[2, 11] = 100;
 
         //Quantity of each item
         shopItems[3, 1] = 0;
@@ -105,6 +106,7 @@ public class ShopManager : MonoBehaviour
         shopItems[3, 8] = 0;
         shopItems[3, 9] = 0;
         shopItems[3, 10] = 0;
+        shopItems[3, 11] = 0;
     }
 
     /// <summary>
@@ -194,6 +196,19 @@ public class ShopManager : MonoBehaviour
         //    Debug.Log(i + " " + equipments[i].isSelected);
         //}
       
+    }
+
+    public void GoToView(GameObject scrollView)
+    {
+        characterScrollView.SetActive(false);
+        minerScrollView.SetActive(false);
+        minerEquipScrollView.SetActive(false);
+        attackerScrollView.SetActive(false);
+        attackerEquipScrollView.SetActive(false);
+        supportScrollView.SetActive(false);
+        supportEquipScrollView.SetActive(false);
+
+        scrollView.SetActive(true);
     }
 
     /// <summary>
