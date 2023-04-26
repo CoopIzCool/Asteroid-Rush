@@ -85,7 +85,6 @@ public class Character : MonoBehaviour
 
                 if(nextTile > currentPath.Count - 1) {
                     // end travel
-                    MoveToTile(currentPath[nextTile - 1]);
                     currentPath = null;
                 }
             }
@@ -106,6 +105,12 @@ public class Character : MonoBehaviour
     {
         transform.position = tile.transform.position;
         transform.position += tileOffset;
+        ClaimTile(tile);
+    }
+
+    // sets this character as the occupant of the input tile
+    private void ClaimTile(Tile tile)
+    {
         if(currentTile != null) {
             currentTile.occupant = null;
         }
@@ -118,6 +123,7 @@ public class Character : MonoBehaviour
         currentPath = path;
         nextTile = 1; // 0 is the starting tile
         this.moveSpeed = moveSpeed;
+        ClaimTile(path[path.Count - 1]); // reserve the end tile even though this is not yet on it
     }
 
     public bool Alive()
