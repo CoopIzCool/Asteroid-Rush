@@ -50,23 +50,38 @@ public class RaycastManager : MonoBehaviour
         //we are only checking for tiles so we need a different layerMask
         if (Physics.Raycast(mouseRay, out hitInfo, tileLayerMask))
         {
-            /*
-            GameObject hitObject = hitInfo.collider.gameObject;
-            Debug.Log(hitObject.name);
-            Debug.Log(hitObject.layer);
-            if(hitObject.GetComponent<Tile>())
-            {
-                return hitObject.GetComponent<Tile>();
-            }
-            else if(hitObject.GetComponent<Character>())
-            {
-                return hitObject.GetComponent<Character>().CurrentTile;
-            }*/
+
             GameObject hitObject = hitInfo.collider.gameObject;
             if(hitObject.GetComponent<LitUpTile>())
             {
                 Debug.Log("Found Tile");
                 return hitObject.GetComponent<LitUpTile>().AssociatedTile;
+            }
+        }
+        return null;
+    }
+
+    public Tile TileRaycast(GameObject character)
+    {
+        mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //we are only checking for tiles so we need a different layerMask
+        if (Physics.Raycast(mouseRay, out hitInfo, tileLayerMask))
+        {
+
+            GameObject hitObject = hitInfo.collider.gameObject;
+            if (hitObject.GetComponent<LitUpTile>())
+            {
+                Debug.Log("Found Tile");
+                return hitObject.GetComponent<LitUpTile>().AssociatedTile;
+            }
+            else if (hitObject == character)
+            {
+                Debug.Log("Hit Player");
+                return hitObject.GetComponent<Character>().CurrentTile;
+            }
+            else
+            {
+                return null;
             }
         }
         return null;

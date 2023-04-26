@@ -138,7 +138,8 @@ public class Character : MonoBehaviour
 
     protected virtual void Death()
     {
-        Destroy(gameObject);
+        currentTile.occupant = null;
+        gameObject.SetActive(false);
     }
     #endregion
 }
