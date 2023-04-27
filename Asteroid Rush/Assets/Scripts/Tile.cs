@@ -42,13 +42,13 @@ public class Tile : MonoBehaviour
     }
 
     //Check if the tile has a character on it and whether or not the entity trying to attack is on the same side
-    public bool IsAttackable(bool isPlayer)
+    public bool IsAttackable(Character attackingCharacter)
     {
         if(occupant != null)
         {
             if(occupant.GetComponent<Character>())
             {
-                if(occupant.GetComponent<Character>().IsPlayer != isPlayer)
+                if(occupant.GetComponent<Character>().IsPlayer !=attackingCharacter.IsPlayer && attackingCharacter.Range > 0)
                 {
                     return true;
                 }
@@ -56,6 +56,20 @@ public class Tile : MonoBehaviour
         }
         return false;
     }
+
+    public bool IsMineable(Character attackingCharacter)
+    {
+        if (occupant != null)
+        {
+            if (occupant.GetComponent<UnrefinedOre>() && attackingCharacter.MiningPower > 0)
+            {
+                Debug.Log("This is an ore");
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void SetAvailabillitySelector(bool status)
     {
         illumination.SetActive(status);

@@ -5,9 +5,7 @@ using UnityEngine;
 public class Miner : Character
 {
     #region Fields
-    [Header("Miner Components:")]
-    [SerializeField]
-    private float mineSpeed;
+
     #endregion
 
     // Start is called before the first frame update

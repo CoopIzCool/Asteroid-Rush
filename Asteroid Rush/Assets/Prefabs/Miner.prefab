@@ -112,9 +112,10 @@ MonoBehaviour:
   damage: 4
   attackRange: 1
   isPlayer: 1
+  miningPower: 3
+  oreCount: 0
   currentTile: {fileID: 0}
   moved: 0
-  mineSpeed: 2
 --- !u!65 &7202197682027103944
 BoxCollider:
   m_ObjectHideFlags: 0

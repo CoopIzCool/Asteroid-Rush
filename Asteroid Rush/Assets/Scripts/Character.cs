@@ -17,6 +17,10 @@ public class Character : MonoBehaviour
     protected int attackRange;
     [SerializeField]
     private bool isPlayer;
+    [SerializeField]
+    private int miningPower;
+    [SerializeField]
+    private int oreCount = 0;
 
     [Header("Movement Components:")]
     [SerializeField] private Tile currentTile;
@@ -57,11 +61,17 @@ public class Character : MonoBehaviour
     {
         get { return isPlayer; }
     }
+
+    public int MiningPower
+    {
+        get { return miningPower; }
+    }
     #endregion
     // Start is called before the first frame update
     protected virtual void Start()
     {
         health = maxHealth;
+
     }
 
     // Update is called once per frame
@@ -144,7 +154,17 @@ public class Character : MonoBehaviour
 
     protected virtual void Death()
     {
-        Destroy(gameObject);
+        currentTile.occupant = null;
+        gameObject.SetActive(false);
+    }
+
+    public void MineOre(UnrefinedOre ore)
+    {
+        bool isOreBroken = ore.MineOre(miningPower);
+        if(isOreBroken)
+        {
+            oreCount++;
+        }
     }
     #endregion
 }
