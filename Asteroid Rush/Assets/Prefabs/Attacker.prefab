@@ -104,7 +104,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 10
-  movementPoints: 6
+  movementPoints: 4
   damage: 5
   attackRange: 5
   isPlayer: 1
