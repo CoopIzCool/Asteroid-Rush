@@ -66,6 +66,11 @@ public class Character : MonoBehaviour
     {
         get { return miningPower; }
     }
+
+    public int OreCount
+    {
+        get { return OreCount; }
+    }
     #endregion
     // Start is called before the first frame update
     protected virtual void Start()

@@ -18,6 +18,7 @@ public class Tile : MonoBehaviour
     public int zPos;
     [SerializeField]
     private GameObject illumination;
+    public bool rocketAccessible = false;
 
     // Start is called before the first frame update
     void Start()
