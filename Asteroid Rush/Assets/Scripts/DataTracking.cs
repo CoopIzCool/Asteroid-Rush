@@ -46,7 +46,7 @@ public class DataTracking : MonoBehaviour
 			Debug.Log(data);
 		}
 
-		gameManager.GetComponent<GameManager>().UpdateUIAndData(ending);
+		//gameManager.GetComponent<GameManager>().UpdateUIAndData(ending);
 	}
 
 	public IEnumerator SaveData(string postData)

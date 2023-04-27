@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3186449403434448607}
   - component: {fileID: 1988147150931376506}
   - component: {fileID: 4356007806049504688}
+  - component: {fileID: -2601110825645074376}
   m_Layer: 0
   m_Name: Pit Tile Final Center
   m_TagString: Untagged
@@ -26,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2842715248505875557}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 6.069737, y: 0.39339116, z: 0.07853532}
+  m_LocalPosition: {x: 6.069737, y: -0.15, z: 0.07853532}
   m_LocalScale: {x: 52, y: 52, z: 52}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -84,3 +85,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-2601110825645074376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2842715248505875557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55d8fee2c4d2f3c48b50d73f013b5e28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  occupant: {fileID: 0}
+  tileType: 1
+  xPos: 0
+  zPos: 0
+  illumination: {fileID: 0}
