@@ -85,7 +85,7 @@ public class Character : MonoBehaviour
             direction.Normalize();
 
             Vector3 lastRotation = transform.rotation.eulerAngles;
-            transform.rotation = Quaternion.Euler(lastRotation.x, Mathf.Atan2(-direction.z, direction.x) / Mathf.PI * 180, lastRotation.z);
+            transform.rotation = Quaternion.Euler(lastRotation.x, Mathf.Atan2(-direction.z, direction.x) / Mathf.PI * 180 - 90, lastRotation.z);
             //transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, transform.rotation.z);
 
             transform.position += direction * moveSpeed * Time.deltaTime;
