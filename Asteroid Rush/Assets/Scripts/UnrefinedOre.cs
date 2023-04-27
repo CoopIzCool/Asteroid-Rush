@@ -10,7 +10,7 @@ public class UnrefinedOre : MonoBehaviour
 
     private GameObject drillBot;
     public bool HasDrillBot { get { return drillBot != null; } }
-    private const int BOT_DAMAGE_PER_TURN = 1;
+    private const int BOT_DAMAGE_PER_TURN = 2;
     #endregion
 
     public bool MineOre(int damage)
@@ -21,6 +21,7 @@ public class UnrefinedOre : MonoBehaviour
             if(HasDrillBot) {
                 Destroy(drillBot);
             }
+            gameObject.SetActive(false);
             return true;
         }
         return false;

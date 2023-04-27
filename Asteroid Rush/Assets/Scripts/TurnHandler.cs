@@ -21,6 +21,7 @@ public class TurnHandler : MonoBehaviour
     private RaycastManager raycastManager;
     [SerializeField]private GameObject selectedCharacter;
     private TurnOrder currentTurn;
+    [SerializeField]
     private PlayerState currentPlayerState;
     public GameObject[] characters;
 
@@ -34,6 +35,10 @@ public class TurnHandler : MonoBehaviour
     [Header("Attacking Components")]
     [SerializeField]
     private List<Tile> attackableTiles = new List<Tile>();
+
+    [Header("Mining Components")]
+    [SerializeField]
+    private List<Tile> mineableTiles = new List<Tile>();
     #endregion
 
     #region Properties
@@ -84,6 +89,7 @@ public class TurnHandler : MonoBehaviour
                     }
                     else if (currentPlayerState == PlayerState.Attack)
                     {
+                        Debug.Log("Attackin");
                         AttackAtTile();
                     }
 
@@ -120,7 +126,7 @@ public class TurnHandler : MonoBehaviour
             //If there is a player selected
             if (selectedCharacter != null)
             {
-                if(currentPlayerState == PlayerState.Attack && attackableTiles.Count == 0)
+                if(currentPlayerState == PlayerState.Attack && (attackableTiles.Count == 0 && mineableTiles.Count == 0))
                 {
                     selectedCharacter = null;
                     currentPlayerState = PlayerState.None;
@@ -148,6 +154,7 @@ public class TurnHandler : MonoBehaviour
 
     }
 
+    #region Tile Clears
     private void ClearCurrentPath()
     {
         availableTiles.Clear();
@@ -161,6 +168,35 @@ public class TurnHandler : MonoBehaviour
         attackableTiles.Clear();
     }
 
+    private void ClearMiningPath()
+    {
+        selectedCharacter = null;
+        mineableTiles.Clear();
+    }
+
+    private void ClearAvailableTiles()
+    {
+        foreach (Tile tile in availableTiles)
+        {
+            tile.SetAvailabillitySelector(false);
+        }
+        availableTiles.Clear();
+
+        foreach (Tile tile in attackableTiles)
+        {
+            tile.SetAvailabillitySelector(false);
+        }
+        attackableTiles.Clear();
+
+        foreach (Tile tile in mineableTiles)
+        {
+            tile.SetAvailabillitySelector(false);
+        }
+        mineableTiles.Clear();
+    }
+    #endregion
+
+
     private void SetUpPlayerTurn()
     {
         Debug.Log("Setting up next turn");
@@ -170,6 +206,9 @@ public class TurnHandler : MonoBehaviour
         }
     }
 
+
+
+    #region Finding Tiles
     public List<Tile> FindAvailableTiles(Character chosenCharacter)
     {
         Tile start = chosenCharacter.CurrentTile;
@@ -256,7 +295,7 @@ public class TurnHandler : MonoBehaviour
             List<Tile> nextLevelTiles = new List<Tile>();
             foreach (Tile tile in currentLevelTiles)
             {
-                Debug.Log("Starting at " + tile.zPos + " , " + tile.xPos);
+                //Debug.Log("Starting at " + tile.zPos + " , " + tile.xPos);
                 //left tile to current tile
                 if (tile.xPos > 0)
                 {
@@ -264,14 +303,14 @@ public class TurnHandler : MonoBehaviour
                     
                     if(!lookedAtTiles.Contains(adjacentLeftTile))
                     {
-                        Debug.Log("Checking at " + adjacentLeftTile.zPos + " , " + adjacentLeftTile.xPos);
+                        //Debug.Log("Checking at " + adjacentLeftTile.zPos + " , " + adjacentLeftTile.xPos);
                         lookedAtTiles.Add(adjacentLeftTile);
                         if (adjacentLeftTile.IsAvailableTile())
                         {
                             nextLevelTiles.Add(adjacentLeftTile);
                             //adjacentLeftTile.SetAvailabillitySelector(true);
                         }
-                        else if (adjacentLeftTile.IsAttackable(chosenCharacter.IsPlayer))
+                        else if (adjacentLeftTile.IsAttackable(chosenCharacter))
                         {
                             attackableTiles.Add(adjacentLeftTile);
                         }
@@ -285,14 +324,14 @@ public class TurnHandler : MonoBehaviour
                     Tile adjacentRightTile = GenerateLevel.grid[tile.zPos, tile.xPos + 1].GetComponent<Tile>();
                     if(!lookedAtTiles.Contains(adjacentRightTile))
                     {
-                        Debug.Log("Checking at " + adjacentRightTile.zPos + " , " + adjacentRightTile.xPos);
+                        //Debug.Log("Checking at " + adjacentRightTile.zPos + " , " + adjacentRightTile.xPos);
                         lookedAtTiles.Add(adjacentRightTile);
                         if (adjacentRightTile.IsAvailableTile())
                         {
                             nextLevelTiles.Add(adjacentRightTile);
                             //adjacentRightTile.SetAvailabillitySelector(true);
                         }
-                        else if (adjacentRightTile.IsAttackable(chosenCharacter.IsPlayer))
+                        else if (adjacentRightTile.IsAttackable(chosenCharacter))
                         {
                             attackableTiles.Add(adjacentRightTile);
                         }
@@ -306,14 +345,14 @@ public class TurnHandler : MonoBehaviour
                     Tile adjacentBottomTile = GenerateLevel.grid[tile.zPos - 1, tile.xPos].GetComponent<Tile>();
                     if(!lookedAtTiles.Contains(adjacentBottomTile))
                     {
-                        Debug.Log("Checking at " + adjacentBottomTile.zPos + " , " + adjacentBottomTile.xPos);
+                        //Debug.Log("Checking at " + adjacentBottomTile.zPos + " , " + adjacentBottomTile.xPos);
                         lookedAtTiles.Add(adjacentBottomTile);
                         if (adjacentBottomTile.IsAvailableTile())
                         {
                             nextLevelTiles.Add(adjacentBottomTile);
                             //adjacentBottomTile.SetAvailabillitySelector(true);
                         }
-                        else if (adjacentBottomTile.IsAttackable(chosenCharacter.IsPlayer))
+                        else if (adjacentBottomTile.IsAttackable(chosenCharacter))
                         {
                             attackableTiles.Add(adjacentBottomTile);
                         }
@@ -328,14 +367,14 @@ public class TurnHandler : MonoBehaviour
                     Tile adjacentTopTile = GenerateLevel.grid[tile.zPos + 1, tile.xPos].GetComponent<Tile>();
                     if(!lookedAtTiles.Contains(adjacentTopTile))
                     {
-                        Debug.Log("Checking at " + adjacentTopTile.zPos + " , " + adjacentTopTile.xPos);
+                        //Debug.Log("Checking at " + adjacentTopTile.zPos + " , " + adjacentTopTile.xPos);
                         lookedAtTiles.Add(adjacentTopTile);
                         if (adjacentTopTile.IsAvailableTile())
                         {
                             nextLevelTiles.Add(adjacentTopTile);
                             //adjacentTopTile.SetAvailabillitySelector(true);
                         }
-                        else if (adjacentTopTile.IsAttackable(chosenCharacter.IsPlayer))
+                        else if (adjacentTopTile.IsAttackable(chosenCharacter))
                         {
                             attackableTiles.Add(adjacentTopTile);
                         }
@@ -353,18 +392,74 @@ public class TurnHandler : MonoBehaviour
             nextLevelTiles.Clear();
         }
 
+
         return attackableTiles;
     }
 
-    private void ClearAvailableTiles()
+    public List<Tile> FindAvailableMinableTiles(Character chosenCharacter, Tile startTile)
     {
-        foreach (Tile tile in availableTiles)
+        List<Tile> mineTiles = new List<Tile>();
+
+        if (startTile.xPos > 0)
         {
-            tile.SetAvailabillitySelector(false);
+            Tile adjacentLeftTile = GenerateLevel.grid[startTile.zPos, startTile.xPos - 1].GetComponent<Tile>();
+
+
+            Debug.Log("Checking at " + adjacentLeftTile.zPos + " , " + adjacentLeftTile.xPos);
+            if (adjacentLeftTile.IsMineable(chosenCharacter))
+            {
+                mineTiles.Add(adjacentLeftTile);
+            }
+
+
         }
-        availableTiles.Clear();
+
+        //right Tile
+        if (startTile.xPos < GenerateLevel.GridWidth - 1)
+        {
+            Tile adjacentRightTile = GenerateLevel.grid[startTile.zPos, startTile.xPos + 1].GetComponent<Tile>();
+
+            Debug.Log("Checking at " + adjacentRightTile.zPos + " , " + adjacentRightTile.xPos);
+            if (adjacentRightTile.IsMineable(chosenCharacter))
+            {
+                mineTiles.Add(adjacentRightTile);
+            }
+        }
+
+        //bottom tile
+        if (startTile.zPos > 0)
+        {
+            Tile adjacentBottomTile = GenerateLevel.grid[startTile.zPos - 1, startTile.xPos].GetComponent<Tile>();
+
+            Debug.Log("Checking at " + adjacentBottomTile.zPos + " , " + adjacentBottomTile.xPos);
+            if (adjacentBottomTile.IsMineable(chosenCharacter))
+            {
+                mineTiles.Add(adjacentBottomTile);
+            }
+            
+
+        }
+
+        //top tile
+        if (startTile.zPos < GenerateLevel.GridHeight - 1)
+        {
+            Tile adjacentTopTile = GenerateLevel.grid[startTile.zPos + 1, startTile.xPos].GetComponent<Tile>();
+
+            Debug.Log("Checking at " + adjacentTopTile.zPos + " , " + adjacentTopTile.xPos);
+            if (adjacentTopTile.IsMineable(chosenCharacter))
+            {
+                mineTiles.Add(adjacentTopTile);
+            }
+        }
+
+        return mineTiles;
     }
 
+    #endregion
+
+
+
+    #region Set Tile
     private void SetAvailableTiles()
     {
         foreach (Tile tile in availableTiles)
@@ -381,7 +476,17 @@ public class TurnHandler : MonoBehaviour
         }
     }
 
+    private void SetMineableTiles()
+    {
+        foreach (Tile tile in mineableTiles)
+        {
+            tile.SetAvailabillitySelector(true);
+        }
+    }
+    #endregion
 
+
+    #region Turn End
     public void EndPlayerTurn()
     {
         // drill bots deal damage at the end of each turn
@@ -394,7 +499,7 @@ public class TurnHandler : MonoBehaviour
             }
         }
 
-        ClearCurrentPath();
+        ClearAvailableTiles();
         currentTurn = TurnOrder.Alien;
         AlienManager.Instance.TakeTurn();
     }
@@ -403,6 +508,7 @@ public class TurnHandler : MonoBehaviour
         currentTurn = TurnOrder.Player;
         SetUpPlayerTurn();
     }
+    #endregion
 
     private void MoveToTile()
     {
@@ -420,13 +526,17 @@ public class TurnHandler : MonoBehaviour
     private void AttackAtTile()
     {
         Tile selectedTile = raycastManager.TileRaycast();
+        //Debug.Log(selectedTile.occupant);
         if (selectedTile != null)
         {
-            AttackEnemy(selectedTile);
+            if (selectedTile.occupant.GetComponent<Character>())
+                AttackEnemy(selectedTile);
+            else if (selectedTile.occupant.GetComponent<UnrefinedOre>())
+                MineAtTile(selectedTile);
         }
     }
 
-
+    #region Player Options
     private void MoveCharacter(Tile selectedTile)
     {
         foreach(Tile tile in availableTiles)
@@ -442,6 +552,8 @@ public class TurnHandler : MonoBehaviour
         selectedCharacter.gameObject.GetComponent<Character>().Moved = true;
         attackableTiles = FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>(), selectedTile);
         SetAttackableTiles();
+        mineableTiles = FindAvailableMinableTiles(selectedCharacter.GetComponent<Character>(), selectedTile);
+        SetMineableTiles();
         currentPlayerState = PlayerState.Attack;
         ClearCurrentPath();
     }
@@ -452,15 +564,30 @@ public class TurnHandler : MonoBehaviour
         {
             tile.SetAvailabillitySelector(false);
         }
+
+
         Debug.Log("Attacking");
         selectedCharacter.gameObject.GetComponent<Character>().Attack(selectedTile.occupant.GetComponent<Character>());
+
         ClearAttackPath();
     }
+
+    private void MineAtTile(Tile selectedTile)
+    {
+        foreach (Tile tile in mineableTiles)
+        {
+            tile.SetAvailabillitySelector(false);
+        }
+        Debug.Log("Mining");
+        selectedCharacter.gameObject.GetComponent<Character>().MineOre(selectedTile.occupant.GetComponent<UnrefinedOre>());
+        ClearMiningPath();
+    }
+    #endregion
+
 
     public void CancelCharacterTurn()
     {
         ClearAvailableTiles();
-        ClearAttackPath();
         selectedCharacter = null;
         currentPlayerState = PlayerState.None;
     }
@@ -469,6 +596,3 @@ public class TurnHandler : MonoBehaviour
         oresWithDrillBots.Add(ore);
     }
 }
-
-#region Defunct Methods
-#endregion
