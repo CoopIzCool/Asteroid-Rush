@@ -853,7 +853,7 @@ MonoBehaviour:
 
     Ethan Ball
 
-    Ryan "Chowder" Cooper
+    Ryan Cooper
 
     Aatman Dhangar
 
@@ -869,8 +869,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278255446
-  m_fontColor: {r: 0.33675766, g: 1, b: 0, a: 1}
+    rgba: 4285191151
+  m_fontColor: {r: 0.93725497, g: 0.82745105, b: 0.4156863, a: 1}
   m_enableVertexGradient: 1
   m_colorMode: 0
   m_fontColorGradient:
@@ -991,7 +991,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -109.30586, y: -8.908941}
+  m_AnchoredPosition: {x: -146.1, y: -8.908941}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &669965534
