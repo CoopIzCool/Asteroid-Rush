@@ -24,7 +24,7 @@ public class Character : MonoBehaviour
 
     [Header("Movement Components:")]
     [SerializeField] private Tile currentTile;
-    private Vector3 tileOffset = new Vector3(0, 0.5f, 0);
+    [SerializeField] private float heightAboveTile;
     [SerializeField]private bool moved;
 
     // variables for animating movement
@@ -84,6 +84,10 @@ public class Character : MonoBehaviour
             direction.y = 0;
             direction.Normalize();
 
+            Vector3 lastRotation = transform.rotation.eulerAngles;
+            transform.rotation = Quaternion.Euler(lastRotation.x, Mathf.Atan2(-direction.z, direction.x) / Mathf.PI * 180, lastRotation.z);
+            //transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, transform.rotation.z);
+
             transform.position += direction * moveSpeed * Time.deltaTime;
 
             Vector3 newDir = target.transform.position - transform.position;
@@ -114,7 +118,7 @@ public class Character : MonoBehaviour
     public void MoveToTile(Tile tile)
     {
         transform.position = tile.transform.position;
-        transform.position += tileOffset;
+        transform.position += new Vector3(0, heightAboveTile, 0);
         ClaimTile(tile);
     }
 
@@ -150,6 +154,11 @@ public class Character : MonoBehaviour
             health = 0;
             Death();
         }
+    }
+
+    public void CollectOre()
+    {
+        oreCount++;
     }
 
     protected virtual void Death()

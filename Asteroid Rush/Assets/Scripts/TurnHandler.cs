@@ -495,7 +495,7 @@ public class TurnHandler : MonoBehaviour
             if(destroyed) {
                 oresWithDrillBots.RemoveAt(i);
                 i--;
-                //GameObject.Find("Supporter").GetComponent<Supporter>().
+                GameObject.Find("Supporter").GetComponent<Supporter>().CollectOre();
             }
         }
 
