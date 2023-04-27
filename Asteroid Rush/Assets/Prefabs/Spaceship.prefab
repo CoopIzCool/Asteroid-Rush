@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4334381121931400984}
   - component: {fileID: 4334381121931400983}
   - component: {fileID: 4334381121931400982}
+  - component: {fileID: 175207590956078136}
   m_Layer: 0
   m_Name: Spaceship
   m_TagString: Untagged
@@ -97,3 +98,17 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &175207590956078136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4334381121931400981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 994f777aa5a13bc409bb4962781b6f78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rocketTile: {fileID: 0}
+  oreNeeded: 3

@@ -7,8 +7,10 @@ public class Rocket : MonoBehaviour
 {
     #region Fields
     private int oreTotal = 0;
+    [SerializeField]
     private Tile rocketTile;
     private int crewmatesAboard = 0;
+    [SerializeField]
     private int oreNeeded;
     private int crewmateTotal = 3;
     #endregion
@@ -17,6 +19,11 @@ public class Rocket : MonoBehaviour
     public int OreNeeded
     {
         set { oreNeeded = value; }
+    }
+
+    public Tile RocketTile
+    {
+        set { rocketTile = value; }
     }
     #endregion
 

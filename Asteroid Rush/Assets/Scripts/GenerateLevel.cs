@@ -301,7 +301,9 @@ public class GenerateLevel : MonoBehaviour
 		}
 
 		shipPosition = new Vector2Int(gridHeight / 2, gridWidth / 2);
-		grid[gridHeight / 2, gridWidth / 2].GetComponent<Tile>().occupant = Instantiate(spaceshipPrefab, new Vector3(gridWidth / 2, spaceshipPrefab.transform.position.y, gridHeight / 2), spaceshipPrefab.transform.rotation, shipZoneObj.transform);
+		GameObject rocket = Instantiate(spaceshipPrefab, new Vector3(gridWidth / 2, spaceshipPrefab.transform.position.y, gridHeight / 2), spaceshipPrefab.transform.rotation, shipZoneObj.transform);
+		grid[gridHeight / 2, gridWidth / 2].GetComponent<Tile>().occupant = rocket;
+		rocket.GetComponent<Rocket>().RocketTile = grid[gridHeight / 2, gridWidth / 2].GetComponent<Tile>();
 		GameObject player1 = Instantiate(playerPrefabs[0]);
 		player1.GetComponent<Character>().MoveToTile(grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>());
 		GameObject player2 = Instantiate(playerPrefabs[1]);
