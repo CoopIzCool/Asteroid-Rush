@@ -30,7 +30,7 @@ public class Zone : MonoBehaviour
 				BuildField(tilePrefabs, objectPrefabs, Random.Range(2, 5), 2);
 				break;
 			case ZoneTypes.Pit:
-				BuildPit(tilePrefabs, objectPrefabs, Random.Range(1, 4), Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0]);
+				BuildPit(tilePrefabs, objectPrefabs, Random.Range(1, 4), Random.Range(0f, 1f) < 0.5f ? tilePrefabs[1 + (int)GenerateLevel.asteroidType * 2] : objectPrefabs[(int)GenerateLevel.asteroidType]);
 				break;
 			case ZoneTypes.Island:
 				BuildIsland(tilePrefabs, objectPrefabs, Random.Range(4, width - 1), Random.Range(1, 3));
@@ -52,13 +52,13 @@ public class Zone : MonoBehaviour
 			{
 				if (GenerateLevel.GetGridItem(row, col) == null)
 				{
-					GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+					GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 					tiles.Add(GenerateLevel.GetGridItem(row, col));
 				}
 			}
 		}
 
-		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0];
+		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[1 + (int)GenerateLevel.asteroidType * 2] : objectPrefabs[(int)GenerateLevel.asteroidType];
 
 		for (int i = 0; i < numWalls; i++)
 		{
@@ -75,14 +75,14 @@ public class Zone : MonoBehaviour
 			do
 			{
 				List<Vector2Int> validPositions = new List<Vector2Int>();
-				if (pitOrWall == objectPrefabs[0])
+				if (pitOrWall == objectPrefabs[(int)GenerateLevel.asteroidType])
 				{
 					GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
 				}
 				else
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(randomZ, randomX));
-					GenerateLevel.SetGridItem(randomZ, randomX, Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), Quaternion.identity, transform));
+					GenerateLevel.SetGridItem(randomZ, randomX, Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), pitOrWall.transform.rotation, transform));
 					tiles.Add(GenerateLevel.GetGridItem(randomZ, randomX));
 				}
 
@@ -117,20 +117,20 @@ public class Zone : MonoBehaviour
 				{
 					if (row < zPos + walkableWidth || row > zPos + height - 1 - walkableWidth || col < xPos + walkableWidth || col > xPos + width - 1 - walkableWidth)
 					{
-						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						tiles.Add(GenerateLevel.GetGridItem(row, col));
 					}
 					else
 					{
-						if (obstacle == objectPrefabs[0])
+						if (obstacle == objectPrefabs[(int)GenerateLevel.asteroidType])
 						{
-							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().occupant = Instantiate(obstacle, new Vector3(col, obstacle.transform.position.y, row), Quaternion.Euler(obstacle.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
 						}
 						else
 						{
-							GenerateLevel.SetGridItem(row, col, Instantiate(obstacle, new Vector3(col, obstacle.transform.position.y, row), Quaternion.identity, transform));
+							GenerateLevel.SetGridItem(row, col, Instantiate(obstacle, new Vector3(col, obstacle.transform.position.y, row), tilePrefabs[1 + (int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
 						}
 					}
@@ -141,7 +141,7 @@ public class Zone : MonoBehaviour
 
 	private void BuildIsland(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int islandWidth, int bridgeWidth)
 	{
-		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0];
+		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[1 + (int)GenerateLevel.asteroidType * 2] : objectPrefabs[(int)GenerateLevel.asteroidType];
 		bool[] bridges = new bool[4];
 		int numBridges = 0;
 		int direction = 0;
@@ -164,7 +164,7 @@ public class Zone : MonoBehaviour
 			direction = 1;
 		}
 
-		BuildIslandBridge(direction, islandWidth, 4, tilePrefabs[0]);
+		BuildIslandBridge(direction, islandWidth, 4, tilePrefabs[(int)GenerateLevel.asteroidType * 2]);
 		bridges[direction] = true;
 
 		for (int i = 0; i < 4; i++)
@@ -175,7 +175,7 @@ public class Zone : MonoBehaviour
 
 				bridges[i] = true;
 				numBridges++;
-				BuildIslandBridge(i, islandWidth, bridgeWidth, tilePrefabs[0]);
+				BuildIslandBridge(i, islandWidth, bridgeWidth, tilePrefabs[(int)GenerateLevel.asteroidType * 2]);
 			}
 		}
 
@@ -188,7 +188,7 @@ public class Zone : MonoBehaviour
 			}
 			while (bridges[randomDirection]);
 
-			BuildIslandBridge(randomDirection, islandWidth, 4, tilePrefabs[0]);
+			BuildIslandBridge(randomDirection, islandWidth, 4, tilePrefabs[(int)GenerateLevel.asteroidType * 2]);
 		}
 
 		for (int row = zPos; row < zPos + height; row++)
@@ -199,22 +199,22 @@ public class Zone : MonoBehaviour
 				{
 					if (row < zPos + height / 2 - islandWidth / 2 || row >= zPos + height / 2 + islandWidth / 2 || col < xPos + width / 2 - islandWidth / 2 || col >= xPos + width / 2 + islandWidth / 2)
 					{
-						if (pitOrWall == objectPrefabs[0])
+						if (pitOrWall == objectPrefabs[(int)GenerateLevel.asteroidType])
 						{
-							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 							GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
 						}
 						else
 						{
 							tiles.Remove(GenerateLevel.GetGridItem(row, col));
-							GenerateLevel.SetGridItem(row, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.identity, transform));
+							GenerateLevel.SetGridItem(row, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), pitOrWall.transform.rotation, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
 						}
 					}
 					else
 					{
-						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						tiles.Add(GenerateLevel.GetGridItem(row, col));
 					}
 				}
@@ -224,7 +224,7 @@ public class Zone : MonoBehaviour
 
 	private void BuildTunnel(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int minTunnelWidth, int maxTunnelWidth)
 	{
-		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0];
+		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[1 + (int)GenerateLevel.asteroidType * 2] : objectPrefabs[(int)GenerateLevel.asteroidType];
 
 		#region Set Up Enemy Spawns
 		int bottomTunnelWidth = Random.Range(minTunnelWidth, maxTunnelWidth + 1);
@@ -272,14 +272,14 @@ public class Zone : MonoBehaviour
 				if (col < xPos + width / 2 - 2 || col >= xPos + width / 2 + 2)
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(zPos, col));
-					if (pitOrWall == objectPrefabs[0])
+					if (pitOrWall == objectPrefabs[(int)GenerateLevel.asteroidType])
 					{
-						GenerateLevel.SetGridItem(zPos, col, Instantiate(tilePrefabs[0], new Vector3(col, tilePrefabs[0].transform.position.y, zPos), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(zPos, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, zPos), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						GenerateLevel.GetGridItem(zPos, col).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, zPos), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
 					}
 					else
 					{
-						GenerateLevel.SetGridItem(zPos, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, zPos), Quaternion.identity, transform));
+						GenerateLevel.SetGridItem(zPos, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, zPos), pitOrWall.transform.rotation, transform));
 					}
 
 					tiles.Add(GenerateLevel.GetGridItem(zPos, col));
@@ -289,7 +289,7 @@ public class Zone : MonoBehaviour
 				else
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(zPos, col));
-					GenerateLevel.SetGridItem(zPos, col, Instantiate(tilePrefabs[0], new Vector3(col, tilePrefabs[0].transform.position.y, zPos), tilePrefabs[0].transform.rotation, transform));
+					GenerateLevel.SetGridItem(zPos, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, zPos), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 					tiles.Add(GenerateLevel.GetGridItem(zPos, col));
 					GenerateLevel.GetGridItem(zPos, col).GetComponent<Tile>().xPos = col;
 					GenerateLevel.GetGridItem(zPos, col).GetComponent<Tile>().zPos = zPos;
@@ -303,14 +303,14 @@ public class Zone : MonoBehaviour
 				if (row < zPos + height / 2 - 2 || row >= zPos + height / 2 + 2)
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(row, xPos));
-					if (pitOrWall == objectPrefabs[0])
+					if (pitOrWall == objectPrefabs[(int)GenerateLevel.asteroidType])
 					{
-						GenerateLevel.SetGridItem(row, xPos, Instantiate(tilePrefabs[0], new Vector3(xPos, tilePrefabs[0].transform.position.y, row), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(row, xPos, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(xPos, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						GenerateLevel.GetGridItem(row, xPos).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(xPos, pitOrWall.transform.position.y, row), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
 					}
 					else
 					{
-						GenerateLevel.SetGridItem(row, xPos, Instantiate(pitOrWall, new Vector3(xPos, pitOrWall.transform.position.y, row), Quaternion.identity, transform));
+						GenerateLevel.SetGridItem(row, xPos, Instantiate(pitOrWall, new Vector3(xPos, pitOrWall.transform.position.y, row), pitOrWall.transform.rotation, transform));
 					}
 
 					tiles.Add(GenerateLevel.GetGridItem(row, xPos));
@@ -320,7 +320,7 @@ public class Zone : MonoBehaviour
 				else
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(row, xPos));
-					GenerateLevel.SetGridItem(row, xPos, Instantiate(tilePrefabs[0], new Vector3(xPos, tilePrefabs[0].transform.position.y, row), tilePrefabs[0].transform.rotation, transform));
+					GenerateLevel.SetGridItem(row, xPos, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(xPos, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 					tiles.Add(GenerateLevel.GetGridItem(row, xPos));
 					GenerateLevel.GetGridItem(row, xPos).GetComponent<Tile>().xPos = xPos;
 					GenerateLevel.GetGridItem(row, xPos).GetComponent<Tile>().zPos = row;
@@ -334,14 +334,14 @@ public class Zone : MonoBehaviour
 				if (col < xPos + width / 2 - 2 || col >= xPos + width / 2 + 2)
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(zPos + height - 1, col));
-					if (pitOrWall == objectPrefabs[0])
+					if (pitOrWall == objectPrefabs[(int)GenerateLevel.asteroidType])
 					{
-						GenerateLevel.SetGridItem(zPos + height - 1, col, Instantiate(tilePrefabs[0], new Vector3(col, tilePrefabs[0].transform.position.y, zPos + height - 1), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(zPos + height - 1, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, zPos + height - 1), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						GenerateLevel.GetGridItem(zPos + height - 1, col).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, zPos + height - 1), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
 					}
 					else
 					{
-						GenerateLevel.SetGridItem(zPos + height - 1, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, zPos + height - 1), Quaternion.identity, transform));
+						GenerateLevel.SetGridItem(zPos + height - 1, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, zPos + height - 1), pitOrWall.transform.rotation, transform));
 					}
 
 					tiles.Add(GenerateLevel.GetGridItem(zPos + height - 1, col));
@@ -351,7 +351,7 @@ public class Zone : MonoBehaviour
 				else
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(zPos + height - 1, col));
-					GenerateLevel.SetGridItem(zPos + height - 1, col, Instantiate(tilePrefabs[0], new Vector3(col, tilePrefabs[0].transform.position.y, zPos + height - 1), tilePrefabs[0].transform.rotation, transform));
+					GenerateLevel.SetGridItem(zPos + height - 1, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, zPos + height - 1), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 					tiles.Add(GenerateLevel.GetGridItem(zPos + height - 1, col));
 					GenerateLevel.GetGridItem(zPos + height - 1, col).GetComponent<Tile>().xPos = col;
 					GenerateLevel.GetGridItem(zPos + height - 1, col).GetComponent<Tile>().zPos = zPos + height - 1;
@@ -365,14 +365,14 @@ public class Zone : MonoBehaviour
 				if (row < zPos + height / 2 - 2 || row >= zPos + height / 2 + 2)
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(row, xPos + width));
-					if (pitOrWall == objectPrefabs[0])
+					if (pitOrWall == objectPrefabs[(int)GenerateLevel.asteroidType])
 					{
-						GenerateLevel.SetGridItem(row, xPos + width - 1, Instantiate(tilePrefabs[0], new Vector3(xPos + width - 1, tilePrefabs[0].transform.position.y, row), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(row, xPos + width - 1, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(xPos + width - 1, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						GenerateLevel.GetGridItem(row, xPos + width - 1).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(xPos + width - 1, pitOrWall.transform.position.y, row), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
 					}
 					else
 					{
-						GenerateLevel.SetGridItem(row, xPos + width - 1, Instantiate(pitOrWall, new Vector3(xPos + width - 1, pitOrWall.transform.position.y, row), Quaternion.identity, transform));
+						GenerateLevel.SetGridItem(row, xPos + width - 1, Instantiate(pitOrWall, new Vector3(xPos + width - 1, pitOrWall.transform.position.y, row), pitOrWall.transform.rotation, transform));
 					}
 
 					tiles.Add(GenerateLevel.GetGridItem(row, xPos + width - 1));
@@ -382,7 +382,7 @@ public class Zone : MonoBehaviour
 				else
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(row, xPos + width - 1));
-					GenerateLevel.SetGridItem(row, xPos + width - 1, Instantiate(tilePrefabs[0], new Vector3(xPos + width - 1, tilePrefabs[0].transform.position.y, row), tilePrefabs[0].transform.rotation, transform));
+					GenerateLevel.SetGridItem(row, xPos + width - 1, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(xPos + width - 1, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 					tiles.Add(GenerateLevel.GetGridItem(row, xPos + width - 1));
 					GenerateLevel.GetGridItem(row, xPos + width - 1).GetComponent<Tile>().xPos = xPos + width - 1;
 					GenerateLevel.GetGridItem(row, xPos + width - 1).GetComponent<Tile>().zPos = row;
@@ -408,7 +408,7 @@ public class Zone : MonoBehaviour
 				{
 					for (int col = xPos + width / 2 - 2; col < xPos + width; col++)
 					{
-						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						tiles.Add(GenerateLevel.GetGridItem(row, col));
 					}
 				}
@@ -422,7 +422,7 @@ public class Zone : MonoBehaviour
 				{
 					for (int col = xPos; col < xPos + width / 2 + 2; col++)
 					{
-						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						tiles.Add(GenerateLevel.GetGridItem(row, col));
 					}
 				}
@@ -436,7 +436,7 @@ public class Zone : MonoBehaviour
 				{
 					for (int col = xPos; col < xPos + width; col++)
 					{
-						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						tiles.Add(GenerateLevel.GetGridItem(row, col));
 					}
 				}
@@ -451,7 +451,7 @@ public class Zone : MonoBehaviour
 					{
 						if (GenerateLevel.GetGridItem(row, col) == null)
 						{
-							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
 						}
 					}
@@ -468,7 +468,7 @@ public class Zone : MonoBehaviour
 						{
 							if (GenerateLevel.GetGridItem(row, col) == null)
 							{
-								GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+								GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 								tiles.Add(GenerateLevel.GetGridItem(row, col));
 							}
 						}
@@ -483,7 +483,7 @@ public class Zone : MonoBehaviour
 					{
 						if (GenerateLevel.GetGridItem(row, col) == null)
 						{
-							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
 						}
 					}
@@ -501,7 +501,7 @@ public class Zone : MonoBehaviour
 						{
 							if (GenerateLevel.GetGridItem(row, col) == null)
 							{
-								GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+								GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 								tiles.Add(GenerateLevel.GetGridItem(row, col));
 							}
 						}
@@ -525,7 +525,7 @@ public class Zone : MonoBehaviour
 				{
 					for(int col = startX; col < startX + topTunnelWidth; col++)
 					{
-						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						tiles.Add(GenerateLevel.GetGridItem(row, col));
 					}
 				}
@@ -539,7 +539,7 @@ public class Zone : MonoBehaviour
 				{
 					for (int col = startX; col < startX + bottomTunnelWidth; col++)
 					{
-						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						tiles.Add(GenerateLevel.GetGridItem(row, col));
 					}
 				}
@@ -553,7 +553,7 @@ public class Zone : MonoBehaviour
 				{
 					for (int col = startX; col < startX + bottomTunnelWidth; col++)
 					{
-						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						tiles.Add(GenerateLevel.GetGridItem(row, col));
 					}
 				}
@@ -568,7 +568,7 @@ public class Zone : MonoBehaviour
 					{
 						if (GenerateLevel.GetGridItem(row, col) == null)
 						{
-							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
 						}
 					}
@@ -585,7 +585,7 @@ public class Zone : MonoBehaviour
 						{
 							if (GenerateLevel.GetGridItem(row, col) == null)
 							{
-								GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+								GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 								tiles.Add(GenerateLevel.GetGridItem(row, col));
 							}
 						}
@@ -600,7 +600,7 @@ public class Zone : MonoBehaviour
 					{
 						if (GenerateLevel.GetGridItem(row, col) == null)
 						{
-							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
 						}
 					}
@@ -618,7 +618,7 @@ public class Zone : MonoBehaviour
 						{
 							if (GenerateLevel.GetGridItem(row, col) == null)
 							{
-								GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+								GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 								tiles.Add(GenerateLevel.GetGridItem(row, col));
 							}
 						}
@@ -635,15 +635,15 @@ public class Zone : MonoBehaviour
 			{
 				if (GenerateLevel.GetGridItem(row, col) == null)
 				{
-					if (pitOrWall == objectPrefabs[0])
+					if (pitOrWall == objectPrefabs[(int)GenerateLevel.asteroidType])
 					{
-						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
 						tiles.Add(GenerateLevel.GetGridItem(row, col));
 					}
 					else
 					{
-						GenerateLevel.SetGridItem(row, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.identity, transform));
+						GenerateLevel.SetGridItem(row, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), pitOrWall.transform.rotation, transform));
 						tiles.Add(GenerateLevel.GetGridItem(row, col));
 					}
 				}
@@ -654,7 +654,7 @@ public class Zone : MonoBehaviour
 
 	private void BuildMaze(GameObject[] tilePrefabs, GameObject[] objectPrefabs, int numWalls)
 	{
-		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[2] : objectPrefabs[0];
+		GameObject pitOrWall = Random.Range(0f, 1f) < 0.5f ? tilePrefabs[1 + (int)GenerateLevel.asteroidType * 2] : objectPrefabs[(int)GenerateLevel.asteroidType];
 
 		#region Set Up Enemy Spawns
 		int randomBottom = zPos == 1 ? -1 : Random.Range(0f, 1f) < 0.5f ? Random.Range(xPos + 1, xPos + width - 1) : xPos - 1;
@@ -677,14 +677,14 @@ public class Zone : MonoBehaviour
 				if (col < xPos + width / 2 - 2 || col >= xPos + width / 2 + 2)
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(zPos, col));
-					if (pitOrWall == objectPrefabs[0])
+					if (pitOrWall == objectPrefabs[(int)GenerateLevel.asteroidType])
 					{
-						GenerateLevel.SetGridItem(zPos, col, Instantiate(tilePrefabs[0], new Vector3(col, tilePrefabs[0].transform.position.y, zPos), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(zPos, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, zPos), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						GenerateLevel.GetGridItem(zPos, col).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, zPos), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
 					}
 					else
 					{
-						GenerateLevel.SetGridItem(zPos, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, zPos), Quaternion.identity, transform));
+						GenerateLevel.SetGridItem(zPos, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, zPos), pitOrWall.transform.rotation, transform));
 					}
 
 					tiles.Add(GenerateLevel.GetGridItem(zPos, col));
@@ -694,7 +694,7 @@ public class Zone : MonoBehaviour
 				else
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(zPos, col));
-					GenerateLevel.SetGridItem(zPos, col, Instantiate(tilePrefabs[0], new Vector3(col, tilePrefabs[0].transform.position.y, zPos), tilePrefabs[0].transform.rotation, transform));
+					GenerateLevel.SetGridItem(zPos, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, zPos), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 					tiles.Add(GenerateLevel.GetGridItem(zPos, col));
 					GenerateLevel.GetGridItem(zPos, col).GetComponent<Tile>().xPos = col;
 					GenerateLevel.GetGridItem(zPos, col).GetComponent<Tile>().zPos = zPos;
@@ -708,14 +708,14 @@ public class Zone : MonoBehaviour
 				if (row < zPos + height / 2 - 2 || row >= zPos + height / 2 + 2)
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(row, xPos));
-					if (pitOrWall == objectPrefabs[0])
+					if (pitOrWall == objectPrefabs[(int)GenerateLevel.asteroidType])
 					{
-						GenerateLevel.SetGridItem(row, xPos, Instantiate(tilePrefabs[0], new Vector3(xPos, tilePrefabs[0].transform.position.y, row), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(row, xPos, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(xPos, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						GenerateLevel.GetGridItem(row, xPos).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(xPos, pitOrWall.transform.position.y, row), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
 					}
 					else
 					{
-						GenerateLevel.SetGridItem(row, xPos, Instantiate(pitOrWall, new Vector3(xPos, pitOrWall.transform.position.y, row), Quaternion.identity, transform));
+						GenerateLevel.SetGridItem(row, xPos, Instantiate(pitOrWall, new Vector3(xPos, pitOrWall.transform.position.y, row), pitOrWall.transform.rotation, transform));
 					}
 
 					tiles.Add(GenerateLevel.GetGridItem(row, xPos));
@@ -725,7 +725,7 @@ public class Zone : MonoBehaviour
 				else
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(row, xPos));
-					GenerateLevel.SetGridItem(row, xPos, Instantiate(tilePrefabs[0], new Vector3(xPos, tilePrefabs[0].transform.position.y, row), tilePrefabs[0].transform.rotation, transform));
+					GenerateLevel.SetGridItem(row, xPos, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(xPos, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 					tiles.Add(GenerateLevel.GetGridItem(row, xPos));
 					GenerateLevel.GetGridItem(row, xPos).GetComponent<Tile>().xPos = xPos;
 					GenerateLevel.GetGridItem(row, xPos).GetComponent<Tile>().zPos = row;
@@ -739,14 +739,14 @@ public class Zone : MonoBehaviour
 				if (col < xPos + width / 2 - 2 || col >= xPos + width / 2 + 2)
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(zPos + height - 1, col));
-					if (pitOrWall == objectPrefabs[0])
+					if (pitOrWall == objectPrefabs[(int)GenerateLevel.asteroidType])
 					{
-						GenerateLevel.SetGridItem(zPos + height - 1, col, Instantiate(tilePrefabs[0], new Vector3(col, tilePrefabs[0].transform.position.y, zPos + height - 1), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(zPos + height - 1, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, zPos + height - 1), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						GenerateLevel.GetGridItem(zPos + height - 1, col).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, zPos + height - 1), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
 					}
 					else
 					{
-						GenerateLevel.SetGridItem(zPos + height - 1, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, zPos + height - 1), Quaternion.identity, transform));
+						GenerateLevel.SetGridItem(zPos + height - 1, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, zPos + height - 1), pitOrWall.transform.rotation, transform));
 					}
 
 					tiles.Add(GenerateLevel.GetGridItem(zPos + height - 1, col));
@@ -756,7 +756,7 @@ public class Zone : MonoBehaviour
 				else
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(zPos + height - 1, col));
-					GenerateLevel.SetGridItem(zPos + height - 1, col, Instantiate(tilePrefabs[0], new Vector3(col, tilePrefabs[0].transform.position.y, zPos + height - 1), tilePrefabs[0].transform.rotation, transform));
+					GenerateLevel.SetGridItem(zPos + height - 1, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, zPos + height - 1), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 					tiles.Add(GenerateLevel.GetGridItem(zPos + height - 1, col));
 					GenerateLevel.GetGridItem(zPos + height - 1, col).GetComponent<Tile>().xPos = col;
 					GenerateLevel.GetGridItem(zPos + height - 1, col).GetComponent<Tile>().zPos = zPos + height - 1;
@@ -770,14 +770,14 @@ public class Zone : MonoBehaviour
 				if (row < zPos + height / 2 - 2 || row >= zPos + height / 2 + 2)
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(row, xPos + width));
-					if (pitOrWall == objectPrefabs[0])
+					if (pitOrWall == objectPrefabs[(int)GenerateLevel.asteroidType])
 					{
-						GenerateLevel.SetGridItem(row, xPos + width - 1, Instantiate(tilePrefabs[0], new Vector3(xPos + width - 1, tilePrefabs[0].transform.position.y, row), tilePrefabs[0].transform.rotation, transform));
+						GenerateLevel.SetGridItem(row, xPos + width - 1, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(xPos + width - 1, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 						GenerateLevel.GetGridItem(row, xPos + width - 1).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(xPos + width - 1, pitOrWall.transform.position.y, row), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
 					}
 					else
 					{
-						GenerateLevel.SetGridItem(row, xPos + width - 1, Instantiate(pitOrWall, new Vector3(xPos + width - 1, pitOrWall.transform.position.y, row), Quaternion.identity, transform));
+						GenerateLevel.SetGridItem(row, xPos + width - 1, Instantiate(pitOrWall, new Vector3(xPos + width - 1, pitOrWall.transform.position.y, row), pitOrWall.transform.rotation, transform));
 					}
 
 					tiles.Add(GenerateLevel.GetGridItem(row, xPos + width - 1));
@@ -787,7 +787,7 @@ public class Zone : MonoBehaviour
 				else
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(row, xPos + width - 1));
-					GenerateLevel.SetGridItem(row, xPos + width - 1, Instantiate(tilePrefabs[0], new Vector3(xPos + width - 1, tilePrefabs[0].transform.position.y, row), tilePrefabs[0].transform.rotation, transform));
+					GenerateLevel.SetGridItem(row, xPos + width - 1, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(xPos + width - 1, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 					tiles.Add(GenerateLevel.GetGridItem(row, xPos + width - 1));
 					GenerateLevel.GetGridItem(row, xPos + width - 1).GetComponent<Tile>().xPos = xPos + width - 1;
 					GenerateLevel.GetGridItem(row, xPos + width - 1).GetComponent<Tile>().zPos = row;
@@ -803,7 +803,7 @@ public class Zone : MonoBehaviour
 			{
 				if (GenerateLevel.GetGridItem(row, col) == null)
 				{
-					GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, tilePrefabs[0].transform.position.y, row), tilePrefabs[0].transform.rotation, transform));
+					GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 					tiles.Add(GenerateLevel.GetGridItem(row, col));
 
 					if (row == zPos || row == zPos + height - 1 || col == xPos || col == xPos + width - 1)
@@ -811,20 +811,20 @@ public class Zone : MonoBehaviour
 						if ((row == randomLeft && col == xPos) || (row == randomRight && col == xPos + width - 1) || (row == zPos && col == randomBottom) || (row == zPos + height - 1 && col == randomTop))
 						{
 							tiles.Remove(GenerateLevel.GetGridItem(row, col));
-							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, tilePrefabs[0].transform.position.y, row), tilePrefabs[0].transform.rotation, transform));
+							GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
 						}
 						else
 						{
 							tiles.Remove(GenerateLevel.GetGridItem(row, col));
-							if (pitOrWall == objectPrefabs[0])
+							if (pitOrWall == objectPrefabs[(int)GenerateLevel.asteroidType])
 							{
-								GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[0], new Vector3(col, tilePrefabs[0].transform.position.y, row), tilePrefabs[0].transform.rotation, transform));
+								GenerateLevel.SetGridItem(row, col, Instantiate(tilePrefabs[(int)GenerateLevel.asteroidType * 2], new Vector3(col, tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.position.y, row), tilePrefabs[(int)GenerateLevel.asteroidType * 2].transform.rotation, transform));
 								GenerateLevel.GetGridItem(row, col).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
 							}
 							else
 							{
-								GenerateLevel.SetGridItem(row, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), Quaternion.identity, transform));
+								GenerateLevel.SetGridItem(row, col, Instantiate(pitOrWall, new Vector3(col, pitOrWall.transform.position.y, row), pitOrWall.transform.rotation, transform));
 							}
 
 							tiles.Add(GenerateLevel.GetGridItem(row, col));
@@ -860,14 +860,14 @@ public class Zone : MonoBehaviour
 			do
 			{
 				List<Vector2Int> validPositions = new List<Vector2Int>();
-				if (pitOrWall == objectPrefabs[0])
+				if (pitOrWall == objectPrefabs[(int)GenerateLevel.asteroidType])
 				{
 					GenerateLevel.GetGridItem(randomZ, randomX).GetComponent<Tile>().occupant = Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), Quaternion.Euler(pitOrWall.transform.rotation.eulerAngles.x, Random.Range(0f, 360f), 0), transform);
 				}
 				else
 				{
 					tiles.Remove(GenerateLevel.GetGridItem(randomZ, randomX));
-					GenerateLevel.SetGridItem(randomZ, randomX, Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), Quaternion.identity, transform));
+					GenerateLevel.SetGridItem(randomZ, randomX, Instantiate(pitOrWall, new Vector3(randomX, pitOrWall.transform.position.y, randomZ), pitOrWall.transform.rotation, transform));
 					tiles.Add(GenerateLevel.GetGridItem(randomZ, randomX));
 				}
 

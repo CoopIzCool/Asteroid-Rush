@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -9,6 +10,13 @@ public enum Direction
 	Down,
 	Left,
 	Right
+}
+
+public enum AsteroidType
+{
+	Gray,
+	Blue,
+	Brown,
 }
 
 public class GenerateLevel : MonoBehaviour
@@ -31,6 +39,9 @@ public class GenerateLevel : MonoBehaviour
 	// Validation fields
 	private List<Vector2Int> corePositions = new List<Vector2Int>();
 	private Vector2Int shipPosition;
+
+	// The asteroid type
+	public static AsteroidType asteroidType = AsteroidType.Blue;
 
 	[Header("Prefabs")]
 	[SerializeField] private GameObject[] tilePrefabs;
@@ -205,23 +216,6 @@ public class GenerateLevel : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Spawns the given prefab at a random unoccupied location in the grid
-	/// </summary>
-	/// <param name="prefab">The prefab to spawn</param>
-	private void SpawnEntityAtRandom(GameObject prefab)
-	{
-		// Select random positions on the grid until one that is unoccupied is found
-		Vector2Int randomPos;
-		do
-		{
-			randomPos = new Vector2Int(Random.Range(0, gridWidth), Random.Range(0, gridHeight));
-		}
-		while (grid[randomPos.y, randomPos.x].GetComponent<Tile>().tileType != TileType.Basic && grid[randomPos.y, randomPos.x].GetComponent<Tile>().occupant != null);
-
-		grid[randomPos.y, randomPos.x].GetComponent<Tile>().occupant = Instantiate(prefab, new Vector3(randomPos.x, prefab.transform.position.y, randomPos.y), prefab.transform.rotation);
-	}
-
-	/// <summary>
 	/// Destroy the old grid if one exists and generate a new one
 	/// </summary>
 	public void ResetGrid()
@@ -293,7 +287,7 @@ public class GenerateLevel : MonoBehaviour
 		{
 			for (int col = shipZone.xPos; col < shipZone.xPos + shipZone.width; col++)
 			{
-				grid[row, col] = Instantiate(tilePrefabs[0], new Vector3(col, 0, row), tilePrefabs[0].transform.rotation, shipZoneObj.transform);
+				grid[row, col] = Instantiate(tilePrefabs[(int)asteroidType * 2], new Vector3(col, 0, row), tilePrefabs[(int)asteroidType * 2].transform.rotation, shipZoneObj.transform);
 				shipZone.tiles.Add(grid[row, col]);
 				grid[row, col].GetComponent<Tile>().xPos = col;
 				grid[row, col].GetComponent<Tile>().zPos = row;
@@ -378,7 +372,7 @@ public class GenerateLevel : MonoBehaviour
 
 			if (IsTileWalkable(col, 1))
 			{
-				grid[0, col] = Instantiate(tilePrefabs[1], new Vector3(col, 0, 0), tilePrefabs[1].transform.rotation, enemyZoneObjs[0].transform);
+				grid[0, col] = Instantiate(tilePrefabs[tilePrefabs.Length - 3], new Vector3(col, 0, 0), tilePrefabs[tilePrefabs.Length - 3].transform.rotation, enemyZoneObjs[0].transform);
 				enemyZoneObjs[0].GetComponent<Zone>().tiles.Add(grid[0, col]);
 				grid[0, col].GetComponent<Tile>().xPos = col;
 				grid[0, col].GetComponent<Tile>().zPos = 0;
@@ -397,7 +391,7 @@ public class GenerateLevel : MonoBehaviour
 
 			if (IsTileWalkable(col, gridHeight - 2))
 			{
-				grid[gridHeight - 1, col] = Instantiate(tilePrefabs[1], new Vector3(col, 0, gridHeight - 1), tilePrefabs[1].transform.rotation, enemyZoneObjs[2].transform);
+				grid[gridHeight - 1, col] = Instantiate(tilePrefabs[tilePrefabs.Length - 3], new Vector3(col, 0, gridHeight - 1), tilePrefabs[tilePrefabs.Length - 3].transform.rotation, enemyZoneObjs[2].transform);
 				enemyZoneObjs[2].GetComponent<Zone>().tiles.Add(grid[gridHeight - 1, col]);
 				grid[gridHeight - 1, col].GetComponent<Tile>().xPos = col;
 				grid[gridHeight - 1, col].GetComponent<Tile>().zPos = gridHeight - 1;
@@ -417,7 +411,7 @@ public class GenerateLevel : MonoBehaviour
 			tile = grid[row, 1].GetComponent<Tile>();
 			if (IsTileWalkable(1, row))
 			{
-				grid[row, 0] = Instantiate(tilePrefabs[1], new Vector3(0, 0, row), tilePrefabs[1].transform.rotation, enemyZoneObjs[1].transform);
+				grid[row, 0] = Instantiate(tilePrefabs[tilePrefabs.Length - 3], new Vector3(0, 0, row), tilePrefabs[tilePrefabs.Length - 3].transform.rotation, enemyZoneObjs[1].transform);
 				enemyZoneObjs[1].GetComponent<Zone>().tiles.Add(grid[row, 0]);
 				grid[row, 0].GetComponent<Tile>().xPos = 0;
 				grid[row, 0].GetComponent<Tile>().zPos = row;
@@ -437,7 +431,7 @@ public class GenerateLevel : MonoBehaviour
 			tile = grid[row, gridWidth - 2].GetComponent<Tile>();
 			if (IsTileWalkable(gridWidth - 2, row))
 			{
-				grid[row, gridWidth - 1] = Instantiate(tilePrefabs[1], new Vector3(gridWidth - 1, 0, row), tilePrefabs[1].transform.rotation, enemyZoneObjs[3].transform);
+				grid[row, gridWidth - 1] = Instantiate(tilePrefabs[tilePrefabs.Length - 3], new Vector3(gridWidth - 1, 0, row), tilePrefabs[tilePrefabs.Length - 3].transform.rotation, enemyZoneObjs[3].transform);
 				enemyZoneObjs[3].GetComponent<Zone>().tiles.Add(grid[row, gridWidth - 1]);
 				grid[row, gridWidth - 1].GetComponent<Tile>().xPos = gridWidth - 1;
 				grid[row, gridWidth - 1].GetComponent<Tile>().zPos = row;
@@ -456,7 +450,7 @@ public class GenerateLevel : MonoBehaviour
 			{
 				if (grid[0, col] == null)
 				{
-					grid[0, col] = Instantiate(tilePrefabs[4], new Vector3(col, tilePrefabs[4].transform.position.y, 0), Quaternion.identity, borderZoneObj.transform);
+					grid[0, col] = Instantiate(tilePrefabs[tilePrefabs.Length - 1], new Vector3(col, tilePrefabs[tilePrefabs.Length - 1].transform.position.y, 0), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[0, col]);
 					grid[0, col].GetComponent<Tile>().xPos = col;
 					grid[0, col].GetComponent<Tile>().zPos = 0;
@@ -464,7 +458,7 @@ public class GenerateLevel : MonoBehaviour
 
 				if (grid[gridHeight - 1, col] == null)
 				{
-					grid[gridHeight - 1, col] = Instantiate(tilePrefabs[4], new Vector3(col, tilePrefabs[4].transform.position.y, gridHeight - 1), Quaternion.identity, borderZoneObj.transform);
+					grid[gridHeight - 1, col] = Instantiate(tilePrefabs[tilePrefabs.Length - 1], new Vector3(col, tilePrefabs[tilePrefabs.Length - 1].transform.position.y, gridHeight - 1), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[gridHeight - 1, col]);
 					grid[gridHeight - 1, col].GetComponent<Tile>().xPos = col;
 					grid[gridHeight - 1, col].GetComponent<Tile>().zPos = gridHeight - 1;
@@ -474,7 +468,7 @@ public class GenerateLevel : MonoBehaviour
 			{
 				if (grid[0, col] == null)
 				{
-					grid[0, col] = Instantiate(tilePrefabs[3], new Vector3(col, tilePrefabs[3].transform.position.y, 0), Quaternion.identity, borderZoneObj.transform);
+					grid[0, col] = Instantiate(tilePrefabs[tilePrefabs.Length - 2], new Vector3(col, tilePrefabs[tilePrefabs.Length - 2].transform.position.y, 0), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[0, col]);
 					grid[0, col].GetComponent<Tile>().xPos = col;
 					grid[0, col].GetComponent<Tile>().zPos = 0;
@@ -482,7 +476,7 @@ public class GenerateLevel : MonoBehaviour
 
 				if (grid[gridHeight - 1, col] == null)
 				{
-					grid[gridHeight - 1, col] = Instantiate(tilePrefabs[3], new Vector3(col, tilePrefabs[3].transform.position.y, gridHeight - 1), Quaternion.identity, borderZoneObj.transform);
+					grid[gridHeight - 1, col] = Instantiate(tilePrefabs[tilePrefabs.Length - 2], new Vector3(col, tilePrefabs[tilePrefabs.Length - 2].transform.position.y, gridHeight - 1), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[gridHeight - 1, col]);
 					grid[gridHeight - 1, col].GetComponent<Tile>().xPos = col;
 					grid[gridHeight - 1, col].GetComponent<Tile>().zPos = gridHeight - 1;
@@ -496,7 +490,7 @@ public class GenerateLevel : MonoBehaviour
 			{
 				if (grid[row, 0] == null)
 				{
-					grid[row, 0] = Instantiate(tilePrefabs[4], new Vector3(0, tilePrefabs[4].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
+					grid[row, 0] = Instantiate(tilePrefabs[tilePrefabs.Length - 1], new Vector3(0, tilePrefabs[tilePrefabs.Length - 1].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[row, 0]);
 					grid[row, 0].GetComponent<Tile>().xPos = 0;
 					grid[row, 0].GetComponent<Tile>().zPos = row;
@@ -504,7 +498,7 @@ public class GenerateLevel : MonoBehaviour
 
 				if (grid[row, gridWidth - 1] == null)
 				{
-					grid[row, gridWidth - 1] = Instantiate(tilePrefabs[4], new Vector3(gridWidth - 1, tilePrefabs[4].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
+					grid[row, gridWidth - 1] = Instantiate(tilePrefabs[tilePrefabs.Length - 1], new Vector3(gridWidth - 1, tilePrefabs[tilePrefabs.Length - 1].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[row, gridWidth - 1]);
 					grid[row, gridWidth - 1].GetComponent<Tile>().xPos = gridWidth - 1;
 					grid[row, gridWidth - 1].GetComponent<Tile>().zPos = row;
@@ -514,7 +508,7 @@ public class GenerateLevel : MonoBehaviour
 			{
 				if (grid[row, 0] == null)
 				{
-					grid[row, 0] = Instantiate(tilePrefabs[3], new Vector3(0, tilePrefabs[3].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
+					grid[row, 0] = Instantiate(tilePrefabs[tilePrefabs.Length - 2], new Vector3(0, tilePrefabs[tilePrefabs.Length - 2].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[row, 0]);
 					grid[row, 0].GetComponent<Tile>().xPos = 0;
 					grid[row, 0].GetComponent<Tile>().zPos = row;
@@ -522,7 +516,7 @@ public class GenerateLevel : MonoBehaviour
 
 				if (grid[row, gridWidth - 1] == null)
 				{
-					grid[row, gridWidth - 1] = Instantiate(tilePrefabs[3], new Vector3(gridWidth - 1, tilePrefabs[3].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
+					grid[row, gridWidth - 1] = Instantiate(tilePrefabs[tilePrefabs.Length - 2], new Vector3(gridWidth - 1, tilePrefabs[tilePrefabs.Length - 2].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[row, gridWidth - 1]);
 					grid[row, gridWidth - 1].GetComponent<Tile>().xPos = gridWidth - 1;
 					grid[row, gridWidth - 1].GetComponent<Tile>().zPos = row;
@@ -583,7 +577,7 @@ public class GenerateLevel : MonoBehaviour
 					randomZ = Random.Range(oreZone.zPos, oreZone.zPos + oreZone.height);
 				} while (!IsTileWalkable(randomX, randomZ));
 
-				SetGridItem(randomZ, randomX, Instantiate(tilePrefabs[0], new Vector3(randomX, 0, randomZ), tilePrefabs[0].transform.rotation, oreZoneObjs[i].transform));
+				SetGridItem(randomZ, randomX, Instantiate(tilePrefabs[(int)asteroidType * 2], new Vector3(randomX, 0, randomZ), tilePrefabs[(int)asteroidType * 2].transform.rotation, oreZoneObjs[i].transform));
 				grid[randomZ, randomX].GetComponent<Tile>().occupant = Instantiate(orePrefabs[0], new Vector3(randomX, orePrefabs[0].transform.position.y, randomZ), Quaternion.identity, oreZoneObjs[i].transform);
 				grid[randomZ, randomX].GetComponent<Tile>().xPos = randomX;
 				grid[randomZ, randomX].GetComponent<Tile>().zPos = randomZ;
@@ -623,7 +617,7 @@ public class GenerateLevel : MonoBehaviour
 				continue;
 			}
 
-			SetGridItem(randomZ, randomX, Instantiate(tilePrefabs[0], new Vector3(randomX, 0, randomZ), tilePrefabs[0].transform.rotation, oreZoneObjs[i].transform));
+			SetGridItem(randomZ, randomX, Instantiate(tilePrefabs[(int)asteroidType * 2], new Vector3(randomX, 0, randomZ), tilePrefabs[(int)asteroidType * 2].transform.rotation, oreZoneObjs[i].transform));
 			grid[randomZ, randomX].GetComponent<Tile>().occupant = Instantiate(orePrefabs[0], new Vector3(randomX, orePrefabs[0].transform.position.y, randomZ), Quaternion.identity, randomZone.transform);
 			grid[randomZ, randomX].GetComponent<Tile>().xPos = randomX;
 			grid[randomZ, randomX].GetComponent<Tile>().zPos = randomZ;
