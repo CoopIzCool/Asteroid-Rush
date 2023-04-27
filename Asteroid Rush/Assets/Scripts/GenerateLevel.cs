@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -9,6 +10,13 @@ public enum Direction
 	Down,
 	Left,
 	Right
+}
+
+public enum AsteroidType
+{
+	Gray,
+	Blue,
+	Brown,
 }
 
 public class GenerateLevel : MonoBehaviour
@@ -31,6 +39,9 @@ public class GenerateLevel : MonoBehaviour
 	// Validation fields
 	private List<Vector2Int> corePositions = new List<Vector2Int>();
 	private Vector2Int shipPosition;
+
+	// The asteroid type
+	public static AsteroidType asteroidType = AsteroidType.Gray;
 
 	[Header("Prefabs")]
 	[SerializeField] private GameObject[] tilePrefabs;
@@ -202,23 +213,6 @@ public class GenerateLevel : MonoBehaviour
 		}
 
 		return path;
-	}
-
-	/// <summary>
-	/// Spawns the given prefab at a random unoccupied location in the grid
-	/// </summary>
-	/// <param name="prefab">The prefab to spawn</param>
-	private void SpawnEntityAtRandom(GameObject prefab)
-	{
-		// Select random positions on the grid until one that is unoccupied is found
-		Vector2Int randomPos;
-		do
-		{
-			randomPos = new Vector2Int(Random.Range(0, gridWidth), Random.Range(0, gridHeight));
-		}
-		while (grid[randomPos.y, randomPos.x].GetComponent<Tile>().tileType != TileType.Basic && grid[randomPos.y, randomPos.x].GetComponent<Tile>().occupant != null);
-
-		grid[randomPos.y, randomPos.x].GetComponent<Tile>().occupant = Instantiate(prefab, new Vector3(randomPos.x, prefab.transform.position.y, randomPos.y), prefab.transform.rotation);
 	}
 
 	/// <summary>
