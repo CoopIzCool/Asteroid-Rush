@@ -11,4 +11,8 @@ public class SlowZone : MonoBehaviour
     {
         TurnsLeft = 3;
     }
+
+    public bool IsInRange(Tile test) {
+        return Mathf.Abs(test.xPos - Tile.xPos) <= 1 && Mathf.Abs(test.zPos - Tile.zPos) <= 1;
+    }
 }

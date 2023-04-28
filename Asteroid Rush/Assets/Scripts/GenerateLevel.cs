@@ -73,13 +73,6 @@ public class GenerateLevel : MonoBehaviour
 		AlienManager.Instance.Grid = this;
 		//do ResetGrid(); while (!IsGridValid());
 		ResetGrid();
-
-		// TEST CODE
-		foreach(GameObject tile in grid) {
-			if(tile.GetComponent<Tile>().occupant != null && tile.GetComponent<Tile>().occupant.GetComponent<UnrefinedOre>() != null) {
-				tile.GetComponent<Tile>().occupant.GetComponent<UnrefinedOre>().AddDrillBot();
-			}
-		}
 	}
 
 	// Update is called once per frame

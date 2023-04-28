@@ -109,6 +109,16 @@ public class AlienManager : MonoBehaviour
 
     // helper function to find the closest player and create a path to it
     private void AssignAlienMovement(Alien alien) {
+        // don't move the alien if in a trap
+        if(alien.CurrentTrap != null) {
+            alien.TakeDamage(1);
+            alien.CurrentTrap.GetComponent<Trap>().TurnsLeft--;
+            if(alien.CurrentTrap.GetComponent<Trap>().TurnsLeft <= 0) {
+                Destroy(alien.CurrentTrap);
+                alien.CurrentTrap = null;
+            }
+        }
+
         // find the closest player character
         GameObject closestPlayer = PlayerCharacters[0];
         float closestDistance = Vector3.Distance(closestPlayer.transform.position, alien.transform.position);
@@ -142,15 +152,43 @@ public class AlienManager : MonoBehaviour
         }
 
         List<Tile> path = GenerateLevel.FindPath(alien.GetComponent<Character>().CurrentTile, closestPlayer.GetComponent<Character>().CurrentTile);
-        if(path != null) {
-            if(alien.GetComponent<Character>().Movement >= path.Count - 1) {
-                path.RemoveAt(path.Count - 1); // remove last element because it is the tile the player is standing on
-            } else {
-                // only travel the movement amount
-                path.RemoveRange(alien.GetComponent<Character>().Movement + 1, path.Count - alien.GetComponent<Character>().Movement - 1);
-            }
-            alien.SetPath(path, MOVE_SPEED);
+        if(path == null) {
+            return;
         }
+
+        if(alien.GetComponent<Character>().Movement >= path.Count - 1) {
+            path.RemoveAt(path.Count - 1); // remove last element because it is the tile the player is standing on
+        } else {
+            // only travel the movement amount
+            path.RemoveRange(alien.GetComponent<Character>().Movement + 1, path.Count - alien.GetComponent<Character>().Movement - 1);
+        }
+
+        //  check for slow from a slow field
+        for(int i = 0; i < path.Count - 1; i++) { // ignore the last tile because the path can't get shorter there
+            foreach(GameObject slowZone in slowZones) {
+                if(slowZone.GetComponent<SlowZone>().IsInRange(path[i])) {
+                    path.RemoveAt(path.Count - 1); // shorten the travel distance by 1 for each slow tile stepped on
+                    break; // no slow zone stacking
+                }
+            }
+        }
+
+        // check for traps
+        foreach(GameObject trap in traps) {
+            for(int i = 0; i < path.Count; i++) {
+                if(trap.GetComponent<Trap>().Tile == path[i]) {
+                    // end path here
+                    path.RemoveRange(i, path.Count - i);
+                    alien.CurrentTrap = trap;
+                    break;
+                }
+            }
+        }
+        if(alien.CurrentTrap != null) {
+            traps.Remove(alien.CurrentTrap);
+        }
+
+        alien.SetPath(path, MOVE_SPEED);
     }
 
     public void RemoveAlien(Alien alienScript) {
