@@ -26,6 +26,20 @@ public class LevelButton : MonoBehaviour
 
     private void OnMouseUpAsButton()
     {
-       SceneManager.LoadScene("NewerRyanScene");  
+        switch (gameObject.name)
+        {
+			case "level_one_screen":
+				GenerateLevel.asteroidType = AsteroidType.Gray;
+				break;
+			case "level_two_screen":
+				GenerateLevel.asteroidType = AsteroidType.Blue;
+				break;
+			case "level_three_screen":
+				GenerateLevel.asteroidType = AsteroidType.Brown;
+				break;
+
+		}
+
+        SceneManager.LoadScene("JohnScene");  
     }
 }
