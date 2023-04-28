@@ -44,6 +44,9 @@ public class AlienManager : MonoBehaviour
             GameObject adjacentPlayer = FindAdjacentPlayer(activeAliens[currentAlien]);
             if(adjacentPlayer != null) {
                 adjacentPlayer.GetComponent<Character>().TakeDamage(activeAliens[currentAlien].GetComponent<Alien>().Damage);
+
+                // face player
+                activeAliens[currentAlien].GetComponent<Character>().RotateToward(adjacentPlayer.transform.position - activeAliens[currentAlien].transform.position);
             }
 
             currentAlien++;
