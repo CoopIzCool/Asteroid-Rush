@@ -7,6 +7,7 @@ public class UnrefinedOre : MonoBehaviour
     #region Fields
     [SerializeField]
     private int breakabillity;
+    [SerializeField] private GameObject drillBotPrefab;
 
     private GameObject drillBot;
     public bool HasDrillBot { get { return drillBot != null; } }
@@ -21,15 +22,15 @@ public class UnrefinedOre : MonoBehaviour
             if(HasDrillBot) {
                 Destroy(drillBot);
             }
-            gameObject.SetActive(false);
+            Destroy(gameObject);
             return true;
         }
         return false;
     }
 
-    public void AddDrillBot(GameObject drillBot) {
-        this.drillBot = drillBot;
-        drillBot.transform.position = transform.position;
+    public void AddDrillBot() {
+        drillBot = Instantiate(drillBotPrefab);
+        drillBot.transform.position = transform.position + new Vector3(0, 0.6f, 0);
         TurnHandler.Instance.AddDrillingOre(this); // this makes the ore take damage every turn
     }
 

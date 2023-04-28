@@ -89,9 +89,10 @@ public class Character : MonoBehaviour
             direction.y = 0;
             direction.Normalize();
 
+            RotateToward(direction);
+
             Vector3 lastRotation = transform.rotation.eulerAngles;
-            transform.rotation = Quaternion.Euler(lastRotation.x, Mathf.Atan2(-direction.z, direction.x) / Mathf.PI * 180, lastRotation.z);
-            //transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, transform.rotation.z);
+            transform.rotation = Quaternion.Euler(lastRotation.x, Mathf.Atan2(-direction.z, direction.x) / Mathf.PI * 180 - 90, lastRotation.z);
 
             transform.position += direction * moveSpeed * Time.deltaTime;
 
@@ -135,6 +136,12 @@ public class Character : MonoBehaviour
         }
         tile.occupant = gameObject;
         currentTile = tile;
+    }
+
+    // ingores y coordinate
+    public void RotateToward(Vector3 facingDirection) {
+        Vector3 lastRotation = transform.rotation.eulerAngles;
+        transform.rotation = Quaternion.Euler(lastRotation.x, Mathf.Atan2(-facingDirection.z, facingDirection.x) / Mathf.PI * 180 - 90, lastRotation.z);
     }
 
     // used to set up a path for the character to move along

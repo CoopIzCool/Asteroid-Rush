@@ -249,7 +249,7 @@ public class TurnHandler : MonoBehaviour
             if(destroyed) {
                 oresWithDrillBots.RemoveAt(i);
                 i--;
-                GameObject.Find("Supporter").GetComponent<Supporter>().CollectOre();
+                characters[2].GetComponent<Supporter>().CollectOre();
             }
         }
 
@@ -326,6 +326,7 @@ public class TurnHandler : MonoBehaviour
 
         Debug.Log("Attacking");
         selectedCharacter.gameObject.GetComponent<Character>().Attack(selectedTile.occupant.GetComponent<Character>());
+        selectedCharacter.GetComponent<Character>().RotateToward(selectedTile.occupant.transform.position - selectedCharacter.transform.position);
 
         ClearAttackPath();
     }
