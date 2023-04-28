@@ -64,6 +64,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef817e69692bd1d40b4cb3435c4d59dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedCharacter: {fileID: 0}
+  currentPlayerState: 0
+  characters: []
+  rocket: {fileID: 0}
+  levelGenerator: {fileID: 0}
+  availableTiles: []
+  attackableTiles: []
+  mineableTiles: []
 --- !u!120 &1942460243909495767
 LineRenderer:
   m_ObjectHideFlags: 0

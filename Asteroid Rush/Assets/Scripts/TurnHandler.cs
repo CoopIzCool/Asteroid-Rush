@@ -42,7 +42,7 @@ public class TurnHandler : MonoBehaviour
     [Header("Mining Components")]
     [SerializeField]
     private List<Tile> mineableTiles = new List<Tile>();
-
+    private bool canDeposit = false;
     #endregion
 
     #region Properties
@@ -55,7 +55,14 @@ public class TurnHandler : MonoBehaviour
     {
         get { return tileFinder; }
     }
-    public TurnOrder CurrentTurn { get { return currentTurn; } }
+    public TurnOrder CurrentTurn 
+    { 
+        get { return currentTurn; } 
+    }
+    public Rocket RocketObject
+    {
+        set { rocket = value; }
+    }
     #endregion
 
     private static TurnHandler instance;
@@ -133,7 +140,7 @@ public class TurnHandler : MonoBehaviour
             //If there is a player selected
             if (selectedCharacter != null)
             {
-                if(currentPlayerState == PlayerState.Attack && (attackableTiles.Count == 0 && mineableTiles.Count == 0))
+                if(currentPlayerState == PlayerState.Attack && (attackableTiles.Count == 0 && mineableTiles.Count == 0 && !canDeposit))
                 {
                     selectedCharacter = null;
                     currentPlayerState = PlayerState.None;
@@ -200,6 +207,8 @@ public class TurnHandler : MonoBehaviour
             tile.SetAvailabillitySelector(false);
         }
         mineableTiles.Clear();
+
+        canDeposit = false;
     }
     #endregion
 
@@ -216,8 +225,10 @@ public class TurnHandler : MonoBehaviour
     #region Set Tile
     private void SetAvailableTiles()
     {
+        //Debug.Log("Turning moving on");
         foreach (Tile tile in availableTiles)
         {
+            //Debug.Log("Turning on " + tile.zPos + " , " + tile.xPos);
             tile.SetAvailabillitySelector(true);
         }
     }
@@ -280,13 +291,15 @@ public class TurnHandler : MonoBehaviour
     private void AttackAtTile()
     {
         Tile selectedTile = raycastManager.TileRaycast();
-        //Debug.Log(selectedTile.occupant);
+        Debug.Log(selectedTile.occupant);
         if (selectedTile != null)
         {
             if (selectedTile.occupant.GetComponent<Character>())
                 AttackEnemy(selectedTile);
             else if (selectedTile.occupant.GetComponent<UnrefinedOre>())
                 MineAtTile(selectedTile);
+            else if (selectedTile.occupant.GetComponent<Rocket>())
+                DepositOre();
         }
     }
 
@@ -304,8 +317,9 @@ public class TurnHandler : MonoBehaviour
             selectedCharacter.gameObject.GetComponent<Character>().SetPath(GenerateLevel.FindPath(selectedCharacter.GetComponent<Character>().CurrentTile, selectedTile), 5.0f);
         }
         selectedCharacter.gameObject.GetComponent<Character>().Moved = true;
-        if(selectedTile.rocketAccessible && (selectedCharacter.GetComponent<Character>().OreCount > 1))
+        if(selectedTile.rocketAccessible && (selectedCharacter.GetComponent<Character>().OreCount >= 1))
         {
+            canDeposit = true;
             rocket.CanDeposit();
         }
         attackableTiles = tileFinder.FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>(), selectedTile);
@@ -328,7 +342,7 @@ public class TurnHandler : MonoBehaviour
         selectedCharacter.gameObject.GetComponent<Character>().Attack(selectedTile.occupant.GetComponent<Character>());
         selectedCharacter.GetComponent<Character>().RotateToward(selectedTile.occupant.transform.position - selectedCharacter.transform.position);
 
-        ClearAttackPath();
+        ClearAvailableTiles();
     }
 
     private void MineAtTile(Tile selectedTile)
@@ -339,7 +353,16 @@ public class TurnHandler : MonoBehaviour
         }
         Debug.Log("Mining");
         selectedCharacter.gameObject.GetComponent<Character>().MineOre(selectedTile.occupant.GetComponent<UnrefinedOre>());
-        ClearMiningPath();
+        ClearAvailableTiles();
+    }
+
+    private void DepositOre()
+    {
+        Debug.Log("Depositing Ore");
+        rocket.DepositOre(selectedCharacter.GetComponent<Character>().OreCount);
+        selectedCharacter.GetComponent<Character>().OreCount = 0;
+        canDeposit = false;
+        ClearAvailableTiles();
     }
     #endregion
 
@@ -354,4 +377,7 @@ public class TurnHandler : MonoBehaviour
     public void AddDrillingOre(UnrefinedOre ore) {
         oresWithDrillBots.Add(ore);
     }
+
+
+
 }

@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class Rocket : MonoBehaviour
 {
     #region Fields
+    [SerializeField]
     private int oreTotal = 0;
     [SerializeField]
     private Tile rocketTile;
@@ -27,8 +28,14 @@ public class Rocket : MonoBehaviour
     }
     #endregion
 
+    private void Start()
+    {
+        GameObject turnHandlerObject = GameObject.FindGameObjectWithTag("TurnHandler");
+        turnHandlerObject.GetComponent<TurnHandler>().RocketObject = this;
+    }
     public void CanDeposit()
     {
+        Debug.Log("Depositing");
         rocketTile.SetAvailabillitySelector(true);
     }
     public void DepositOre(int oreDeposit)

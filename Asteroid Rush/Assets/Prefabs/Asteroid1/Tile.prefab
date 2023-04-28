@@ -104,6 +104,7 @@ MonoBehaviour:
   xPos: 0
   zPos: 0
   illumination: {fileID: 6048137482646023290}
+  rocketAccessible: 0
 --- !u!65 &7154154064976034411
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -136,7 +137,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &9064712811822208440
 Transform:
   m_ObjectHideFlags: 0

@@ -69,7 +69,8 @@ public class Character : MonoBehaviour
 
     public int OreCount
     {
-        get { return OreCount; }
+        get { return oreCount; }
+        set { oreCount = value; }
     }
     #endregion
     // Start is called before the first frame update
