@@ -97,3 +97,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breakabillity: 6
+  drillBotPrefab: {fileID: 8302163267269311188, guid: abd8d8bd617d00744a90dc223661132f, type: 3}

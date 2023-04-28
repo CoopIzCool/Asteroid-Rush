@@ -5,14 +5,14 @@ using UnityEngine;
 // player character with support abilities
 public class Supporter : Character
 {
-    [SerializeField] private GameObject drillBotPrefab;
+    
 
     public void CreateDrillBot(UnrefinedOre targetOre) {
         if(targetOre.HasDrillBot) {
             return;
         }
 
-        targetOre.AddDrillBot(Instantiate(drillBotPrefab));
+        targetOre.AddDrillBot();
     }
 
     public override void SpecialAction()
