@@ -84,6 +84,7 @@ public class GenerateLevel : MonoBehaviour
 		AlienManager.Instance.Grid = this;
 		//do ResetGrid(); while (!IsGridValid());
 		ResetGrid();
+		Debug.Log(DataTracking.data[0]);
 	}
 
 	// Update is called once per frame

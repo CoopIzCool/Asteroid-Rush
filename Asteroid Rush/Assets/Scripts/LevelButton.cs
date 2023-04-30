@@ -26,20 +26,29 @@ public class LevelButton : MonoBehaviour
 
     private void OnMouseUpAsButton()
     {
-        switch (gameObject.name)
+        if (DataTracking.data != null)
         {
-			case "level_one_screen":
-				GenerateLevel.asteroidType = AsteroidType.Gray;
-				break;
-			case "level_two_screen":
-				GenerateLevel.asteroidType = AsteroidType.Blue;
-				break;
-			case "level_three_screen":
-				GenerateLevel.asteroidType = AsteroidType.Brown;
-				break;
+            switch (gameObject.name)
+            {
+                case "level_one_screen":
+                    GenerateLevel.asteroidType = AsteroidType.Gray;
+                    break;
+                case "level_two_screen":
+                    GenerateLevel.asteroidType = AsteroidType.Blue;
+                    break;
+                case "level_three_screen":
+                    GenerateLevel.asteroidType = AsteroidType.Brown;
+                    break;
+            }
 
-		}
+            string numRuns = DataTracking.data[0] + 1;
+            DataTracking.data[0] = numRuns.ToString();
 
-        SceneManager.LoadScene("JohnScene");  
+            SceneManager.LoadScene("JohnScene");
+        }
+        else
+        {
+            Debug.Log("Data not yet loaded!");
+        }
     }
 }

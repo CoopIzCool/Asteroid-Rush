@@ -24,7 +24,6 @@ public class HealthUI : MonoBehaviour
             int numBlocks = characters[i].GetComponent<Character>().MaxHealth;
             float healthBlockWidth = healthBars[i].GetComponent<RectTransform>().rect.width / numBlocks;
 			float healthBarLeft = -healthBars[i].GetComponent<RectTransform>().rect.width / 2f;
-            Debug.Log(healthBarLeft);
 
             for(int j = 0; j < numBlocks; j++)
             {
