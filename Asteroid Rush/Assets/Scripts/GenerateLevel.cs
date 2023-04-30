@@ -25,6 +25,8 @@ public class GenerateLevel : MonoBehaviour
 	public static GameObject[,] grid = null;
 	private static int gridWidth = 0;
 	private static int gridHeight = 0;
+	private static GameObject[] playerCharcters;
+	public static GameObject[] PlayerCharacters { get { return playerCharcters; } }
 
 	public static int GridWidth
 	{
@@ -308,8 +310,8 @@ public class GenerateLevel : MonoBehaviour
 		player2.GetComponent<Character>().MoveToTile(grid[gridHeight / 2 + 1, gridWidth / 2 + 1].GetComponent<Tile>());
 		GameObject player3 = Instantiate(playerPrefabs[2]);
 		player3.GetComponent<Character>().MoveToTile(grid[gridHeight / 2 + 2, gridWidth / 2].GetComponent<Tile>());
-		AlienManager.Instance.PlayerCharacters = new GameObject[3] { player1, player2, player3 };
-		TurnHandler.Instance.characters = new GameObject[3] { player1, player2, player3 };
+		playerCharcters = new GameObject[3] { player1, player2, player3 };
+		GameplayUI.Instance.SetupUITrackers();
 
 		//Set initial character tile to players
 		grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>().occupant.GetComponent<Character>().CurrentTile = grid[gridHeight / 2 + 1, gridWidth / 2 - 1].GetComponent<Tile>();
