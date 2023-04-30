@@ -46,6 +46,10 @@ public class ShopManager : MonoBehaviour
     public GameObject supportEquipScrollView;
 
     public EquipmentButton[] equipments;
+    /// <summary>
+    /// Copied array of above
+    /// </summary>
+    public static EquipmentButton[] charEquipments;
 
     // Start is called before the first frame update
     void Start()
@@ -195,7 +199,14 @@ public class ShopManager : MonoBehaviour
         //{
         //    Debug.Log(i + " " + equipments[i].isSelected);
         //}
-      
+
+        charEquipments = equipments;
+
+        //for (int i = 0; i < charEquipments.Length; i++)
+        //{
+        //    Debug.Log(i + " " + charEquipments[i].isSelected);
+        //}
+
     }
 
     public void GoToView(GameObject scrollView)

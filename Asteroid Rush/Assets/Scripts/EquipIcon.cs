@@ -21,7 +21,7 @@ public class EquipIcon : MonoBehaviour
         else if (shopManager.equipments[shopID + 1].isSelected)
         {
             icon.GetComponent<SpriteRenderer>().sprite = shopManager.equipments[shopID + 1].icon.GetComponent<SpriteRenderer>().sprite;
-            icon.transform.localScale = shopManager.equipments[shopID].icon.transform.localScale;
+            icon.transform.localScale = shopManager.equipments[shopID + 1].icon.transform.localScale;
         }
     }
 }
