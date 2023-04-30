@@ -30,6 +30,11 @@ public class Character : MonoBehaviour
     #endregion
 
     #region Properties
+    public int MaxHealth
+    {
+        get { return maxHealth; }
+    }
+
     public int Movement
     {
         get { return movementPoints; }
@@ -128,6 +133,7 @@ public class Character : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
+        if(gameObject.tag == "Character") HealthUI.UpdateHealthBar(gameObject, damage);
         Debug.Log(gameObject.name + " has taken " + damage + " damage. They now have " + health + " health");
         if(health <= 0)
         {
