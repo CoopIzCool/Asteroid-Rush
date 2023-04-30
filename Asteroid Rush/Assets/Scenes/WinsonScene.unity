@@ -1732,6 +1732,7 @@ MonoBehaviour:
   icon: {fileID: 1971049395}
   shopManager: {fileID: 1885287967}
   shopID: 7
+  equipName: Pickaxe-FW
   altEquipment: {fileID: 904214277}
   isSelected: 0
 --- !u!1 &195476833
@@ -2317,7 +2318,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1754467248}
   m_HandleRect: {fileID: 1754467247}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -2512,6 +2513,7 @@ MonoBehaviour:
   icon: {fileID: 858534786}
   shopManager: {fileID: 1885287967}
   shopID: 11
+  equipName: Holy Cross
   altEquipment: {fileID: 338687459}
   isSelected: 0
 --- !u!1 &224792869
@@ -2825,6 +2827,7 @@ MonoBehaviour:
   icon: {fileID: 31921454}
   shopManager: {fileID: 1885287967}
   shopID: 8
+  equipName: Blaster-KI
   altEquipment: {fileID: 673764790}
   isSelected: 0
 --- !u!1001 &246665695
@@ -3426,6 +3429,7 @@ MonoBehaviour:
   icon: {fileID: 438162235}
   shopManager: {fileID: 1885287967}
   shopID: 10
+  equipName: Medkit-VT
   altEquipment: {fileID: 217258775}
   isSelected: 0
 --- !u!4 &354601206 stripped
@@ -6898,6 +6902,7 @@ MonoBehaviour:
   icon: {fileID: 68630991}
   shopManager: {fileID: 1885287967}
   shopID: 9
+  equipName: Blaster-QY
   altEquipment: {fileID: 243010493}
   isSelected: 0
 --- !u!1001 &687083310
@@ -9315,6 +9320,7 @@ MonoBehaviour:
   icon: {fileID: 748408263}
   shopManager: {fileID: 1885287967}
   shopID: 6
+  equipName: Shovel-OA
   altEquipment: {fileID: 195178870}
   isSelected: 0
 --- !u!1 &927516405 stripped
@@ -13803,7 +13809,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -270.90515, y: 153}
+  m_AnchoredPosition: {x: -270.90512, y: 153}
   m_SizeDelta: {x: -555.02, y: -307.79}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1311395749

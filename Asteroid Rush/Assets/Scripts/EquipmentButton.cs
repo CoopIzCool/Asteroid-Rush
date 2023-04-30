@@ -8,6 +8,7 @@ public class EquipmentButton : MonoBehaviour
     public GameObject icon;
     public ShopManager shopManager;
     public int shopID;
+    public string equipName;
 
     public EquipmentButton altEquipment;
 

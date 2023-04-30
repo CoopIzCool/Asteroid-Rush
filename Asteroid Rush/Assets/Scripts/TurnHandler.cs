@@ -82,6 +82,15 @@ public class TurnHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //SHOWS WHICH EQUIPMENT ARE EQUIPPED
+        for (int i = 0; i < ShopManager.charEquipments.Length; i++)
+        {
+            if(ShopManager.charEquipments[i].isSelected == true)
+            {
+                Debug.Log(ShopManager.charEquipments[i].equipName + " " + ShopManager.charEquipments[i].isSelected);
+            }
+        }
+
         //Debug.Log(characters.Length);
         if (currentTurn == TurnOrder.Player)
         {
