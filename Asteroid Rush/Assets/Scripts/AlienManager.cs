@@ -221,6 +221,23 @@ public class AlienManager : MonoBehaviour
         trap.GetComponent<Trap>().Tile = placement;
     }
 
+    public bool CanPlaceAbility(Tile spot) {
+        // check if there is already a trap or slow zone on that spot
+        foreach(GameObject oldTrap in traps) {
+            if(oldTrap.GetComponent<Trap>().Tile == spot) {
+                return false;
+            }
+        }
+        
+        foreach(GameObject oldZone in slowZones) {
+            if(oldZone.GetComponent<SlowZone>().Tile == spot) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     // supporter's slow zone ability
     public void AddSlowZone(Tile placement) {
         GameObject slowZone = Instantiate(slowZonePrefab);

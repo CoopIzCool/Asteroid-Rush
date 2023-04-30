@@ -105,14 +105,13 @@ MonoBehaviour:
   maxHealth: 12
   movementPoints: 5
   damage: 0
-  attackRange: 0
+  attackRange: 1
   isPlayer: 1
   miningPower: 0
   oreCount: 0
   currentTile: {fileID: 0}
   heightAboveTile: 0.62
   moved: 0
-  drillBotPrefab: {fileID: 0}
 --- !u!65 &969685304422301012
 BoxCollider:
   m_ObjectHideFlags: 0

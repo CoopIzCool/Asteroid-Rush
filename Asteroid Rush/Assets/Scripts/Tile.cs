@@ -58,11 +58,11 @@ public class Tile : MonoBehaviour
         return false;
     }
 
-    public bool IsMineable(Character attackingCharacter)
+    public bool IsMineable()
     {
         if (occupant != null)
         {
-            if (occupant.GetComponent<UnrefinedOre>() && attackingCharacter.MiningPower > 0)
+            if (occupant.GetComponent<UnrefinedOre>())
             {
                 Debug.Log("This is an ore");
                 return true;

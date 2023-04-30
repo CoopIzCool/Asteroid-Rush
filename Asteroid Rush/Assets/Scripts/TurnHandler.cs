@@ -15,8 +15,10 @@ public class TurnHandler : MonoBehaviour
     public enum PlayerState
     {
         PlayerSelect,
-        MovementSelect, 
+        MovementSelect,
+        ActionSelect,
         AttackSelect,
+        DrillBotPlacement,
         Animating,
     }
 
@@ -90,6 +92,10 @@ public class TurnHandler : MonoBehaviour
         switch (currentPlayerState) {
             case PlayerState.PlayerSelect:
                 // look for a character to select
+                // wait for the player to click one of the buttons
+
+                // old raycast method below
+
                 //if (Input.GetKeyDown(KeyCode.Mouse0)) {
                 //    raycastManager.TestRaycast();
                 //    if (selectedCharacter != null && !selectedCharacter.GetComponent<Character>().Moved)
@@ -101,9 +107,6 @@ public class TurnHandler : MonoBehaviour
                 //        GameplayUI.Instance.OpenMenu(GameplayMenu.None);
                 //    }
                 //}
-
-                // wait for the player to click one of the buttons
-                // end turn button can end the turn
                 break;
 
             case PlayerState.MovementSelect:
@@ -115,7 +118,7 @@ public class TurnHandler : MonoBehaviour
                 break;
 
             case PlayerState.AttackSelect:
-                // choose a tile to attack
+                // choose a tile to attack or mine
                 if (Input.GetKeyDown(KeyCode.Mouse0)) {
                     bool success = AttackAtTile();
                     if(success) {
@@ -127,15 +130,55 @@ public class TurnHandler : MonoBehaviour
             case PlayerState.Animating:
                 // wait for the character to stop moving
                 if(!selectedCharacter.GetComponent<Character>().Animating) {
-                    currentPlayerState = PlayerState.AttackSelect;
+                    // after moving, choose an action this turn
+                    GameplayUI.Instance.DisableCharacterMoves(selectedCharacter.GetComponent<Character>());
 
-                    FindAttackableTiles(selectedCharacter.GetComponent<Character>().CurrentTile);
+                    // determine which actions this player can take after moving and set up the UI acoordingly
+                    if(selectedCharacter.GetComponent<Miner>()) {
+                        bool canAttack = tileFinder.FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile).Count > 0;
+                        bool canMine = tileFinder.FindAvailableMinableTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile).Count > 0;
+                        if(canAttack || canMine) {
+                            GameplayUI.Instance.OpenMinerActions(canAttack, canMine);
+                            currentPlayerState = PlayerState.ActionSelect;
+                        } else {
+                            SetStatePlayerSelect();
+                        }
+                    }
+                    else if(selectedCharacter.GetComponent<Fighter>()) {
+                        bool canAttack = tileFinder.FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile).Count > 0;
+                        bool canTrap = AlienManager.Instance.CanPlaceAbility(selectedCharacter.GetComponent<Character>().CurrentTile);
+                        if(canAttack || canTrap) {
+                            GameplayUI.Instance.OpenFighterActions(canAttack, canTrap);
+                            currentPlayerState = PlayerState.ActionSelect;
+                        } else {
+                            SetStatePlayerSelect();
+                        }
+                    }
+                    else if(selectedCharacter.GetComponent<Supporter>()) {
+                        bool canMine = FindDrillbottableTiles().Count > 0;
+                        bool canZone = AlienManager.Instance.CanPlaceAbility(selectedCharacter.GetComponent<Character>().CurrentTile);
+                        if(canMine || canZone) {
+                            GameplayUI.Instance.OpenSupporterActions(canMine, canZone);
+                            currentPlayerState = PlayerState.ActionSelect;
+                        } else {
+                            SetStatePlayerSelect();
+                        }
+                    }
+                }
+                break;
 
-                    // go back to player select if this character has nothing to attack
-                    if (attackableTiles.Count == 0 && mineableTiles.Count == 0 && !canDeposit)
+            case PlayerState.ActionSelect:
+                // using a character's specific menu, waiting for a button click
+                break;
+
+            case PlayerState.DrillBotPlacement:
+                if (Input.GetKeyDown(KeyCode.Mouse0)) {
+                    Tile selectedTile = raycastManager.TileRaycast();
+                    if (selectedTile != null)
                     {
-                        selectedCharacter = null;
+                        selectedTile.occupant.GetComponent<UnrefinedOre>().AddDrillBot();
                         SetStatePlayerSelect();
+                        ClearAvailableTiles();
                     }
                 }
                 break;
@@ -191,12 +234,22 @@ public class TurnHandler : MonoBehaviour
     {
         Debug.Log("Setting up next turn");
         currentPlayerState = PlayerState.PlayerSelect;
-        GameplayUI.Instance.OpenMenu(GameplayMenu.PlayerSelect);
-        GameplayUI.Instance.AllowCharacterSelection();
+        GameplayUI.Instance.OpenPlayerSelect(true);
         foreach (GameObject character in GenerateLevel.PlayerCharacters)
         {
             character.GetComponent<Character>().Moved = false;
         }
+    }
+
+    private List<Tile> FindDrillbottableTiles() {
+        List<Tile> tilesInRange = tileFinder.FindAvailableMinableTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile);
+        for(int i = tilesInRange.Count - 1; i >= 0; i--) {
+            if(tilesInRange[i].occupant.GetComponent<UnrefinedOre>().HasDrillBot) {
+                tilesInRange.RemoveAt(i);
+            }
+        }
+
+        return tilesInRange;
     }
 
     #region Set Tile
@@ -227,6 +280,32 @@ public class TurnHandler : MonoBehaviour
     }
     #endregion
 
+    #region interface for choosing action type
+    public void ChooseAttack() {
+        attackableTiles = tileFinder.FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile);
+        SetAttackableTiles();
+        ClearCurrentPath();
+        currentPlayerState = PlayerState.AttackSelect;
+    }
+
+    public void ChooseMine() {
+        if(selectedCharacter.GetComponent<Miner>()) {
+            mineableTiles = tileFinder.FindAvailableMinableTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile);
+            currentPlayerState = PlayerState.AttackSelect;
+        }
+        else if(selectedCharacter.GetComponent<Supporter>()) {
+            mineableTiles = FindDrillbottableTiles();
+            currentPlayerState = PlayerState.DrillBotPlacement;
+        }
+
+        SetMineableTiles();
+        ClearCurrentPath();
+    }
+
+    public void ChooseDeposit() {
+
+    }
+    #endregion
 
     #region Turn End
     public void EndPlayerTurn()
@@ -243,7 +322,7 @@ public class TurnHandler : MonoBehaviour
 
         ClearAvailableTiles();
         currentTurn = TurnOrder.Alien;
-        GameplayUI.Instance.OpenMenu(GameplayMenu.None);
+        GameplayUI.Instance.CloseMenus();
         AlienManager.Instance.TakeTurn();
     }
 
@@ -257,7 +336,7 @@ public class TurnHandler : MonoBehaviour
         // highlight available tiles
         SetAvailableTiles();
         currentPlayerState = PlayerState.MovementSelect;
-        GameplayUI.Instance.OpenMenu(GameplayMenu.None);
+        GameplayUI.Instance.CloseMenus();
     }
 
     public void EndAlienTurn() {
@@ -302,9 +381,10 @@ public class TurnHandler : MonoBehaviour
     }
 
     // used to auto end the turn whenever a player is done with their move
-    private void SetStatePlayerSelect() {
+    public void SetStatePlayerSelect() {
+        selectedCharacter = null;
         currentPlayerState = PlayerState.PlayerSelect;
-        GameplayUI.Instance.OpenMenu(GameplayMenu.PlayerSelect);
+        GameplayUI.Instance.OpenPlayerSelect(false);
 
         // auto end turn if no moves left
         bool hasMove = false;
@@ -337,19 +417,19 @@ public class TurnHandler : MonoBehaviour
         currentPlayerState = PlayerState.Animating;
     }
 
-    private void FindAttackableTiles(Tile currentTile) {
-        if (currentTile.rocketAccessible && (selectedCharacter.GetComponent<Character>().OreCount >= 1))
-        {
-            canDeposit = true;
-            rocket.CanDeposit();
-        }
-        attackableTiles = tileFinder.FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>(), currentTile);
-        SetAttackableTiles();
-        mineableTiles = tileFinder.FindAvailableMinableTiles(selectedCharacter.GetComponent<Character>(), currentTile);
-        SetMineableTiles();
+    //private void FindAttackableTiles(Tile currentTile) {
+    //    if (currentTile.rocketAccessible && (selectedCharacter.GetComponent<Character>().OreCount >= 1))
+    //    {
+    //        canDeposit = true;
+    //        rocket.CanDeposit();
+    //    }
+    //    attackableTiles = tileFinder.FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>(), currentTile);
+    //    SetAttackableTiles();
+    //    mineableTiles = tileFinder.FindAvailableMinableTiles(selectedCharacter.GetComponent<Character>(), currentTile);
+    //    SetMineableTiles();
         
-        ClearCurrentPath();
-    }
+    //    ClearCurrentPath();
+    //}
 
     private void AttackEnemy(Tile selectedTile)
     {
@@ -391,7 +471,6 @@ public class TurnHandler : MonoBehaviour
     public void CancelCharacterTurn()
     {
         ClearAvailableTiles();
-        selectedCharacter = null;
         SetStatePlayerSelect();
     }
 
