@@ -82,7 +82,7 @@ public class TurnHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //SHOWS WHICH EQUIPMENT ARE EQUIPPED
+        //SHOWS WHICH EQUIPMENT ARE EQUIPPED (0-5) 0-1 = Miner. 2-3 = Attacker. 4-5 = Supporter
         for (int i = 0; i < ShopManager.charEquipments.Length; i++)
         {
             if(ShopManager.charEquipments[i].isSelected == true)
