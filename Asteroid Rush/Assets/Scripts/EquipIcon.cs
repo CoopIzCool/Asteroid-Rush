@@ -15,12 +15,13 @@ public class EquipIcon : MonoBehaviour
         if(shopManager.equipments[shopID].isSelected)
         {
             icon.GetComponent<SpriteRenderer>().sprite = shopManager.equipments[shopID].icon.GetComponent<SpriteRenderer>().sprite;
+            icon.transform.localScale = shopManager.equipments[shopID].icon.transform.localScale;
         }
 
         else if (shopManager.equipments[shopID + 1].isSelected)
         {
             icon.GetComponent<SpriteRenderer>().sprite = shopManager.equipments[shopID + 1].icon.GetComponent<SpriteRenderer>().sprite;
-            icon.transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
+            icon.transform.localScale = shopManager.equipments[shopID].icon.transform.localScale;
         }
     }
 }
