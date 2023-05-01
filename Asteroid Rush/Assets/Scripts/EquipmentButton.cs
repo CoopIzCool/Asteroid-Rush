@@ -7,11 +7,10 @@ public class EquipmentButton : MonoBehaviour
 {
     public GameObject icon;
     public ShopManager shopManager;
-    public int shopID;
-    public string equipName;
-
     public EquipmentButton altEquipment;
 
+    public int shopID;
+    public string equipName;
     public bool isSelected = false;
 
     // Update is called once per frame
