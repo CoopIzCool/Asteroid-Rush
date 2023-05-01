@@ -13,6 +13,7 @@ public class Fighter : Character
 
     public override void SpecialAction()
     {
-        AlienManager.Instance.AddTrap(CurrentTile);
+        Debug.Log("in Fighter.cs, trying to set a trap");
+        //AlienManager.Instance.AddTrap(CurrentTile);
     }
 }

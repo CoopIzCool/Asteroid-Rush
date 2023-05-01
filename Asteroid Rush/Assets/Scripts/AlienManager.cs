@@ -14,7 +14,6 @@ public class AlienManager : MonoBehaviour
     private static AlienManager instance;
     public static AlienManager Instance { get { return instance; } }
 
-    public GameObject[] PlayerCharacters { get; set; } // set by grid generator
     public GenerateLevel Grid { get; set; } // set by grid generator
 
     private List<GameObject> slowZones;
@@ -120,9 +119,9 @@ public class AlienManager : MonoBehaviour
         }
 
         // find the closest player character
-        GameObject closestPlayer = PlayerCharacters[0];
+        GameObject closestPlayer = GenerateLevel.PlayerCharacters[0];
         float closestDistance = Vector3.Distance(closestPlayer.transform.position, alien.transform.position);
-        for(int i = 1; i < PlayerCharacters.Length; i++) {
+        for(int i = 1; i < GenerateLevel.PlayerCharacters.Length; i++) {
             // check for an open tile next to the character because otherwise there will be no path
             List<Vector2Int> testDirections = new List<Vector2Int>() {
                 new Vector2Int(1, 0),
@@ -130,7 +129,7 @@ public class AlienManager : MonoBehaviour
                 new Vector2Int(0, 1),
                 new Vector2Int(0, -1),
             };
-            Tile playerTile = PlayerCharacters[i].GetComponent<Character>().CurrentTile;
+            Tile playerTile = GenerateLevel.PlayerCharacters[i].GetComponent<Character>().CurrentTile;
             bool openSpot = false;
             foreach(Vector2Int testDirection in testDirections) {
                 GameObject tileObject = GenerateLevel.GetGridItem(playerTile.zPos + testDirection.y, playerTile.xPos + testDirection.x);
@@ -144,10 +143,10 @@ public class AlienManager : MonoBehaviour
             }
 
             // check if this player is closer
-            float distance = Vector3.Distance(PlayerCharacters[i].transform.position, alien.transform.position);
+            float distance = Vector3.Distance(GenerateLevel.PlayerCharacters[i].transform.position, alien.transform.position);
             if(distance < closestDistance) {
                 closestDistance = distance;
-                closestPlayer = PlayerCharacters[i];
+                closestPlayer = GenerateLevel.PlayerCharacters[i];
             }
         }
 
@@ -200,7 +199,7 @@ public class AlienManager : MonoBehaviour
     private GameObject FindAdjacentPlayer(GameObject alien) {
         Tile alienTile = alien.GetComponent<Alien>().CurrentTile;
 
-        foreach (GameObject player in PlayerCharacters) {
+        foreach (GameObject player in GenerateLevel.PlayerCharacters) {
             if(player.GetComponent<Character>().Alive())
             {
                 Tile playerTile = player.GetComponent<Character>().CurrentTile;
@@ -220,6 +219,23 @@ public class AlienManager : MonoBehaviour
         traps.Add(trap);
         trap.transform.position = placement.transform.position;
         trap.GetComponent<Trap>().Tile = placement;
+    }
+
+    public bool CanPlaceAbility(Tile spot) {
+        // check if there is already a trap or slow zone on that spot
+        foreach(GameObject oldTrap in traps) {
+            if(oldTrap.GetComponent<Trap>().Tile == spot) {
+                return false;
+            }
+        }
+        
+        foreach(GameObject oldZone in slowZones) {
+            if(oldZone.GetComponent<SlowZone>().Tile == spot) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     // supporter's slow zone ability

@@ -14,16 +14,19 @@ public class TurnHandler : MonoBehaviour
 
     public enum PlayerState
     {
-        Movement, 
-        Attack,
-        None
+        PlayerSelect,
+        MovementSelect,
+        ActionSelect,
+        AttackSelect,
+        DrillBotPlacement,
+        Animating,
     }
+
     private RaycastManager raycastManager;
     [SerializeField]private GameObject selectedCharacter;
     private TurnOrder currentTurn;
     [SerializeField]
     private PlayerState currentPlayerState;
-    public GameObject[] characters;
     private TileFinder tileFinder = new TileFinder();
     [SerializeField]
     private Rocket rocket;
@@ -68,13 +71,12 @@ public class TurnHandler : MonoBehaviour
     private static TurnHandler instance;
     public static TurnHandler Instance {  get { return instance; } }
 
-    // use awake because this is referenced by GenerateLevel.cs Start()
-    void Awake()
+    void Start()
     {
         raycastManager = gameObject.GetComponent<RaycastManager>();
         lineRenderer = gameObject.GetComponent<LineRenderer>();
         currentTurn = TurnOrder.Player;
-        currentPlayerState = PlayerState.None;
+        currentPlayerState = PlayerState.PlayerSelect;
         instance = this;
         oresWithDrillBots = new List<UnrefinedOre>();
 
@@ -94,93 +96,108 @@ public class TurnHandler : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //Debug.Log(characters.Length);
-        if (currentTurn == TurnOrder.Player)
-        {
-            // prevent actions while characters are animating
-            foreach(GameObject character in characters) {
-                if(character.GetComponent<Character>().Animating) {
-                    return;
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                if (selectedCharacter != null)
-                {
-                    //AddTile();
-                    if (currentPlayerState == PlayerState.Movement)
-                    {
-                        MoveToTile();
-                    }
-                    else if (currentPlayerState == PlayerState.Attack)
-                    {
-                        Debug.Log("Attackin");
-                        AttackAtTile();
-                    }
-
-                }
-                //If character is not selected, look for one to select
-                else
-                {
-                    raycastManager.TestRaycast();
-                    if (selectedCharacter != null )
-                    {
-                        if (!selectedCharacter.GetComponent<Character>().Moved)
-                        {
-                            //select character for moving and set up line renderer
-                            #region Defunct LineRendererCode
-                            /*
-                            lineRenderer.positionCount = 1;
-                            Vector3 startLocation = selectedCharacter.GetComponent<Character>().CurrentTile.gameObject.transform.position;
-                            lineRenderer.SetPosition(0, new Vector3(startLocation.x, startLocation.y + 0.2f, startLocation.z));*/
-                            #endregion
-                            availableTiles = tileFinder.FindAvailableTiles(selectedCharacter.GetComponent<Character>());
-                            // highlight available tiles
-                            SetAvailableTiles();
-                            currentPlayerState = PlayerState.Movement;
-                        }
-                        else
-                        {
-                            selectedCharacter = null;
-                            currentPlayerState = PlayerState.None;
-                        }
-                    }
-                }
-            }
-
-            //If there is a player selected
-            if (selectedCharacter != null)
-            {
-                if(currentPlayerState == PlayerState.Attack && (attackableTiles.Count == 0 && mineableTiles.Count == 0 && !canDeposit))
-                {
-                    selectedCharacter = null;
-                    currentPlayerState = PlayerState.None;
-                }
-
-
-                if(Input.GetKeyDown(KeyCode.C))
-                {
-                    CancelCharacterTurn();
-                }
-
-            }
-
-
-            //Enemy turn
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                EndPlayerTurn();
-            }
-        }
-        else
-        {
+        if(currentTurn == TurnOrder.Alien) {
             AlienManager.Instance.UpdateTurn();
+            return;
         }
 
+        // player turn
+        switch (currentPlayerState) {
+            case PlayerState.PlayerSelect:
+                // look for a character to select
+                // wait for the player to click one of the buttons
+
+                // old raycast method below
+
+                //if (Input.GetKeyDown(KeyCode.Mouse0)) {
+                //    raycastManager.TestRaycast();
+                //    if (selectedCharacter != null && !selectedCharacter.GetComponent<Character>().Moved)
+                //    {
+                //        availableTiles = tileFinder.FindAvailableTiles(selectedCharacter.GetComponent<Character>());
+                //        // highlight available tiles
+                //        SetAvailableTiles();
+                //        currentPlayerState = PlayerState.MovementSelect;
+                //        GameplayUI.Instance.OpenMenu(GameplayMenu.None);
+                //    }
+                //}
+                break;
+
+            case PlayerState.MovementSelect:
+                // choose a tile to move to
+                if (Input.GetKeyDown(KeyCode.Mouse0))
+                {
+                    MoveToTile();
+                }
+                break;
+
+            case PlayerState.AttackSelect:
+                // choose a tile to attack or mine
+                if (Input.GetKeyDown(KeyCode.Mouse0)) {
+                    bool success = AttackAtTile();
+                    if(success) {
+                        SetStatePlayerSelect();
+                    }
+                }
+                break;
+
+            case PlayerState.Animating:
+                // wait for the character to stop moving
+                if(!selectedCharacter.GetComponent<Character>().Animating) {
+                    // after moving, choose an action this turn
+                    GameplayUI.Instance.DisableCharacterMoves(selectedCharacter.GetComponent<Character>());
+
+                    // determine which actions this player can take after moving and set up the UI acoordingly
+                    if(selectedCharacter.GetComponent<Miner>()) {
+                        bool canAttack = tileFinder.FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile).Count > 0;
+                        bool canMine = tileFinder.FindAvailableMinableTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile).Count > 0;
+                        if(canAttack || canMine) {
+                            GameplayUI.Instance.OpenMinerActions(canAttack, canMine);
+                            currentPlayerState = PlayerState.ActionSelect;
+                        } else {
+                            SetStatePlayerSelect();
+                        }
+                    }
+                    else if(selectedCharacter.GetComponent<Fighter>()) {
+                        bool canAttack = tileFinder.FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile).Count > 0;
+                        bool canTrap = AlienManager.Instance.CanPlaceAbility(selectedCharacter.GetComponent<Character>().CurrentTile);
+                        if(canAttack || canTrap) {
+                            GameplayUI.Instance.OpenFighterActions(canAttack, canTrap);
+                            currentPlayerState = PlayerState.ActionSelect;
+                        } else {
+                            SetStatePlayerSelect();
+                        }
+                    }
+                    else if(selectedCharacter.GetComponent<Supporter>()) {
+                        bool canMine = FindDrillbottableTiles().Count > 0;
+                        bool canZone = AlienManager.Instance.CanPlaceAbility(selectedCharacter.GetComponent<Character>().CurrentTile);
+                        if(canMine || canZone) {
+                            GameplayUI.Instance.OpenSupporterActions(canMine, canZone);
+                            currentPlayerState = PlayerState.ActionSelect;
+                        } else {
+                            SetStatePlayerSelect();
+                        }
+                    }
+                }
+                break;
+
+            case PlayerState.ActionSelect:
+                // using a character's specific menu, waiting for a button click
+                break;
+
+            case PlayerState.DrillBotPlacement:
+                if (Input.GetKeyDown(KeyCode.Mouse0)) {
+                    Tile selectedTile = raycastManager.TileRaycast();
+                    if (selectedTile != null)
+                    {
+                        selectedTile.occupant.GetComponent<UnrefinedOre>().AddDrillBot();
+                        SetStatePlayerSelect();
+                        ClearAvailableTiles();
+                    }
+                }
+                break;
+        }
     }
 
     #region Tile Clears
@@ -231,10 +248,23 @@ public class TurnHandler : MonoBehaviour
     private void SetUpPlayerTurn()
     {
         Debug.Log("Setting up next turn");
-        foreach (GameObject character in characters)
+        currentPlayerState = PlayerState.PlayerSelect;
+        GameplayUI.Instance.OpenPlayerSelect(true);
+        foreach (GameObject character in GenerateLevel.PlayerCharacters)
         {
             character.GetComponent<Character>().Moved = false;
         }
+    }
+
+    private List<Tile> FindDrillbottableTiles() {
+        List<Tile> tilesInRange = tileFinder.FindAvailableMinableTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile);
+        for(int i = tilesInRange.Count - 1; i >= 0; i--) {
+            if(tilesInRange[i].occupant.GetComponent<UnrefinedOre>().HasDrillBot) {
+                tilesInRange.RemoveAt(i);
+            }
+        }
+
+        return tilesInRange;
     }
 
     #region Set Tile
@@ -265,6 +295,32 @@ public class TurnHandler : MonoBehaviour
     }
     #endregion
 
+    #region interface for choosing action type
+    public void ChooseAttack() {
+        attackableTiles = tileFinder.FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile);
+        SetAttackableTiles();
+        ClearCurrentPath();
+        currentPlayerState = PlayerState.AttackSelect;
+    }
+
+    public void ChooseMine() {
+        if(selectedCharacter.GetComponent<Miner>()) {
+            mineableTiles = tileFinder.FindAvailableMinableTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile);
+            currentPlayerState = PlayerState.AttackSelect;
+        }
+        else if(selectedCharacter.GetComponent<Supporter>()) {
+            mineableTiles = FindDrillbottableTiles();
+            currentPlayerState = PlayerState.DrillBotPlacement;
+        }
+
+        SetMineableTiles();
+        ClearCurrentPath();
+    }
+
+    public void ChooseDeposit() {
+
+    }
+    #endregion
 
     #region Turn End
     public void EndPlayerTurn()
@@ -275,13 +331,27 @@ public class TurnHandler : MonoBehaviour
             if(destroyed) {
                 oresWithDrillBots.RemoveAt(i);
                 i--;
-                characters[2].GetComponent<Supporter>().CollectOre();
+                GenerateLevel.PlayerCharacters[2].GetComponent<Supporter>().CollectOre();
             }
         }
 
         ClearAvailableTiles();
         currentTurn = TurnOrder.Alien;
+        GameplayUI.Instance.CloseMenus();
         AlienManager.Instance.TakeTurn();
+    }
+
+    // 0: miner, 1: fighter, 2: supporter
+    public void SelectCharacter(int index) {
+        // this does not need to check if the player has already moved because
+        // the button to select the character would have disappeared
+        selectedCharacter = GenerateLevel.PlayerCharacters[index];
+
+        availableTiles = tileFinder.FindAvailableTiles(selectedCharacter.GetComponent<Character>());
+        // highlight available tiles
+        SetAvailableTiles();
+        currentPlayerState = PlayerState.MovementSelect;
+        GameplayUI.Instance.CloseMenus();
     }
 
     public void EndAlienTurn() {
@@ -303,10 +373,13 @@ public class TurnHandler : MonoBehaviour
         }
     }
 
-    private void AttackAtTile()
+    // returns whether or not this was successfull
+    private bool AttackAtTile()
     {
         Tile selectedTile = raycastManager.TileRaycast();
-        Debug.Log(selectedTile.occupant);
+        if(selectedTile) {
+            Debug.Log(selectedTile.occupant);
+        }
         if (selectedTile != null)
         {
             if (selectedTile.occupant.GetComponent<Character>())
@@ -315,6 +388,30 @@ public class TurnHandler : MonoBehaviour
                 MineAtTile(selectedTile);
             else if (selectedTile.occupant.GetComponent<Rocket>())
                 DepositOre();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    // used to auto end the turn whenever a player is done with their move
+    public void SetStatePlayerSelect() {
+        selectedCharacter = null;
+        currentPlayerState = PlayerState.PlayerSelect;
+        GameplayUI.Instance.OpenPlayerSelect(false);
+
+        // auto end turn if no moves left
+        bool hasMove = false;
+        foreach(GameObject player in GenerateLevel.PlayerCharacters) {
+            if(!player.GetComponent<Character>().Moved) {
+                hasMove = true;
+                break;
+            }
+        }
+
+        if(!hasMove) {
+            EndPlayerTurn();
         }
     }
 
@@ -332,18 +429,22 @@ public class TurnHandler : MonoBehaviour
             selectedCharacter.gameObject.GetComponent<Character>().SetPath(GenerateLevel.FindPath(selectedCharacter.GetComponent<Character>().CurrentTile, selectedTile), 5.0f);
         }
         selectedCharacter.gameObject.GetComponent<Character>().Moved = true;
-        if(selectedTile.rocketAccessible && (selectedCharacter.GetComponent<Character>().OreCount >= 1))
-        {
-            canDeposit = true;
-            rocket.CanDeposit();
-        }
-        attackableTiles = tileFinder.FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>(), selectedTile);
-        SetAttackableTiles();
-        mineableTiles = tileFinder.FindAvailableMinableTiles(selectedCharacter.GetComponent<Character>(), selectedTile);
-        SetMineableTiles();
-        currentPlayerState = PlayerState.Attack;
-        ClearCurrentPath();
+        currentPlayerState = PlayerState.Animating;
     }
+
+    //private void FindAttackableTiles(Tile currentTile) {
+    //    if (currentTile.rocketAccessible && (selectedCharacter.GetComponent<Character>().OreCount >= 1))
+    //    {
+    //        canDeposit = true;
+    //        rocket.CanDeposit();
+    //    }
+    //    attackableTiles = tileFinder.FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>(), currentTile);
+    //    SetAttackableTiles();
+    //    mineableTiles = tileFinder.FindAvailableMinableTiles(selectedCharacter.GetComponent<Character>(), currentTile);
+    //    SetMineableTiles();
+        
+    //    ClearCurrentPath();
+    //}
 
     private void AttackEnemy(Tile selectedTile)
     {
@@ -385,8 +486,7 @@ public class TurnHandler : MonoBehaviour
     public void CancelCharacterTurn()
     {
         ClearAvailableTiles();
-        selectedCharacter = null;
-        currentPlayerState = PlayerState.None;
+        SetStatePlayerSelect();
     }
 
     public void AddDrillingOre(UnrefinedOre ore) {

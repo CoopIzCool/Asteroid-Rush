@@ -207,7 +207,7 @@ public class TileFinder : MonoBehaviour
 
 
             //Debug.Log("Checking at " + adjacentLeftTile.zPos + " , " + adjacentLeftTile.xPos);
-            if (adjacentLeftTile.IsMineable(chosenCharacter))
+            if (adjacentLeftTile.IsMineable())
             {
                 mineTiles.Add(adjacentLeftTile);
             }
@@ -221,7 +221,7 @@ public class TileFinder : MonoBehaviour
             Tile adjacentRightTile = GenerateLevel.grid[startTile.zPos, startTile.xPos + 1].GetComponent<Tile>();
 
             //Debug.Log("Checking at " + adjacentRightTile.zPos + " , " + adjacentRightTile.xPos);
-            if (adjacentRightTile.IsMineable(chosenCharacter))
+            if (adjacentRightTile.IsMineable())
             {
                 mineTiles.Add(adjacentRightTile);
             }
@@ -233,7 +233,7 @@ public class TileFinder : MonoBehaviour
             Tile adjacentBottomTile = GenerateLevel.grid[startTile.zPos - 1, startTile.xPos].GetComponent<Tile>();
 
             //Debug.Log("Checking at " + adjacentBottomTile.zPos + " , " + adjacentBottomTile.xPos);
-            if (adjacentBottomTile.IsMineable(chosenCharacter))
+            if (adjacentBottomTile.IsMineable())
             {
                 mineTiles.Add(adjacentBottomTile);
             }
@@ -247,7 +247,7 @@ public class TileFinder : MonoBehaviour
             Tile adjacentTopTile = GenerateLevel.grid[startTile.zPos + 1, startTile.xPos].GetComponent<Tile>();
 
             //Debug.Log("Checking at " + adjacentTopTile.zPos + " , " + adjacentTopTile.xPos);
-            if (adjacentTopTile.IsMineable(chosenCharacter))
+            if (adjacentTopTile.IsMineable())
             {
                 mineTiles.Add(adjacentTopTile);
             }

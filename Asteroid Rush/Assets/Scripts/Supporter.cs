@@ -5,18 +5,9 @@ using UnityEngine;
 // player character with support abilities
 public class Supporter : Character
 {
-    
-
-    public void CreateDrillBot(UnrefinedOre targetOre) {
-        if(targetOre.HasDrillBot) {
-            return;
-        }
-
-        targetOre.AddDrillBot();
-    }
-
     public override void SpecialAction()
     {
-        AlienManager.Instance.AddSlowZone(CurrentTile);
+        Debug.Log("in Supporter.cs, trying to add a slow zone");
+        //AlienManager.Instance.AddSlowZone(CurrentTile);
     }
 }
