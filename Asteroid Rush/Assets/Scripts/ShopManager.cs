@@ -48,6 +48,8 @@ public class ShopManager : MonoBehaviour
     //supporter
     public GameObject supportScrollView;
     public GameObject supportEquipScrollView;
+    public GameObject supportItemViewOne;
+    public GameObject supportItemViewTwo;
 
     /// <summary>
     /// All six equipment
@@ -62,11 +64,17 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     public EquipmentButton[] attackerItems;
     /// <summary>
-    /// Copied arrays from above, usable in any script
+    /// Attacker's equipped items
+    /// </summary>
+    public EquipmentButton[] supporterItems;
+
+    /// <summary>
+    /// COPIED ARRAYS FROM ABOVE, USABLE IN ANY SCRIPT
     /// </summary>
     public static EquipmentButton[] charEquipments;
     public static EquipmentButton[] minerItemsEquipped;
     public static EquipmentButton[] attackerItemsEquipped;
+    public static EquipmentButton[] supporterItemsEquipped;
 
     // Start is called before the first frame update
     void Start()
@@ -220,21 +228,14 @@ public class ShopManager : MonoBehaviour
         charEquipments = equipments;
         minerItemsEquipped = minerItems;
         attackerItemsEquipped = attackerItems;
+        supporterItemsEquipped = supporterItems;
     }
 
     public void GoToView(GameObject scrollView)
     {
         characterScrollView.SetActive(false);
-        minerScrollView.SetActive(false);
-        minerEquipScrollView.SetActive(false);
-        attackerScrollView.SetActive(false);
-        attackerEquipScrollView.SetActive(false);
-        supportScrollView.SetActive(false);
-        supportEquipScrollView.SetActive(false);
-        minerItemViewOne.SetActive(false);
-        minerItemViewTwo.SetActive(false);
-        attackerItemViewOne.SetActive(false);
-        attackerItemViewTwo.SetActive(false);
+
+        SetAllInactive();
 
         scrollView.SetActive(true);
     }
@@ -265,6 +266,14 @@ public class ShopManager : MonoBehaviour
         equipMenu.SetActive(true);
 
         characterScrollView.SetActive(true);
+
+        SetAllInactive();
+
+        isEquipMenuOpen = true;
+    }
+
+    public void SetAllInactive()
+    {
         minerScrollView.SetActive(false);
         minerEquipScrollView.SetActive(false);
         attackerScrollView.SetActive(false);
@@ -275,8 +284,8 @@ public class ShopManager : MonoBehaviour
         minerItemViewTwo.SetActive(false);
         attackerItemViewOne.SetActive(false);
         attackerItemViewTwo.SetActive(false);
-
-        isEquipMenuOpen = true;
+        supportItemViewOne.SetActive(false);
+        supportItemViewTwo.SetActive(false);
     }
 
     /// <summary>

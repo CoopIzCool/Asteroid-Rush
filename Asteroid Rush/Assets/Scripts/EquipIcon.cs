@@ -26,6 +26,11 @@ public class EquipIcon : MonoBehaviour
         {
             ChangeIcon(shopManager.attackerItems);
         }
+
+        if (equipType == "ItemS")
+        {
+            ChangeIcon(shopManager.supporterItems);
+        }
     }
 
     public void ChangeIcon(EquipmentButton[] equipments)

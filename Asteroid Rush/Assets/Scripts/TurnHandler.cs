@@ -77,20 +77,20 @@ public class TurnHandler : MonoBehaviour
         currentPlayerState = PlayerState.None;
         instance = this;
         oresWithDrillBots = new List<UnrefinedOre>();
+
+        //SHOWS WHICH EQUIPMENT ARE EQUIPPED (0-5) 0-1 = Miner. 2-3 = Attacker. 4-5 = Supporter
+        for (int i = 0; i < ShopManager.charEquipments.Length; i++)
+        {
+            if (ShopManager.charEquipments[i].isSelected == true)
+            {
+                Debug.Log(ShopManager.charEquipments[i].equipName + " " + ShopManager.charEquipments[i].isSelected);
+            }
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        //SHOWS WHICH EQUIPMENT ARE EQUIPPED (0-5) 0-1 = Miner. 2-3 = Attacker. 4-5 = Supporter
-        for (int i = 0; i < ShopManager.charEquipments.Length; i++)
-        {
-            if(ShopManager.charEquipments[i].isSelected == true)
-            {
-                Debug.Log(ShopManager.charEquipments[i].equipName + " " + ShopManager.charEquipments[i].isSelected);
-            }
-        }
-
         //Debug.Log(characters.Length);
         if (currentTurn == TurnOrder.Player)
         {
