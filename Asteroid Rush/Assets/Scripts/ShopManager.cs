@@ -75,6 +75,7 @@ public class ShopManager : MonoBehaviour
     public static EquipmentButton[] minerItemsEquipped;
     public static EquipmentButton[] attackerItemsEquipped;
     public static EquipmentButton[] supporterItemsEquipped;
+    public static int[,] updatedShopItems;
 
     // Start is called before the first frame update
     void Start()
@@ -229,6 +230,7 @@ public class ShopManager : MonoBehaviour
         minerItemsEquipped = minerItems;
         attackerItemsEquipped = attackerItems;
         supporterItemsEquipped = supporterItems;
+        updatedShopItems = shopItems;
     }
 
     public void GoToView(GameObject scrollView)

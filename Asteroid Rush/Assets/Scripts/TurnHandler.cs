@@ -86,6 +86,12 @@ public class TurnHandler : MonoBehaviour
                 Debug.Log(ShopManager.charEquipments[i].equipName + " " + ShopManager.charEquipments[i].isSelected);
             }
         }
+
+        //SHOWS WHICH THE QUANTITY OF EACH ITEM (1-4 = Consumables)
+        for( int i = 1; i < ShopManager.updatedShopItems.Length; i++)
+        {
+             Debug.Log("Item " + i + " " + ShopManager.updatedShopItems[3,i]);
+        }
     }
 
     // Update is called once per frame
