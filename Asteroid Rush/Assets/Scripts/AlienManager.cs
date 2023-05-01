@@ -16,7 +16,8 @@ public class AlienManager : MonoBehaviour
 
     public GenerateLevel Grid { get; set; } // set by grid generator
 
-    private List<GameObject> slowZones;
+    //private List<GameObject> slowZones;
+    private SlowZone slowZone; // supporter is only allowed one at a time
     private List<GameObject> traps;
     private List<GameObject> activeAliens;
     private List<GameObject> spawnedAliens;
@@ -31,7 +32,6 @@ public class AlienManager : MonoBehaviour
     {
         instance = this;
         activeAliens = new List<GameObject>();
-        slowZones = new List<GameObject>();
         traps = new List<GameObject>();
         turnsBeforeSpawn = 3;
     }
@@ -65,12 +65,11 @@ public class AlienManager : MonoBehaviour
     // operates all of the aliens and handles spawning new ones
     public void TakeTurn() {
         // manage traps and slow zones
-        for(int i = 0; i < slowZones.Count; i++) {
-            slowZones[i].GetComponent<SlowZone>().TurnsLeft--;
-            if(slowZones[i].GetComponent<SlowZone>().TurnsLeft < 0) {
-                Destroy(slowZones[i]);
-                slowZones.RemoveAt(i);
-                i--;
+        if(slowZone != null) {
+            slowZone.TurnsLeft--;
+            if(slowZone.TurnsLeft < 0) {
+                Destroy(slowZone.gameObject);
+                slowZone = null;
             }
         }
 
@@ -163,11 +162,10 @@ public class AlienManager : MonoBehaviour
         }
 
         //  check for slow from a slow field
-        for(int i = 0; i < path.Count - 1; i++) { // ignore the last tile because the path can't get shorter there
-            foreach(GameObject slowZone in slowZones) {
-                if(slowZone.GetComponent<SlowZone>().IsInRange(path[i])) {
+        if(slowZone != null) {
+            for(int i = 0; i < path.Count - 1; i++) { // ignore the last tile because the path can't get shorter there
+                if(slowZone.IsInRange(path[i])) {
                     path.RemoveAt(path.Count - 1); // shorten the travel distance by 1 for each slow tile stepped on
-                    break; // no slow zone stacking
                 }
             }
         }
@@ -229,10 +227,8 @@ public class AlienManager : MonoBehaviour
             }
         }
         
-        foreach(GameObject oldZone in slowZones) {
-            if(oldZone.GetComponent<SlowZone>().Tile == spot) {
-                return false;
-            }
+        if(slowZone != null && slowZone.Tile == spot) {
+            return false;
         }
 
         return true;
@@ -240,9 +236,13 @@ public class AlienManager : MonoBehaviour
 
     // supporter's slow zone ability
     public void AddSlowZone(Tile placement) {
-        GameObject slowZone = Instantiate(slowZonePrefab);
-        traps.Add(slowZone);
-        slowZone.transform.position = placement.transform.position;
-        slowZone.GetComponent<SlowZone>().Tile = placement;
+        if(slowZone != null) {
+            Destroy(slowZone);
+        }
+
+        GameObject newZone = Instantiate(slowZonePrefab);
+        newZone.transform.position = placement.transform.position;
+        slowZone = newZone.GetComponent<SlowZone>();
+        slowZone.Tile = placement;
     }
 }

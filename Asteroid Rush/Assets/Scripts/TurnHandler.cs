@@ -146,7 +146,7 @@ public class TurnHandler : MonoBehaviour
                     }
                     else if(selectedCharacter.GetComponent<Fighter>()) {
                         bool canAttack = tileFinder.FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile).Count > 0;
-                        bool canTrap = AlienManager.Instance.CanPlaceAbility(selectedCharacter.GetComponent<Character>().CurrentTile);
+                        bool canTrap = selectedCharacter.GetComponent<Fighter>().CanTrap && AlienManager.Instance.CanPlaceAbility(selectedCharacter.GetComponent<Character>().CurrentTile);
                         if(canAttack || canTrap) {
                             GameplayUI.Instance.OpenFighterActions(canAttack, canTrap);
                             currentPlayerState = PlayerState.ActionSelect;
@@ -319,6 +319,9 @@ public class TurnHandler : MonoBehaviour
                 GenerateLevel.PlayerCharacters[2].GetComponent<Supporter>().CollectOre();
             }
         }
+
+        // reduce trap cooldown
+        GenerateLevel.PlayerCharacters[1].GetComponent<Fighter>().TrapCooldown--;
 
         ClearAvailableTiles();
         currentTurn = TurnOrder.Alien;
