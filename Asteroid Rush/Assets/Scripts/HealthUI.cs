@@ -29,7 +29,8 @@ public class HealthUI : MonoBehaviour
             {
 				GameObject healthBlock = Instantiate(healthBlockPrefab, new Vector3(healthBarLeft + padding + healthBlockWidth * j, healthBars[i].transform.position.y, healthBars[i].transform.position.z), Quaternion.identity, healthBars[i].transform);
                 healthBlock.transform.localPosition = new Vector3(healthBarLeft + padding + healthBlockWidth / 2f + healthBlockWidth * j, healthBlock.transform.localPosition.y, healthBlock.transform.localPosition.z);
-				healthBlock.transform.localScale = new Vector3(healthBlockPrefab.transform.localScale.x, healthBlockPrefab.transform.localScale.y / healthBars[i].transform.localScale.y, healthBlockPrefab.transform.localScale.z);
+				if (i < healthBars.Length - 1) healthBlock.transform.localScale = new Vector3(healthBlockPrefab.transform.localScale.x, healthBlockPrefab.transform.localScale.y / healthBars[i].transform.localScale.y, healthBlockPrefab.transform.localScale.z);
+                else healthBlock.transform.localScale = new Vector3(numBlocks / healthBars[i].GetComponent<RectTransform>().rect.width, healthBlockPrefab.transform.localScale.y / healthBars[i].transform.localScale.y, healthBlockPrefab.transform.localScale.z);
 			}
 		}
     }

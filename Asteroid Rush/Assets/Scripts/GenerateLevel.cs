@@ -52,6 +52,8 @@ public class GenerateLevel : MonoBehaviour
 	[SerializeField] private GameObject[] enemyPrefabs;
 	[SerializeField] private GameObject[] orePrefabs;
 	[SerializeField] private GameObject spaceshipPrefab;
+	[SerializeField] private GameObject entityHealthPrefab;
+	[SerializeField] private GameObject entityHealthBlockPrefab;
 
 	[Space]
 	[Header("Zone Parameters")]
@@ -258,6 +260,12 @@ public class GenerateLevel : MonoBehaviour
 			{
 				Destroy(parentZone.transform.GetChild(i).gameObject);
 			}
+		}
+
+		GameObject oreUI = GameObject.Find("OreUI");
+		for (int i = 0; i < oreUI.transform.childCount; i++)
+		{
+			Destroy(oreUI.transform.GetChild(i).gameObject);
 		}
 
 		grid = null;
@@ -591,6 +599,23 @@ public class GenerateLevel : MonoBehaviour
 				grid[randomZ, randomX].GetComponent<Tile>().xPos = randomX;
 				grid[randomZ, randomX].GetComponent<Tile>().zPos = randomZ;
 
+				GameObject oreHealthBar = Instantiate(entityHealthPrefab, GameObject.Find("OreUI").transform);
+				oreHealthBar.GetComponent<UITrackCharacter>().TargetObject = grid[randomZ, randomX].GetComponent<Tile>().occupant;
+				grid[randomZ, randomX].GetComponent<Tile>().occupant.GetComponent<UnrefinedOre>().healthBar = oreHealthBar;
+				int numBlocks = grid[randomZ, randomX].GetComponent<Tile>().occupant.GetComponent<UnrefinedOre>().Breakability;
+				float healthBlockWidth = oreHealthBar.GetComponent<RectTransform>().rect.width / numBlocks;
+				float healthBarLeft = -oreHealthBar.GetComponent<RectTransform>().rect.width / 2f;
+				float padding = 0.1f;
+
+				for (int j = 0; j < numBlocks; j++)
+				{
+					GameObject healthBlock = Instantiate(entityHealthBlockPrefab, new Vector3(healthBarLeft + padding + healthBlockWidth * j, oreHealthBar.transform.position.y, oreHealthBar.transform.position.z), Quaternion.identity, oreHealthBar.transform);
+					healthBlock.transform.localPosition = new Vector3(healthBarLeft + padding + healthBlockWidth / 2f + healthBlockWidth * j, healthBlock.transform.localPosition.y, healthBlock.transform.localPosition.z);
+					healthBlock.transform.localScale = new Vector3(0.3f, entityHealthBlockPrefab.transform.localScale.y / oreHealthBar.transform.localScale.y, entityHealthBlockPrefab.transform.localScale.z);
+				}
+
+				oreHealthBar.transform.localScale *= 7;
+
 				numOres++;
 			} while (numOres < numOresPerZone);
 
@@ -630,6 +655,23 @@ public class GenerateLevel : MonoBehaviour
 			grid[randomZ, randomX].GetComponent<Tile>().occupant = Instantiate(orePrefabs[0], new Vector3(randomX, orePrefabs[0].transform.position.y, randomZ), Quaternion.identity, randomZone.transform);
 			grid[randomZ, randomX].GetComponent<Tile>().xPos = randomX;
 			grid[randomZ, randomX].GetComponent<Tile>().zPos = randomZ;
+
+			GameObject oreHealthBar = Instantiate(entityHealthPrefab, GameObject.Find("OreUI").transform);
+			oreHealthBar.GetComponent<UITrackCharacter>().TargetObject = grid[randomZ, randomX].GetComponent<Tile>().occupant;
+			grid[randomZ, randomX].GetComponent<Tile>().occupant.GetComponent<UnrefinedOre>().healthBar = oreHealthBar;
+			int numBlocks = grid[randomZ, randomX].GetComponent<Tile>().occupant.GetComponent<UnrefinedOre>().Breakability;
+			float healthBlockWidth = oreHealthBar.GetComponent<RectTransform>().rect.width / numBlocks;
+			float healthBarLeft = -oreHealthBar.GetComponent<RectTransform>().rect.width / 2f;
+			float padding = 0.1f;
+
+			for (int j = 0; j < numBlocks; j++)
+			{
+				GameObject healthBlock = Instantiate(entityHealthBlockPrefab, new Vector3(healthBarLeft + padding + healthBlockWidth * j, oreHealthBar.transform.position.y, oreHealthBar.transform.position.z), Quaternion.identity, oreHealthBar.transform);
+				healthBlock.transform.localPosition = new Vector3(healthBarLeft + padding + healthBlockWidth / 2f + healthBlockWidth * j, healthBlock.transform.localPosition.y, healthBlock.transform.localPosition.z);
+				healthBlock.transform.localScale = new Vector3(0.3f, entityHealthBlockPrefab.transform.localScale.y / oreHealthBar.transform.localScale.y, entityHealthBlockPrefab.transform.localScale.z);
+			}
+
+			oreHealthBar.transform.localScale *= 7;
 		}
 		#endregion
 
