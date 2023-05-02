@@ -89,10 +89,10 @@ public class TurnHandler : MonoBehaviour
             }
         }
 
-        //SHOWS WHICH THE QUANTITY OF EACH ITEM (1-4 = Consumables)
-        for( int i = 1; i < ShopManager.updatedShopItems.Length; i++)
+        //SHOWS THE QUANTITY OF EACH ITEM (1-4 = Consumables)
+        for( int i = 1; i < ShopManager.updatedShopItems.Length / 4; i++)
         {
-             Debug.Log("Item " + i + " " + ShopManager.updatedShopItems[3,i]);
+            Debug.Log("Item " + i + " " + ShopManager.updatedShopItems[3,i]);
         }
     }
 
