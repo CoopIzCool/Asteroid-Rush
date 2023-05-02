@@ -10,5 +10,8 @@ public class Alien : Character
     protected override void Death()
     {
         AlienManager.Instance.RemoveAlien(this);
+
+        int numKills = int.Parse(DataTracking.GetData(3)) + 1;
+        DataTracking.SetData(3, numKills.ToString());
     }
 }

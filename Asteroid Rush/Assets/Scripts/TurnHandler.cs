@@ -89,10 +89,10 @@ public class TurnHandler : MonoBehaviour
             }
         }
 
-        //SHOWS WHICH THE QUANTITY OF EACH ITEM (1-4 = Consumables)
-        for( int i = 1; i < ShopManager.updatedShopItems.Length; i++)
+        //SHOWS THE QUANTITY OF EACH ITEM (1-4 = Consumables)
+        for( int i = 1; i < ShopManager.updatedShopItems.Length / 4; i++)
         {
-             //Debug.Log("Item " + i + " " + ShopManager.updatedShopItems[3,i]);
+            Debug.Log("Item " + i + " " + ShopManager.updatedShopItems[3,i]);
         }
     }
 
@@ -341,6 +341,9 @@ public class TurnHandler : MonoBehaviour
     #region Turn End
     public void EndPlayerTurn()
     {
+        int numTurns = int.Parse(DataTracking.GetData(4)) + 1;
+        DataTracking.SetData(4, numTurns.ToString());
+
         // drill bots deal damage at the end of each turn
         for(int i = 0; i < oresWithDrillBots.Count; i++) {
             bool destroyed = oresWithDrillBots[i].DealDrillBotDamage();

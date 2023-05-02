@@ -77,8 +77,13 @@ public class ShopManager : MonoBehaviour
     public static EquipmentButton[] supporterItemsEquipped;
     public static int[,] updatedShopItems;
 
-    // Start is called before the first frame update
-    void Start()
+	private void Awake()
+	{
+        if(!DataTracking.DataExists()) StartCoroutine(DataTracking.LoadData());
+	}
+
+	// Start is called before the first frame update
+	void Start()
     {
         CoinsText.text = "Currency: " + coins.ToString();
         UICoinsText.text = "Currency: " + coins.ToString();
