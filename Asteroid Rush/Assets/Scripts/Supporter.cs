@@ -7,7 +7,6 @@ public class Supporter : Character
 {
     public override void SpecialAction()
     {
-        Debug.Log("in Supporter.cs, trying to add a slow zone");
-        //AlienManager.Instance.AddSlowZone(CurrentTile);
+        AlienManager.Instance.AddSlowZone(CurrentTile);
     }
 }

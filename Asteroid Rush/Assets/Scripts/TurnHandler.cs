@@ -45,7 +45,7 @@ public class TurnHandler : MonoBehaviour
     [Header("Mining Components")]
     [SerializeField]
     private List<Tile> mineableTiles = new List<Tile>();
-    private bool canDeposit = false;
+    //private bool canDeposit = false;
     #endregion
 
     #region Properties
@@ -152,8 +152,9 @@ public class TurnHandler : MonoBehaviour
                     if(selectedCharacter.GetComponent<Miner>()) {
                         bool canAttack = tileFinder.FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile).Count > 0;
                         bool canMine = tileFinder.FindAvailableMinableTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile).Count > 0;
-                        if(canAttack || canMine) {
-                            GameplayUI.Instance.OpenMinerActions(canAttack, canMine);
+                        bool canDeposit = CanDeposit();
+                        if(canAttack || canMine || canDeposit) {
+                            GameplayUI.Instance.OpenMinerActions(canAttack, canMine, canDeposit);
                             currentPlayerState = PlayerState.ActionSelect;
                         } else {
                             SetStatePlayerSelect();
@@ -162,8 +163,9 @@ public class TurnHandler : MonoBehaviour
                     else if(selectedCharacter.GetComponent<Fighter>()) {
                         bool canAttack = tileFinder.FindAvailableAttackingTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile).Count > 0;
                         bool canTrap = selectedCharacter.GetComponent<Fighter>().CanTrap && AlienManager.Instance.CanPlaceAbility(selectedCharacter.GetComponent<Character>().CurrentTile);
-                        if(canAttack || canTrap) {
-                            GameplayUI.Instance.OpenFighterActions(canAttack, canTrap);
+                        bool canDeposit = CanDeposit();
+                        if(canAttack || canTrap || canDeposit) {
+                            GameplayUI.Instance.OpenFighterActions(canAttack, canTrap, canDeposit);
                             currentPlayerState = PlayerState.ActionSelect;
                         } else {
                             SetStatePlayerSelect();
@@ -171,9 +173,10 @@ public class TurnHandler : MonoBehaviour
                     }
                     else if(selectedCharacter.GetComponent<Supporter>()) {
                         bool canMine = FindDrillbottableTiles().Count > 0;
-                        bool canZone = AlienManager.Instance.CanPlaceAbility(selectedCharacter.GetComponent<Character>().CurrentTile);
-                        if(canMine || canZone) {
-                            GameplayUI.Instance.OpenSupporterActions(canMine, canZone);
+                        bool canZone = !AlienManager.Instance.ActiveSlowZone() && AlienManager.Instance.CanPlaceAbility(selectedCharacter.GetComponent<Character>().CurrentTile);
+                        bool canDeposit = CanDeposit();
+                        if(canMine || canZone || canDeposit) {
+                            GameplayUI.Instance.OpenSupporterActions(canMine, canZone, canDeposit);
                             currentPlayerState = PlayerState.ActionSelect;
                         } else {
                             SetStatePlayerSelect();
@@ -240,7 +243,7 @@ public class TurnHandler : MonoBehaviour
         }
         mineableTiles.Clear();
 
-        canDeposit = false;
+        //canDeposit = false;
     }
     #endregion
 
@@ -318,7 +321,8 @@ public class TurnHandler : MonoBehaviour
     }
 
     public void ChooseDeposit() {
-
+        rocket.CanDeposit();
+        currentPlayerState = PlayerState.AttackSelect; // depositing is handled through the attack state
     }
     #endregion
 
@@ -435,6 +439,10 @@ public class TurnHandler : MonoBehaviour
         currentPlayerState = PlayerState.Animating;
     }
 
+    private bool CanDeposit() {
+        return selectedCharacter.GetComponent<Character>().CurrentTile.rocketAccessible && selectedCharacter.GetComponent<Character>().OreCount >= 1;
+    }
+
     //private void FindAttackableTiles(Tile currentTile) {
     //    if (currentTile.rocketAccessible && (selectedCharacter.GetComponent<Character>().OreCount >= 1))
     //    {
@@ -480,7 +488,7 @@ public class TurnHandler : MonoBehaviour
         Debug.Log("Depositing Ore");
         rocket.DepositOre(selectedCharacter.GetComponent<Character>().OreCount);
         selectedCharacter.GetComponent<Character>().OreCount = 0;
-        canDeposit = false;
+        //canDeposit = false;
         ClearAvailableTiles();
     }
     #endregion

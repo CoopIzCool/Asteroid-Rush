@@ -9,7 +9,7 @@ public class SlowZone : MonoBehaviour
 
     void Start()
     {
-        TurnsLeft = 3;
+        TurnsLeft = 5;
     }
 
     public bool IsInRange(Tile test) {

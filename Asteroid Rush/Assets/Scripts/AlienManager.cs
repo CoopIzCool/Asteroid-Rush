@@ -115,6 +115,7 @@ public class AlienManager : MonoBehaviour
                 Destroy(alien.CurrentTrap);
                 alien.CurrentTrap = null;
             }
+            return;
         }
 
         // find the closest player character
@@ -163,9 +164,13 @@ public class AlienManager : MonoBehaviour
 
         //  check for slow from a slow field
         if(slowZone != null) {
-            for(int i = 0; i < path.Count - 1; i++) { // ignore the last tile because the path can't get shorter there
+            for(int i = 1; i < path.Count - 1; i++) { // ignore the last tile because the path can't get shorter there, and start checking the second tile
                 if(slowZone.IsInRange(path[i])) {
-                    path.RemoveAt(path.Count - 1); // shorten the travel distance by 1 for each slow tile stepped on
+                    //path.RemoveAt(path.Count - 1); // shorten the travel distance by 1 for each slow tile stepped on
+
+                    // end path here
+                    path.RemoveRange(i + 1, path.Count - i - 1);
+                    break;
                 }
             }
         }
@@ -175,7 +180,7 @@ public class AlienManager : MonoBehaviour
             for(int i = 0; i < path.Count; i++) {
                 if(trap.GetComponent<Trap>().Tile == path[i]) {
                     // end path here
-                    path.RemoveRange(i, path.Count - i);
+                    path.RemoveRange(i + 1, path.Count - i - 1);
                     alien.CurrentTrap = trap;
                     break;
                 }
@@ -200,7 +205,6 @@ public class AlienManager : MonoBehaviour
         foreach (GameObject player in GenerateLevel.PlayerCharacters) {
             if(player.GetComponent<Character>().Alive())
             {
-                Tile playerTile = player.GetComponent<Character>().CurrentTile;
                 if (player.GetComponent<Character>().CurrentTile.IsAdjacent(alienTile))
                 {
                     return player;
@@ -215,7 +219,7 @@ public class AlienManager : MonoBehaviour
     public void AddTrap(Tile placement) {
         GameObject trap = Instantiate(trapPrefab);
         traps.Add(trap);
-        trap.transform.position = placement.transform.position;
+        trap.transform.position = placement.transform.position + new Vector3(0, 0.1f, 0);
         trap.GetComponent<Trap>().Tile = placement;
     }
 
@@ -237,12 +241,16 @@ public class AlienManager : MonoBehaviour
     // supporter's slow zone ability
     public void AddSlowZone(Tile placement) {
         if(slowZone != null) {
-            Destroy(slowZone);
+            Destroy(slowZone.gameObject);
         }
 
         GameObject newZone = Instantiate(slowZonePrefab);
-        newZone.transform.position = placement.transform.position;
+        newZone.transform.position = placement.transform.position + new Vector3(0, 2.2f, 0);
         slowZone = newZone.GetComponent<SlowZone>();
         slowZone.Tile = placement;
+    }
+
+    public bool ActiveSlowZone() {
+        return slowZone != null;
     }
 }

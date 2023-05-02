@@ -17,7 +17,7 @@ public class Fighter : Character
     public override void SpecialAction()
     {
         Debug.Log("in Fighter.cs, trying to set a trap");
-        //AlienManager.Instance.AddTrap(CurrentTile);
+        AlienManager.Instance.AddTrap(CurrentTile);
         TrapCooldown = 4;
     }
 }

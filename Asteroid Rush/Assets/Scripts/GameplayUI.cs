@@ -18,6 +18,7 @@ public class GameplayUI : MonoBehaviour
     public GameObject MinerActionSelect;
     public GameObject FighterActionSelect;
     public GameObject SupporterActionSelect;
+    public GameObject SharedActionSelect;
 
     [SerializeField] private GameObject minerSelect;
     [SerializeField] private GameObject fighterSelect;
@@ -43,6 +44,7 @@ public class GameplayUI : MonoBehaviour
         MinerActionSelect.SetActive(false);
         FighterActionSelect.SetActive(false);
         SupporterActionSelect.SetActive(false);
+        SharedActionSelect.SetActive(false);
     }
 
     // opens the player select menu. If the parameter is true, it allows all of the players to use a move again
@@ -57,28 +59,34 @@ public class GameplayUI : MonoBehaviour
         }
     }
 
-    public void OpenMinerActions(bool canAttack, bool canMine) {
+    public void OpenMinerActions(bool canAttack, bool canMine, bool canDeposit) {
         CloseMenus();
         MinerActionSelect.SetActive(true);
+        SharedActionSelect.SetActive(true);
 
         MinerActionSelect.transform.GetChild(0).gameObject.GetComponent<Button>().interactable = canAttack;
         MinerActionSelect.transform.GetChild(1).gameObject.GetComponent<Button>().interactable = canMine;
+        SharedActionSelect.transform.GetChild(0).gameObject.GetComponent<Button>().interactable = canDeposit;
     }
 
-    public void OpenFighterActions(bool canAttack, bool canTrap) {
+    public void OpenFighterActions(bool canAttack, bool canTrap, bool canDeposit) {
         CloseMenus();
         FighterActionSelect.SetActive(true);
+        SharedActionSelect.SetActive(true);
 
         FighterActionSelect.transform.GetChild(0).gameObject.GetComponent<Button>().interactable = canAttack;
         FighterActionSelect.transform.GetChild(1).gameObject.GetComponent<Button>().interactable = canTrap;
+        SharedActionSelect.transform.GetChild(0).gameObject.GetComponent<Button>().interactable = canDeposit;
     }
 
-    public void OpenSupporterActions(bool canMine, bool canSlowZone) {
+    public void OpenSupporterActions(bool canMine, bool canSlowZone, bool canDeposit) {
         CloseMenus();
         SupporterActionSelect.SetActive(true);
+        SharedActionSelect.SetActive(true);
 
         SupporterActionSelect.transform.GetChild(0).gameObject.GetComponent<Button>().interactable = canMine;
         SupporterActionSelect.transform.GetChild(1).gameObject.GetComponent<Button>().interactable = canSlowZone;
+        SharedActionSelect.transform.GetChild(0).gameObject.GetComponent<Button>().interactable = canDeposit;
     }
 
     public void DisableCharacterMoves(Character playerScript) {
@@ -134,6 +142,10 @@ public class GameplayUI : MonoBehaviour
     public void SelectSlowZone() {
         CloseMenus();
         GenerateLevel.PlayerCharacters[2].GetComponent<Supporter>().SpecialAction();
+        TurnHandler.Instance.SetStatePlayerSelect();
+    }
+
+    public void SelectWait() {
         TurnHandler.Instance.SetStatePlayerSelect();
     }
 }

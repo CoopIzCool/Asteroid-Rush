@@ -286,7 +286,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &809213536
 GameObject:
@@ -819,6 +819,14 @@ PrefabInstance:
       value: AlienManager
       objectReference: {fileID: 0}
     - target: {fileID: 2164374671098724475, guid: 4d0c52708045fe542aecb4db50f9cfae, type: 3}
+      propertyPath: trapPrefab
+      value: 
+      objectReference: {fileID: 6950621260607956420, guid: 1bd92d9656d7d7541b1c0ef9d614a888, type: 3}
+    - target: {fileID: 2164374671098724475, guid: 4d0c52708045fe542aecb4db50f9cfae, type: 3}
+      propertyPath: slowZonePrefab
+      value: 
+      objectReference: {fileID: 218734527233071987, guid: 7f5bdd264e11b03448fe734ad3e8002f, type: 3}
+    - target: {fileID: 2164374671098724475, guid: 4d0c52708045fe542aecb4db50f9cfae, type: 3}
       propertyPath: spawnZoneContainer
       value: 
       objectReference: {fileID: 1344129096}
@@ -876,7 +884,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7538099624998140318, guid: 25fb5e1ac1f41d240b94dd5059d6f0d9, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7538099624998140318, guid: 25fb5e1ac1f41d240b94dd5059d6f0d9, type: 3}
       propertyPath: m_AnchorMax.x
