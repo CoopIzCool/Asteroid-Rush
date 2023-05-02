@@ -41,9 +41,7 @@ public class LevelButton : MonoBehaviour
                     break;
             }
 
-            Debug.Log(DataTracking.GetData(0));
-            int numRuns = int.Parse(DataTracking.GetData(0));
-            numRuns++;
+            int numRuns = int.Parse(DataTracking.GetData(0)) + 1;
             DataTracking.SetData(0, numRuns.ToString());
 
             SceneManager.LoadScene("JohnScene");
