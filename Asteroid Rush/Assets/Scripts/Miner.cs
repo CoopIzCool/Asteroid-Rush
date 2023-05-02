@@ -12,6 +12,18 @@ public class Miner : Character
     protected override void Start()
     {
         base.Start();
+
+        //Boosts mining damage if miner equipment #1 is equipped
+        if (ShopManager.charEquipments[0].isSelected == true)
+        {
+            MiningPower = 6;
+        }
+
+        //Boosts miner movement range if miner equipment #2 is equipped
+        if (ShopManager.charEquipments[1].isSelected == true)
+        {
+            Movement = 6;
+        }
     }
 
 

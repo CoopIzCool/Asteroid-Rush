@@ -45,6 +45,7 @@ public class Character : MonoBehaviour
     public int Movement
     {
         get { return movementPoints; }
+        set { movementPoints = value; }
     }    
 
     public Tile CurrentTile
@@ -73,6 +74,7 @@ public class Character : MonoBehaviour
     public int MiningPower
     {
         get { return miningPower; }
+        set { miningPower = value; }
     }
 
     public int OreCount

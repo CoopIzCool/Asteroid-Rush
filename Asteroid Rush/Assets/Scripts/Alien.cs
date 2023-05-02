@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Alien : Character
 {
-    public int Damage { get { return damage; } }
+    public int Damage { get { return damage; } set { damage = value; } }
     public GameObject CurrentTrap { get; set; }
 
     protected override void Death()

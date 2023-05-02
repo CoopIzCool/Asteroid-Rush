@@ -10,6 +10,12 @@ public class SlowZone : MonoBehaviour
     void Start()
     {
         TurnsLeft = 5;
+
+        //Boosts slow zone duration if supporter equipment #1 is equipped
+        if (ShopManager.charEquipments[4].isSelected == true)
+        {
+            TurnsLeft = 8;
+        }
     }
 
     public bool IsInRange(Tile test) {

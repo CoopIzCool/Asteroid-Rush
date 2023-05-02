@@ -10,7 +10,18 @@ public class Fighter : Character
     protected override void Start()
     {
         base.Start();
-        
+
+        //Boosts attack damage if attacker equipment #1 is equipped
+        if (ShopManager.charEquipments[2].isSelected == true)
+        {
+            damage = 8;
+        }
+
+        //Boosts attack range if attacker equipment #2 is equipped
+        if (ShopManager.charEquipments[3].isSelected == true)
+        {
+            attackRange = 8;
+        }
     }
 
 

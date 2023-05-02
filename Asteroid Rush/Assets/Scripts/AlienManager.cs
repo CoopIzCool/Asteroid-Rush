@@ -42,6 +42,11 @@ public class AlienManager : MonoBehaviour
             // attack at the end of moving if next to a player
             GameObject adjacentPlayer = FindAdjacentPlayer(activeAliens[currentAlien]);
             if(adjacentPlayer != null) {
+                //Reduces enemy damage if supporter equipment #2 is equipped
+                if (ShopManager.charEquipments[5].isSelected == true)
+                {
+                    activeAliens[currentAlien].GetComponent<Alien>().Damage = 1;
+                }
                 adjacentPlayer.GetComponent<Character>().TakeDamage(activeAliens[currentAlien].GetComponent<Alien>().Damage);
 
                 // face player
