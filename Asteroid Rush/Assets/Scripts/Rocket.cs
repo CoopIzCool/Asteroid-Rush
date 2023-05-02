@@ -33,7 +33,7 @@ public class Rocket : MonoBehaviour
         GameObject turnHandlerObject = GameObject.FindGameObjectWithTag("TurnHandler");
         turnHandlerObject.GetComponent<TurnHandler>().RocketObject = this;
     }
-    public void CanDeposit()
+    public void ActivatingShipTiles()
     {
         Debug.Log("Depositing");
         rocketTile.SetAvailabillitySelector(true);

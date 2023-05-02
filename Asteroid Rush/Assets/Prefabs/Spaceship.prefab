@@ -110,5 +110,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 994f777aa5a13bc409bb4962781b6f78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  oreTotal: 0
   rocketTile: {fileID: 0}
-  oreNeeded: 3
+  oreNeeded: 1
