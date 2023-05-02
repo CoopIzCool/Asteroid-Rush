@@ -224,7 +224,6 @@ public class AlienManager : MonoBehaviour
     }
 
     public bool CanPlaceAbility(Tile spot) {
-        return slowZone == null;
         // check if there is already a trap or slow zone on that spot
         foreach(GameObject oldTrap in traps) {
             if(oldTrap.GetComponent<Trap>().Tile == spot) {
@@ -249,5 +248,9 @@ public class AlienManager : MonoBehaviour
         newZone.transform.position = placement.transform.position + new Vector3(0, 2.2f, 0);
         slowZone = newZone.GetComponent<SlowZone>();
         slowZone.Tile = placement;
+    }
+
+    public bool ActiveSlowZone() {
+        return slowZone != null;
     }
 }
