@@ -71,10 +71,16 @@ public class ShopManager : MonoBehaviour
     /// <summary>
     /// COPIED ARRAYS FROM ABOVE, USABLE IN ANY SCRIPT
     /// </summary>
+    /// 
+    //checks which equipments are equipped
     public static EquipmentButton[] charEquipments;
+    //what items the miner has equipped
     public static EquipmentButton[] minerItemsEquipped;
+    //what items the attacker has equipped
     public static EquipmentButton[] attackerItemsEquipped;
+    //what items the supporter has equipped
     public static EquipmentButton[] supporterItemsEquipped;
+    //quantity of each item in the shop
     public static int[,] updatedShopItems;
 
 	private void Awake()
