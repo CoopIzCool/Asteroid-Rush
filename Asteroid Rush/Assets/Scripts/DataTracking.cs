@@ -45,7 +45,7 @@ public class DataTracking : MonoBehaviour
 	public static IEnumerator LoadData()
 	{
 		yield return new WaitForSeconds(3f);
-		UnityWebRequest request = UnityWebRequest.Get("https://firebasestorage.googleapis.com/v0/b/asteroid-rush.appspot.com/o/SaveData.txt?alt=media&token=d7e738a3-aa82-4233-b345-2cc16ad6dd1c");
+		UnityWebRequest request = UnityWebRequest.Get("https://firebasestorage.googleapis.com/v0/b/asteroid-rush.appspot.com/o/SaveData.txt?alt=media&token=c237e539-9b33-4209-9e07-f3230e3e2f52");
 		yield return request.SendWebRequest();
 
 		if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
@@ -55,7 +55,9 @@ public class DataTracking : MonoBehaviour
 		}
 		else
 		{
-			data = request.downloadHandler.text.Split("%2c");
+			string dataString = request.downloadHandler.text;
+			if (dataString.Contains(',')) data = dataString.Split(',');
+			else data = dataString.Split("%2c");
 		}
 
 		Debug.Log(data[0]);
@@ -63,7 +65,7 @@ public class DataTracking : MonoBehaviour
 
 	public static IEnumerator SaveData(string postData)
 	{
-		UnityWebRequest request = UnityWebRequest.Post("https://firebasestorage.googleapis.com/v0/b/asteroid-rush.appspot.com/o/SaveData.txt?alt=media&token=d7e738a3-aa82-4233-b345-2cc16ad6dd1c", postData);
+		UnityWebRequest request = UnityWebRequest.Post("https://firebasestorage.googleapis.com/v0/b/asteroid-rush.appspot.com/o/SaveData.txt?alt=media&token=c237e539-9b33-4209-9e07-f3230e3e2f52", postData);
 		yield return request.SendWebRequest();
 
 		if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
