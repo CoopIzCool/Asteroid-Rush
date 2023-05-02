@@ -61,6 +61,8 @@ public class Rocket : MonoBehaviour
 
     public void WinState()
     {
-
+        Debug.Log("Victory");
+        rocketTile.SetAvailabillitySelector(false);
+        SceneManager.LoadScene("Victory");
     }
 }

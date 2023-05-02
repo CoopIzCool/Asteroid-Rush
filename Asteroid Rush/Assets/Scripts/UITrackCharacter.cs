@@ -13,5 +13,10 @@ public class UITrackCharacter : MonoBehaviour
         Vector3 worldPosition = TargetObject.transform.position;
         Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
         transform.position = screenPosition + new Vector3(0, UPSHIFT, 0);
+        //Deactivate UI if the player is deactivated
+        if(!TargetObject.activeInHierarchy)
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

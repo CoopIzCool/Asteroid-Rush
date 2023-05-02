@@ -111,6 +111,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unlitMaterial: {fileID: 2100000, guid: 1e8c6e0fe6865cc43aab9bea50098587, type: 2}
+  unlitPlayerMaterial: {fileID: 2100000, guid: 282039c65a8ef724582e8a41380fbbdf, type: 2}
+  unselectedStandardMaterial: {fileID: 0}
   selectedMaterial: {fileID: 2100000, guid: 9f1648d6c1888db43bb450371a9eaa5e, type: 2}
   associatedTile: {fileID: -3309414973571219943}
   selectedArea:

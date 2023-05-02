@@ -151,4 +151,10 @@ public class GameplayUI : MonoBehaviour
     public void SelectWait() {
         TurnHandler.Instance.SetStatePlayerSelect();
     }
+
+    public void SelectBoard()
+    {
+        CloseMenus();
+        TurnHandler.Instance.ChooseBoard();
+    }
 }

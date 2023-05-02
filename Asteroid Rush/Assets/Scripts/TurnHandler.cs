@@ -154,7 +154,7 @@ public class TurnHandler : MonoBehaviour
                         bool canMine = tileFinder.FindAvailableMinableTiles(selectedCharacter.GetComponent<Character>(), selectedCharacter.GetComponent<Character>().CurrentTile).Count > 0;
                         bool canDeposit = CanDeposit();
                         bool canBoard = CanBoard();
-                        if (canAttack || canMine || canDeposit) {
+                        if (canAttack || canMine || canDeposit || canBoard) {
                             GameplayUI.Instance.OpenMinerActions(canAttack, canMine, canDeposit, canBoard);
                             currentPlayerState = PlayerState.ActionSelect;
                         } else {
@@ -166,7 +166,7 @@ public class TurnHandler : MonoBehaviour
                         bool canTrap = selectedCharacter.GetComponent<Fighter>().CanTrap && AlienManager.Instance.CanPlaceAbility(selectedCharacter.GetComponent<Character>().CurrentTile);
                         bool canDeposit = CanDeposit();
                         bool canBoard = CanBoard();
-                        if (canAttack || canTrap || canDeposit) {
+                        if (canAttack || canTrap || canDeposit || canBoard) {
                             GameplayUI.Instance.OpenFighterActions(canAttack, canTrap, canDeposit, canBoard);
                             currentPlayerState = PlayerState.ActionSelect;
                         } else {
@@ -178,7 +178,7 @@ public class TurnHandler : MonoBehaviour
                         bool canZone = !AlienManager.Instance.ActiveSlowZone() && AlienManager.Instance.CanPlaceAbility(selectedCharacter.GetComponent<Character>().CurrentTile);
                         bool canDeposit = CanDeposit();
                         bool canBoard = CanBoard(); 
-                        if(canMine || canZone || canDeposit) {
+                        if(canMine || canZone || canDeposit || canBoard) {
                             GameplayUI.Instance.OpenSupporterActions(canMine, canZone, canDeposit, canBoard);
                             currentPlayerState = PlayerState.ActionSelect;
                         } else {
@@ -466,6 +466,9 @@ public class TurnHandler : MonoBehaviour
 
     private bool CanBoard()
     {
+        Debug.Log("Player is rocket accessible is " + selectedCharacter.GetComponent<Character>().CurrentTile.rocketAccessible);
+        Debug.Log("Player has no ore is " + (selectedCharacter.GetComponent<Character>().OreCount <= 0));
+        Debug.Log("Win condition state is " + rocket.CanEscape());
         return selectedCharacter.GetComponent<Character>().CurrentTile.rocketAccessible && selectedCharacter.GetComponent<Character>().OreCount <= 0 && rocket.CanEscape();
     }
 

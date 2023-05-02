@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Character : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class Character : MonoBehaviour
     private int miningPower;
     [SerializeField]
     private int oreCount = 0;
+    [SerializeField]
+    private bool boarded = false;
 
     [Header("Movement Components:")]
     [SerializeField] private Tile currentTile;
@@ -76,6 +79,12 @@ public class Character : MonoBehaviour
     {
         get { return oreCount; }
         set { oreCount = value; }
+    }
+
+    public bool Boarded
+    {
+        get { return boarded; }
+        set { boarded = value; }
     }
     #endregion
     // Start is called before the first frame update
@@ -187,6 +196,7 @@ public class Character : MonoBehaviour
     {
         currentTile.occupant = null;
         gameObject.SetActive(false);
+        SceneManager.LoadScene("Defeat");
     }
 
     public void MineOre(UnrefinedOre ore)
