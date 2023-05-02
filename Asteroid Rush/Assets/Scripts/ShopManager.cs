@@ -49,7 +49,7 @@ public class ShopManager : MonoBehaviour
 
 	private void Awake()
 	{
-        if(DataTracking.data == null) StartCoroutine(DataTracking.LoadData());
+        if(!DataTracking.DataExists()) StartCoroutine(DataTracking.LoadData());
 	}
 
 	// Start is called before the first frame update

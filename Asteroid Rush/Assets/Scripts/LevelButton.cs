@@ -26,7 +26,7 @@ public class LevelButton : MonoBehaviour
 
     private void OnMouseUpAsButton()
     {
-        if (DataTracking.data != null)
+        if (DataTracking.DataExists())
         {
             switch (gameObject.name)
             {
@@ -41,8 +41,8 @@ public class LevelButton : MonoBehaviour
                     break;
             }
 
-            string numRuns = DataTracking.data[0] + 1;
-            DataTracking.data[0] = numRuns.ToString();
+            int numRuns = int.Parse(DataTracking.GetData(0)) + 1;
+            DataTracking.SetData(0, numRuns.ToString());
 
             SceneManager.LoadScene("JohnScene");
         }

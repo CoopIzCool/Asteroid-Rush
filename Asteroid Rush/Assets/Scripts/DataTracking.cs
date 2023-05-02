@@ -13,7 +13,22 @@ public class DataTracking : MonoBehaviour
 	// 3. AVERAGE DAMAGE TAKEN PER RUN
 	// 4. AVERAGE NUMBER OF ENEMIES DEFEATED PER RUN
 	// 5. AVERAGE NUMBER OF TURNS TAKEN PER RUN
-	public static string[] data;
+	private static string[] data;
+
+	public static string GetData(int index)
+	{
+		return data[index];
+	}
+
+	public static void SetData(int index, string value)
+	{
+		data[index] = value;
+	}
+
+	public static bool DataExists()
+	{
+		return data != null;
+	}
 
 	// Start is called before the first frame update
 	void Start()

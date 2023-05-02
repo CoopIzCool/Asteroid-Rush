@@ -133,6 +133,9 @@ public class Character : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
+
+        int amtDamage = int.Parse(DataTracking.GetData(2)) + damage;
+		DataTracking.SetData(2, amtDamage.ToString());
         if(gameObject.tag == "Character") HealthUI.UpdateHealthBar(gameObject, damage);
         Debug.Log(gameObject.name + " has taken " + damage + " damage. They now have " + health + " health");
         if(health <= 0)
