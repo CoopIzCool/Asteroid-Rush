@@ -329,6 +329,9 @@ public class TurnHandler : MonoBehaviour
     #region Turn End
     public void EndPlayerTurn()
     {
+        int numTurns = int.Parse(DataTracking.GetData(4)) + 1;
+        DataTracking.SetData(4, numTurns.ToString());
+
         // drill bots deal damage at the end of each turn
         for(int i = 0; i < oresWithDrillBots.Count; i++) {
             bool destroyed = oresWithDrillBots[i].DealDrillBotDamage();
