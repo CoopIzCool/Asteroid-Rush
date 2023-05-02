@@ -16,6 +16,7 @@ public class TileFinder : MonoBehaviour
         List<Tile> currentLevelTiles = new List<Tile>();
         List<Tile> moveableTiles = new List<Tile>();
         currentLevelTiles.Add(start);
+        moveableTiles.Add(start);
         for (int i = 0; i < chosenCharacter.Movement; i++)
         {
             List<Tile> nextLevelTiles = new List<Tile>();

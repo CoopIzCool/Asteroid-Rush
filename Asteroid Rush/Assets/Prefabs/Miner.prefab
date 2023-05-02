@@ -114,6 +114,7 @@ MonoBehaviour:
   isPlayer: 1
   miningPower: 3
   oreCount: 0
+  boarded: 0
   currentTile: {fileID: 0}
   heightAboveTile: 0.44
   moved: 0

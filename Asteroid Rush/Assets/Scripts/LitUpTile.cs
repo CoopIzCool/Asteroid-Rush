@@ -6,6 +6,8 @@ public class LitUpTile : MonoBehaviour
 {
     #region Fields
     [SerializeField] private Material unlitMaterial;
+    [SerializeField] private Material unlitPlayerMaterial;
+    [SerializeField] private Material unselectedStandardMaterial;
     [SerializeField] private Material selectedMaterial;
     [SerializeField] private Tile associatedTile;
     [Header("Raycast Components:")]
@@ -25,12 +27,14 @@ public class LitUpTile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        unselectedStandardMaterial = unlitMaterial;
     }
 
     // Update is called once per frame
     void Update()
     {
+        GetUnselectedMaterial();
+
         mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(mouseRay, out hitInfo, selectedArea))
         {
@@ -40,12 +44,32 @@ public class LitUpTile : MonoBehaviour
             }
             else
             {
-                gameObject.GetComponent<MeshRenderer>().material = unlitMaterial;
+                gameObject.GetComponent<MeshRenderer>().material = unselectedStandardMaterial;
             }
         }
         else
         {
-            gameObject.GetComponent<MeshRenderer>().material = unlitMaterial;
+            gameObject.GetComponent<MeshRenderer>().material = unselectedStandardMaterial;
         }
+    }
+
+    private void GetUnselectedMaterial()
+    {
+        if(associatedTile.occupant == null)
+        {
+            unselectedStandardMaterial = unlitMaterial;
+        }
+        else
+        {
+            if (associatedTile.occupant.GetComponent<Character>())
+            {
+                unselectedStandardMaterial = unlitPlayerMaterial;
+            }
+            else
+            {
+                unselectedStandardMaterial = unlitMaterial;
+            }
+        }
+
     }
 }

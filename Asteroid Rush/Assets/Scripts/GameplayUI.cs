@@ -59,7 +59,7 @@ public class GameplayUI : MonoBehaviour
         }
     }
 
-    public void OpenMinerActions(bool canAttack, bool canMine, bool canDeposit) {
+    public void OpenMinerActions(bool canAttack, bool canMine, bool canDeposit,bool canBoard) {
         CloseMenus();
         MinerActionSelect.SetActive(true);
         SharedActionSelect.SetActive(true);
@@ -67,9 +67,10 @@ public class GameplayUI : MonoBehaviour
         MinerActionSelect.transform.GetChild(0).gameObject.GetComponent<Button>().interactable = canAttack;
         MinerActionSelect.transform.GetChild(1).gameObject.GetComponent<Button>().interactable = canMine;
         SharedActionSelect.transform.GetChild(0).gameObject.GetComponent<Button>().interactable = canDeposit;
+        SharedActionSelect.transform.GetChild(2).gameObject.GetComponent<Button>().interactable = canBoard;
     }
 
-    public void OpenFighterActions(bool canAttack, bool canTrap, bool canDeposit) {
+    public void OpenFighterActions(bool canAttack, bool canTrap, bool canDeposit, bool canBoard) {
         CloseMenus();
         FighterActionSelect.SetActive(true);
         SharedActionSelect.SetActive(true);
@@ -77,9 +78,10 @@ public class GameplayUI : MonoBehaviour
         FighterActionSelect.transform.GetChild(0).gameObject.GetComponent<Button>().interactable = canAttack;
         FighterActionSelect.transform.GetChild(1).gameObject.GetComponent<Button>().interactable = canTrap;
         SharedActionSelect.transform.GetChild(0).gameObject.GetComponent<Button>().interactable = canDeposit;
+        SharedActionSelect.transform.GetChild(2).gameObject.GetComponent<Button>().interactable = canBoard;
     }
 
-    public void OpenSupporterActions(bool canMine, bool canSlowZone, bool canDeposit) {
+    public void OpenSupporterActions(bool canMine, bool canSlowZone, bool canDeposit, bool canBoard) {
         CloseMenus();
         SupporterActionSelect.SetActive(true);
         SharedActionSelect.SetActive(true);
@@ -87,6 +89,7 @@ public class GameplayUI : MonoBehaviour
         SupporterActionSelect.transform.GetChild(0).gameObject.GetComponent<Button>().interactable = canMine;
         SupporterActionSelect.transform.GetChild(1).gameObject.GetComponent<Button>().interactable = canSlowZone;
         SharedActionSelect.transform.GetChild(0).gameObject.GetComponent<Button>().interactable = canDeposit;
+        SharedActionSelect.transform.GetChild(2).gameObject.GetComponent<Button>().interactable = canBoard;
     }
 
     public void DisableCharacterMoves(Character playerScript) {
@@ -147,5 +150,11 @@ public class GameplayUI : MonoBehaviour
 
     public void SelectWait() {
         TurnHandler.Instance.SetStatePlayerSelect();
+    }
+
+    public void SelectBoard()
+    {
+        CloseMenus();
+        TurnHandler.Instance.ChooseBoard();
     }
 }
