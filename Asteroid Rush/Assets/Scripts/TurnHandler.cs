@@ -79,12 +79,6 @@ public class TurnHandler : MonoBehaviour
         currentPlayerState = PlayerState.PlayerSelect;
         instance = this;
         oresWithDrillBots = new List<UnrefinedOre>();
-
-        //SHOWS THE QUANTITY OF EACH ITEM (1-4 = Consumables)
-        for( int i = 1; i < ShopManager.updatedShopItems.Length / 4; i++)
-        {
-            Debug.Log("Item " + i + " " + ShopManager.updatedShopItems[3,i]);
-        }
     }
 
     void Update()

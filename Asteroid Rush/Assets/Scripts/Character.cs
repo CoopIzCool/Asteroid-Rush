@@ -131,6 +131,16 @@ public class Character : MonoBehaviour
     public virtual void Attack(Character opponent)
     {
         opponent.TakeDamage(damage);
+
+        //BOOSTER
+        if (gameObject.GetComponent<Miner>())
+        {
+            UseBooster(ShopManager.minerItemsEquipped, opponent);
+        }
+        if (gameObject.GetComponent<Fighter>())
+        {
+            UseBooster(ShopManager.attackerItemsEquipped, opponent);
+        }
     }
 
     public virtual void SpecialAction()
@@ -181,30 +191,51 @@ public class Character : MonoBehaviour
         int amtDamage = int.Parse(DataTracking.GetData(2)) + damage;
 		DataTracking.SetData(2, amtDamage.ToString());
         if(gameObject.tag == "Character") HealthUI.UpdateHealthBar(gameObject, damage);
-        Debug.Log(gameObject.name + " has taken " + damage + " damage. They now have " + health + " health");
-
-        //POTION
+   
+        //POTION & GUARD
         if (gameObject.GetComponent<Miner>())
         {
+            UseGuard(ShopManager.minerItemsEquipped, damage);
             UsePotion(ShopManager.minerItemsEquipped);
         }
         if(gameObject.GetComponent<Fighter>())
         {
+            UseGuard(ShopManager.attackerItemsEquipped, damage);
             UsePotion(ShopManager.attackerItemsEquipped);
         }
         if (gameObject.GetComponent<Supporter>())
         {
+            UseGuard(ShopManager.supporterItemsEquipped, damage);
             UsePotion(ShopManager.supporterItemsEquipped);
         }
 
+        Debug.Log(gameObject.name + " has taken " + damage + " damage. They now have " + health + " health");
 
         if (health <= 0)
         {
-            health = 0;
-            Death();
+            //health = 0;
+            //Death();
+
+            //REVIVE
+            if (gameObject.GetComponent<Miner>())
+            {
+                UseRevive(ShopManager.minerItemsEquipped);
+            }
+            if (gameObject.GetComponent<Fighter>())
+            {
+                UseRevive(ShopManager.attackerItemsEquipped);
+            }
+            if (gameObject.GetComponent<Supporter>())
+            {
+                UseRevive(ShopManager.supporterItemsEquipped);
+            }
+
+            if (gameObject.GetComponent<Alien>())
+            {
+                health = 0;
+                Death();
+            }
         }
-
-
     }
 
     private void UsePotion(EquipmentButton[] roleItemsEquipped)
@@ -218,6 +249,45 @@ public class Character : MonoBehaviour
                 health += 3;
                 ShopManager.updatedShopItems[3, 1] -= 1;
             }
+        }
+    }
+
+    private void UseRevive(EquipmentButton[] roleItemsEquipped)
+    {
+        //If revive is equipped, and there is at least one revive left in inventory
+        if (roleItemsEquipped[1].isSelected && ShopManager.updatedShopItems[3, 2] >= 1)
+        {
+            //Restores some health upon dying, and uses a revive
+            health += 5;
+            ShopManager.updatedShopItems[3, 2] -= 1;
+        }
+
+        else
+        {
+            health = 0;
+            Death();
+        }
+    }
+
+    private void UseBooster(EquipmentButton[] roleItemsEquipped, Character opponent)
+    {
+        //If booster is equipped, and there is at least one booster left in inventory
+        if (roleItemsEquipped[2].isSelected && ShopManager.updatedShopItems[3, 3] >= 1)
+        {
+            //Attack again
+            opponent.TakeDamage(damage);
+            ShopManager.updatedShopItems[3, 3] -= 1;
+        }
+    }
+
+    private void UseGuard(EquipmentButton[] roleItemsEquipped, int damage)
+    {
+        //If guard is equipped, and there is at least one guard left in inventory
+        if (roleItemsEquipped[3].isSelected && ShopManager.updatedShopItems[3, 4] >= 1)
+        {
+            //Prevents damage, then consumes a guard
+            health += damage;
+            ShopManager.updatedShopItems[3, 4] -= 1;
         }
     }
 
