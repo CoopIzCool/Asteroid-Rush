@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TextCore.Text;
@@ -35,10 +36,10 @@ public class Character : MonoBehaviour
     private int nextTile;
     private float moveSpeed;
     private List<Tile> currentPath;
-    #endregion
+	#endregion
 
-    #region Properties
-    public int MaxHealth
+	#region Properties
+	public int MaxHealth
     {
         get { return maxHealth; }
     }
@@ -89,9 +90,12 @@ public class Character : MonoBehaviour
         get { return boarded; }
         set { boarded = value; }
     }
-    #endregion
-    // Start is called before the first frame update
-    protected virtual void Start()
+
+	// Text field for held ore
+	public TMP_Text OreText { get; protected set; }
+	#endregion
+	// Start is called before the first frame update
+	protected virtual void Start()
     {
         health = maxHealth;
 
@@ -297,7 +301,8 @@ public class Character : MonoBehaviour
     public void CollectOre()
     {
         oreCount++;
-    }
+		OreText.text = "Ore Held: " + oreCount.ToString();
+	}
 
     protected virtual void Death()
     {
@@ -312,6 +317,7 @@ public class Character : MonoBehaviour
         if(isOreBroken)
         {
             oreCount++;
+            OreText.text = "Ore Held: " + oreCount.ToString();
         }
     }
     #endregion

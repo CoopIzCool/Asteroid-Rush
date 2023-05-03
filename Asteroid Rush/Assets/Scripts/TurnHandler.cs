@@ -502,6 +502,7 @@ public class TurnHandler : MonoBehaviour
         Debug.Log("Depositing Ore");
         rocket.DepositOre(selectedCharacter.GetComponent<Character>().OreCount);
         selectedCharacter.GetComponent<Character>().OreCount = 0;
+        selectedCharacter.GetComponent<Character>().OreText.text = "Ore Held: 0";
         //canDeposit = false;
         ClearAvailableTiles();
     }

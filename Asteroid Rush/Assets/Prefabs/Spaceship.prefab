@@ -112,4 +112,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   oreTotal: 0
   rocketTile: {fileID: 0}
-  oreNeeded: 1
+  oreNeeded: 2

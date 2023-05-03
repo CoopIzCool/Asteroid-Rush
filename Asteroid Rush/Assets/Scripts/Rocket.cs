@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,10 +15,12 @@ public class Rocket : MonoBehaviour
     [SerializeField]
     private int oreNeeded;
     private int crewmateTotal = 3;
-    #endregion
+	private TMP_Text currentOreText = null;
+	private TMP_Text requiredOreText = null;
+	#endregion
 
-    #region Properties
-    public int OreNeeded
+	#region Properties
+	public int OreNeeded
     {
         set { oreNeeded = value; }
     }
@@ -32,7 +35,10 @@ public class Rocket : MonoBehaviour
     {
         GameObject turnHandlerObject = GameObject.FindGameObjectWithTag("TurnHandler");
         turnHandlerObject.GetComponent<TurnHandler>().RocketObject = this;
-    }
+
+		currentOreText = GameObject.Find("ShipOre").GetComponent<TMP_Text>();
+		GameObject.Find("RequiredOre").GetComponent<TMP_Text>().text = "Ore Required: " + oreNeeded;
+	}
     public void ActivatingShipTiles()
     {
         Debug.Log("Depositing");
@@ -41,6 +47,7 @@ public class Rocket : MonoBehaviour
     public void DepositOre(int oreDeposit)
     {
         oreTotal += oreDeposit;
+		currentOreText.text = "Ore Secured: " + oreTotal.ToString();
         rocketTile.SetAvailabillitySelector(false);
     }
 

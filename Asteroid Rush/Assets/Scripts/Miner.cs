@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Miner : Character
@@ -24,6 +25,8 @@ public class Miner : Character
         {
             Movement = 6;
         }
+
+        OreText = GameObject.Find("MinerOre").GetComponent<TMP_Text>();
     }
 
 
