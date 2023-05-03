@@ -95,28 +95,6 @@ public class ShopManager : MonoBehaviour
         UICoinsText.text = "Currency: " + coins.ToString();
 
         //ID
-        //Potion
-        //shopItems[1, 1] = 1;
-        ////Item 2
-        //shopItems[1, 2] = 2;
-        ////Item 3
-        //shopItems[1, 3] = 3;
-        ////Item 4
-        //shopItems[1, 4] = 4;
-        ////Item 5
-        //shopItems[1, 5] = 5;
-
-        ////Item 6
-        //shopItems[1, 6] = 6;
-        ////Item 7
-        //shopItems[1, 7] = 7;
-        ////Item 8
-        //shopItems[1, 8] = 8;
-        ////Item 9
-        //shopItems[1, 9] = 9;
-        ////Item 10
-        //shopItems[1, 10] = 10;
-
         //Gives each item an ID
         for(int i = 1; i < shopItems.Length / 4; i ++)
         {
@@ -148,6 +126,12 @@ public class ShopManager : MonoBehaviour
         shopItems[3, 9] = 0;
         shopItems[3, 10] = 0;
         shopItems[3, 11] = 0;
+
+        //Saves player's item inventory when returning to shop
+        if(updatedShopItems != null)
+        {
+            shopItems = updatedShopItems;
+        }
     }
 
     /// <summary>
