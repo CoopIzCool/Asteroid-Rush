@@ -194,11 +194,14 @@ public class Character : MonoBehaviour
     {
         health -= damage;
 
-        int amtDamage = int.Parse(DataTracking.GetData(2)) + damage;
-		DataTracking.SetData(2, amtDamage.ToString());
-        if(gameObject.tag == "Character") HealthUI.UpdateHealthBar(gameObject, damage);
-        else 
-   
+        if (gameObject.tag == "Character")
+        {
+            HealthUI.UpdateHealthBar(gameObject, damage);
+			int amtDamage = int.Parse(DataTracking.GetData(2)) + damage;
+			DataTracking.SetData(2, amtDamage.ToString());
+		}
+        else
+
         //POTION & GUARD
         if (gameObject.GetComponent<Miner>())
         {
@@ -307,8 +310,9 @@ public class Character : MonoBehaviour
     protected virtual void Death()
     {
         currentTile.occupant = null;
-        gameObject.SetActive(false);
-        SceneManager.LoadScene("Defeat");
+		gameObject.SetActive(false);
+		DataTracking.SaveData();
+		SceneManager.LoadScene("Defeat");
     }
 
     public void MineOre(UnrefinedOre ore)

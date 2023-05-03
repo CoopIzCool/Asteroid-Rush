@@ -70,6 +70,13 @@ public class Rocket : MonoBehaviour
     {
         Debug.Log("Victory");
         rocketTile.SetAvailabillitySelector(false);
-        SceneManager.LoadScene("Victory");
+
+        int amtOre = int.Parse(DataTracking.GetData(5)) + oreTotal;
+        DataTracking.SetData(5, amtOre.ToString());
+		int numWins = int.Parse(DataTracking.GetData(1)) + 1;
+		DataTracking.SetData(1, numWins.ToString());
+        DataTracking.SaveData();
+
+		SceneManager.LoadScene("Victory");
     }
 }
