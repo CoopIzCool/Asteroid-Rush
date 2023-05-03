@@ -27,8 +27,12 @@ public class AlienManager : MonoBehaviour
     int currentAlien; // index of the alien currently moving
     const float MOVE_SPEED = 8.0f;
 
-    // use awake because this is referenced by GenerateLevel.cs Start()
-    void Awake()
+	// Enemy health prefabs
+	[SerializeField] private GameObject entityHealthPrefab;
+	[SerializeField] private GameObject entityHealthBlockPrefab;
+
+	// use awake because this is referenced by GenerateLevel.cs Start()
+	void Awake()
     {
         instance = this;
         activeAliens = new List<GameObject>();
@@ -94,7 +98,24 @@ public class AlienManager : MonoBehaviour
                 GameObject newAlien = Instantiate(alienPrefab);
                 spawnedAliens.Add(newAlien);
                 newAlien.GetComponent<Alien>().MoveToTile(tileSpot.gameObject.GetComponent<Tile>());
-            }
+
+				GameObject enemyHealthBar = Instantiate(entityHealthPrefab, GameObject.Find("EnemyUI").transform);
+				enemyHealthBar.GetComponent<UITrackCharacter>().TargetObject = tileSpot.GetComponent<Tile>().occupant;
+				newAlien.GetComponent<Alien>().HealthBar = enemyHealthBar;
+                int amtHealth = tileSpot.GetComponent<Tile>().occupant.GetComponent<Alien>().MaxHealth;
+				float healthBlockWidth = enemyHealthBar.GetComponent<RectTransform>().rect.width / amtHealth;
+				float healthBarLeft = -enemyHealthBar.GetComponent<RectTransform>().rect.width / 2f;
+				float padding = 0.1f;
+
+				for (int j = 0; j < amtHealth; j++)
+				{
+					GameObject healthBlock = Instantiate(entityHealthBlockPrefab, new Vector3(healthBarLeft + padding + healthBlockWidth * j, enemyHealthBar.transform.position.y, enemyHealthBar.transform.position.z), Quaternion.identity, enemyHealthBar.transform);
+					healthBlock.transform.localPosition = new Vector3(healthBarLeft + padding + healthBlockWidth / 2f + healthBlockWidth * j, healthBlock.transform.localPosition.y, healthBlock.transform.localPosition.z);
+					healthBlock.transform.localScale = new Vector3(0.2f, entityHealthBlockPrefab.transform.localScale.y / enemyHealthBar.transform.localScale.y, entityHealthBlockPrefab.transform.localScale.z);
+				}
+
+				enemyHealthBar.transform.localScale *= 7;
+			}
         }
 
         // start animating aliens

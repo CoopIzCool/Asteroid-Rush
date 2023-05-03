@@ -115,5 +115,9 @@ MonoBehaviour:
   damage: 2
   attackRange: 1
   isPlayer: 0
+  miningPower: 0
+  oreCount: 0
+  boarded: 0
   currentTile: {fileID: 0}
+  heightAboveTile: 0
   moved: 0

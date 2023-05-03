@@ -719,9 +719,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 218734527233071987, guid: 7f5bdd264e11b03448fe734ad3e8002f, type: 3}
     - target: {fileID: 2164374671098724475, guid: 4d0c52708045fe542aecb4db50f9cfae, type: 3}
+      propertyPath: entityHealthPrefab
+      value: 
+      objectReference: {fileID: 3805940419513935397, guid: 48e5edee8fcf07c4c89058e12cc6af69, type: 3}
+    - target: {fileID: 2164374671098724475, guid: 4d0c52708045fe542aecb4db50f9cfae, type: 3}
       propertyPath: spawnZoneContainer
       value: 
       objectReference: {fileID: 1761830342}
+    - target: {fileID: 2164374671098724475, guid: 4d0c52708045fe542aecb4db50f9cfae, type: 3}
+      propertyPath: entityHealthBlockPrefab
+      value: 
+      objectReference: {fileID: 7022669498572769311, guid: 4b179f050130f3b438baa7ccdb6ac029, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d0c52708045fe542aecb4db50f9cfae, type: 3}
 --- !u!1 &675960682

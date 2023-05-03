@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.TextCore.Text;
 
 public class Character : MonoBehaviour
 {
@@ -183,14 +184,16 @@ public class Character : MonoBehaviour
     {
         return health > 0;
     }
-    #region Damage and Death
-    public void TakeDamage(int damage)
+
+	#region Damage and Death
+	public virtual void TakeDamage(int damage)
     {
         health -= damage;
 
         int amtDamage = int.Parse(DataTracking.GetData(2)) + damage;
 		DataTracking.SetData(2, amtDamage.ToString());
         if(gameObject.tag == "Character") HealthUI.UpdateHealthBar(gameObject, damage);
+        else 
    
         //POTION & GUARD
         if (gameObject.GetComponent<Miner>())
