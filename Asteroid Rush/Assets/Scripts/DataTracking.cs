@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -46,25 +48,41 @@ public class DataTracking : MonoBehaviour
 
 	public static void LoadData()
 	{
-		if (PlayerPrefs.HasKey("SaveData")) data = PlayerPrefs.GetString("SaveData").Split(",");
-		else data = new string[] { "0", "0", "0", "0", "0", "0" };
+		BinaryFormatter formatter= new BinaryFormatter();
+		FileStream readStream = null;
+
+		try
+		{
+			readStream = File.OpenRead(Application.persistentDataPath + @"\SaveData.dat");
+			data = (string[])formatter.Deserialize(readStream);
+		}
+		catch
+		{
+			data = new string[] { "0", "0", "0", "0", "0", "0" };
+		}
+		finally
+		{
+			if(readStream != null ) readStream.Close();
+		}
 	}
 
 	public static void SaveData()
 	{
-		string saveData = data[0] + ",";
-		for (int i = 1; i < data.Length; i++)
+		FileStream writeStream = null;
+		BinaryFormatter formatter = new BinaryFormatter();
+
+		try
 		{
-			saveData += data[i] + ",";
+			writeStream = File.OpenWrite(Application.persistentDataPath + @"\SaveData.dat");
+			formatter.Serialize(writeStream, data);
 		}
-		saveData = saveData.Substring(0, saveData.Length - 1);
-
-		PlayerPrefs.SetString("SaveData", saveData);
-
-		Debug.Log(data[0]);
-		for (int i = 1; i < data.Length; i++)
+		catch(Exception e)
 		{
-			Debug.Log((float.Parse(data[i]) / float.Parse(data[0])).ToString());
+			Debug.Log(e);
+		}
+		finally
+		{ 
+			if(writeStream != null) writeStream.Close(); 
 		}
 	}
 }
