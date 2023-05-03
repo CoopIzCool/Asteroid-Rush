@@ -125,16 +125,16 @@ public class ShopManager : MonoBehaviour
 
         //Prices of each item
         shopItems[2, 1] = 50;
-        shopItems[2, 2] = 75;
+        shopItems[2, 2] = 100;
         shopItems[2, 3] = 10;
         shopItems[2, 4] = 10;
         shopItems[2, 5] = 10;
-        shopItems[2, 6] = 100;
-        shopItems[2, 7] = 100;
-        shopItems[2, 8] = 100;
-        shopItems[2, 9] = 100;
-        shopItems[2, 10] = 100;
-        shopItems[2, 11] = 100;
+        shopItems[2, 6] = 150;
+        shopItems[2, 7] = 150;
+        shopItems[2, 8] = 150;
+        shopItems[2, 9] = 150;
+        shopItems[2, 10] = 150;
+        shopItems[2, 11] = 150;
 
         //Quantity of each item
         shopItems[3, 1] = 0;

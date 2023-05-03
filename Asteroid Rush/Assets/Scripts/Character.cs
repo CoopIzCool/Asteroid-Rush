@@ -182,10 +182,42 @@ public class Character : MonoBehaviour
 		DataTracking.SetData(2, amtDamage.ToString());
         if(gameObject.tag == "Character") HealthUI.UpdateHealthBar(gameObject, damage);
         Debug.Log(gameObject.name + " has taken " + damage + " damage. They now have " + health + " health");
-        if(health <= 0)
+
+        //POTION
+        if (gameObject.GetComponent<Miner>())
+        {
+            UsePotion(ShopManager.minerItemsEquipped);
+        }
+        if(gameObject.GetComponent<Fighter>())
+        {
+            UsePotion(ShopManager.attackerItemsEquipped);
+        }
+        if (gameObject.GetComponent<Supporter>())
+        {
+            UsePotion(ShopManager.supporterItemsEquipped);
+        }
+
+
+        if (health <= 0)
         {
             health = 0;
             Death();
+        }
+
+
+    }
+
+    private void UsePotion(EquipmentButton[] roleItemsEquipped)
+    {
+        //If potion is equipped, and there is at least one potion left in inventory
+        if (roleItemsEquipped[0].isSelected && ShopManager.updatedShopItems[3, 1] >= 1)
+        {
+            //Restores some health upon reaching half health, and uses a potion
+            if (health <= maxHealth / 2)
+            {
+                health += 3;
+                ShopManager.updatedShopItems[3, 1] -= 1;
+            }
         }
     }
 

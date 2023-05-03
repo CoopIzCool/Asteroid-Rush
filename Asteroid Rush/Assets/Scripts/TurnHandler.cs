@@ -80,15 +80,6 @@ public class TurnHandler : MonoBehaviour
         instance = this;
         oresWithDrillBots = new List<UnrefinedOre>();
 
-        //SHOWS WHICH EQUIPMENT ARE EQUIPPED (0-5) 0-1 = Miner. 2-3 = Attacker. 4-5 = Supporter
-        for (int i = 0; i < ShopManager.charEquipments.Length; i++)
-        {
-            if (ShopManager.charEquipments[i].isSelected == true)
-            {
-                Debug.Log(ShopManager.charEquipments[i].equipName + " " + ShopManager.charEquipments[i].isSelected);
-            }
-        }
-
         //SHOWS THE QUANTITY OF EACH ITEM (1-4 = Consumables)
         for( int i = 1; i < ShopManager.updatedShopItems.Length / 4; i++)
         {
