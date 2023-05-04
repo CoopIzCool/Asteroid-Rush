@@ -390,7 +390,7 @@ public class GenerateLevel : MonoBehaviour
 
 			if (IsTileWalkable(col, 1))
 			{
-				grid[0, col] = Instantiate(tilePrefabs[tilePrefabs.Length - 3], new Vector3(col, 0, 0), tilePrefabs[tilePrefabs.Length - 3].transform.rotation, enemyZoneObjs[0].transform);
+				grid[0, col] = Instantiate(tilePrefabs[tilePrefabs.Length - 7], new Vector3(col, 0, 0), tilePrefabs[tilePrefabs.Length - 7].transform.rotation, enemyZoneObjs[0].transform);
 				enemyZoneObjs[0].GetComponent<Zone>().tiles.Add(grid[0, col]);
 				grid[0, col].GetComponent<Tile>().xPos = col;
 				grid[0, col].GetComponent<Tile>().zPos = 0;
@@ -409,7 +409,7 @@ public class GenerateLevel : MonoBehaviour
 
 			if (IsTileWalkable(col, gridHeight - 2))
 			{
-				grid[gridHeight - 1, col] = Instantiate(tilePrefabs[tilePrefabs.Length - 3], new Vector3(col, 0, gridHeight - 1), tilePrefabs[tilePrefabs.Length - 3].transform.rotation, enemyZoneObjs[2].transform);
+				grid[gridHeight - 1, col] = Instantiate(tilePrefabs[tilePrefabs.Length - 7], new Vector3(col, 0, gridHeight - 1), tilePrefabs[tilePrefabs.Length - 7].transform.rotation, enemyZoneObjs[2].transform);
 				enemyZoneObjs[2].GetComponent<Zone>().tiles.Add(grid[gridHeight - 1, col]);
 				grid[gridHeight - 1, col].GetComponent<Tile>().xPos = col;
 				grid[gridHeight - 1, col].GetComponent<Tile>().zPos = gridHeight - 1;
@@ -429,7 +429,7 @@ public class GenerateLevel : MonoBehaviour
 			tile = grid[row, 1].GetComponent<Tile>();
 			if (IsTileWalkable(1, row))
 			{
-				grid[row, 0] = Instantiate(tilePrefabs[tilePrefabs.Length - 3], new Vector3(0, 0, row), tilePrefabs[tilePrefabs.Length - 3].transform.rotation, enemyZoneObjs[1].transform);
+				grid[row, 0] = Instantiate(tilePrefabs[tilePrefabs.Length - 7], new Vector3(0, 0, row), tilePrefabs[tilePrefabs.Length - 7].transform.rotation, enemyZoneObjs[1].transform);
 				enemyZoneObjs[1].GetComponent<Zone>().tiles.Add(grid[row, 0]);
 				grid[row, 0].GetComponent<Tile>().xPos = 0;
 				grid[row, 0].GetComponent<Tile>().zPos = row;
@@ -449,7 +449,7 @@ public class GenerateLevel : MonoBehaviour
 			tile = grid[row, gridWidth - 2].GetComponent<Tile>();
 			if (IsTileWalkable(gridWidth - 2, row))
 			{
-				grid[row, gridWidth - 1] = Instantiate(tilePrefabs[tilePrefabs.Length - 3], new Vector3(gridWidth - 1, 0, row), tilePrefabs[tilePrefabs.Length - 3].transform.rotation, enemyZoneObjs[3].transform);
+				grid[row, gridWidth - 1] = Instantiate(tilePrefabs[tilePrefabs.Length - 7], new Vector3(gridWidth - 1, 0, row), tilePrefabs[tilePrefabs.Length - 7].transform.rotation, enemyZoneObjs[3].transform);
 				enemyZoneObjs[3].GetComponent<Zone>().tiles.Add(grid[row, gridWidth - 1]);
 				grid[row, gridWidth - 1].GetComponent<Tile>().xPos = gridWidth - 1;
 				grid[row, gridWidth - 1].GetComponent<Tile>().zPos = row;
@@ -468,77 +468,90 @@ public class GenerateLevel : MonoBehaviour
 			{
 				if (grid[0, col] == null)
 				{
-					grid[0, col] = Instantiate(tilePrefabs[tilePrefabs.Length - 1], new Vector3(col, tilePrefabs[tilePrefabs.Length - 1].transform.position.y, 0), Quaternion.identity, borderZoneObj.transform);
+					grid[0, col] = Instantiate(tilePrefabs[(int)asteroidType * 2], new Vector3(col, 0, 0), tilePrefabs[(int)asteroidType * 2].transform.rotation, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[0, col]);
 					grid[0, col].GetComponent<Tile>().xPos = col;
 					grid[0, col].GetComponent<Tile>().zPos = 0;
+					grid[0, col].GetComponent<Tile>().occupant = Instantiate(tilePrefabs[tilePrefabs.Length - 1 - (int)asteroidType * 2], new Vector3(col, tilePrefabs[tilePrefabs.Length - 1 - (int)asteroidType * 2].transform.position.y, 0), tilePrefabs[tilePrefabs.Length - 1 - (int)asteroidType * 2].transform.rotation, borderZoneObj.transform);
+					GameObject corner = grid[0, col].GetComponent<Tile>().occupant;
+					corner.transform.localScale *= 1.5f;
+
+					if (col == 0)
+					{
+						corner.transform.SetPositionAndRotation(corner.transform.position, Quaternion.Euler(corner.transform.rotation.eulerAngles.x, corner.transform.rotation.eulerAngles.y, -90));
+					}
+					else
+					{
+						corner.transform.SetPositionAndRotation(corner.transform.position, Quaternion.Euler(corner.transform.rotation.eulerAngles.x, corner.transform.rotation.eulerAngles.y, -180));
+					}
 				}
 
 				if (grid[gridHeight - 1, col] == null)
 				{
-					grid[gridHeight - 1, col] = Instantiate(tilePrefabs[tilePrefabs.Length - 1], new Vector3(col, tilePrefabs[tilePrefabs.Length - 1].transform.position.y, gridHeight - 1), Quaternion.identity, borderZoneObj.transform);
+					grid[gridHeight - 1, col] = Instantiate(tilePrefabs[(int)asteroidType * 2], new Vector3(col, 0, gridHeight - 1), tilePrefabs[(int)asteroidType * 2].transform.rotation, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[gridHeight - 1, col]);
 					grid[gridHeight - 1, col].GetComponent<Tile>().xPos = col;
 					grid[gridHeight - 1, col].GetComponent<Tile>().zPos = gridHeight - 1;
+					grid[gridHeight - 1, col].GetComponent<Tile>().occupant = Instantiate(tilePrefabs[tilePrefabs.Length - 1 - (int)asteroidType * 2], new Vector3(col, tilePrefabs[tilePrefabs.Length - 1 - (int)asteroidType * 2].transform.position.y, gridHeight - 1), tilePrefabs[tilePrefabs.Length - 1 - (int)asteroidType * 2].transform.rotation, borderZoneObj.transform);
+					GameObject corner = grid[gridHeight - 1, col].GetComponent<Tile>().occupant;
+					corner.transform.localScale *= 1.5f;
+
+					if (col == 0)
+					{
+						corner.transform.SetPositionAndRotation(corner.transform.position, Quaternion.Euler(corner.transform.rotation.eulerAngles.x, corner.transform.rotation.eulerAngles.y, 0));
+					}
+					else
+					{
+						corner.transform.SetPositionAndRotation(corner.transform.position, Quaternion.Euler(corner.transform.rotation.eulerAngles.x, corner.transform.rotation.eulerAngles.y, 90));
+					}
 				}
 			}
 			else
 			{
 				if (grid[0, col] == null)
 				{
-					grid[0, col] = Instantiate(tilePrefabs[tilePrefabs.Length - 2], new Vector3(col, tilePrefabs[tilePrefabs.Length - 2].transform.position.y, 0), Quaternion.identity, borderZoneObj.transform);
+					grid[0, col] = Instantiate(tilePrefabs[(int)asteroidType * 2], new Vector3(col, 0, 0), tilePrefabs[(int)asteroidType * 2].transform.rotation, borderZoneObj.transform);
+					grid[0, col].GetComponent<Tile>().occupant = Instantiate(tilePrefabs[tilePrefabs.Length - 2 - (int)asteroidType * 2], new Vector3(col, tilePrefabs[tilePrefabs.Length - 2 - (int)asteroidType * 2].transform.position.y, 0), tilePrefabs[tilePrefabs.Length - 2 - (int)asteroidType * 2].transform.rotation, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[0, col]);
 					grid[0, col].GetComponent<Tile>().xPos = col;
 					grid[0, col].GetComponent<Tile>().zPos = 0;
+					grid[0, col].GetComponent<Tile>().occupant.transform.localScale *= 1.5f;
 				}
 
 				if (grid[gridHeight - 1, col] == null)
 				{
-					grid[gridHeight - 1, col] = Instantiate(tilePrefabs[tilePrefabs.Length - 2], new Vector3(col, tilePrefabs[tilePrefabs.Length - 2].transform.position.y, gridHeight - 1), Quaternion.identity, borderZoneObj.transform);
+					grid[gridHeight - 1, col] = Instantiate(tilePrefabs[(int)asteroidType * 2], new Vector3(col, 0, gridHeight - 1), tilePrefabs[(int)asteroidType * 2].transform.rotation, borderZoneObj.transform);
+					grid[gridHeight - 1, col].GetComponent<Tile>().occupant = Instantiate(tilePrefabs[tilePrefabs.Length - 2 - (int)asteroidType * 2], new Vector3(col, tilePrefabs[tilePrefabs.Length - 2 - (int)asteroidType * 2].transform.position.y, gridHeight - 1), tilePrefabs[tilePrefabs.Length - 2 - (int)asteroidType * 2].transform.rotation, borderZoneObj.transform);
 					borderZone.tiles.Add(grid[gridHeight - 1, col]);
 					grid[gridHeight - 1, col].GetComponent<Tile>().xPos = col;
 					grid[gridHeight - 1, col].GetComponent<Tile>().zPos = gridHeight - 1;
+					grid[gridHeight - 1, col].GetComponent<Tile>().occupant.transform.localScale *= 1.5f;
 				}
 			}
 		}
 
 		for (int row = 0; row < gridHeight; row++)
 		{
-			if (row == 0 || row == gridHeight - 1)
+			if (grid[row, 0] == null)
 			{
-				if (grid[row, 0] == null)
-				{
-					grid[row, 0] = Instantiate(tilePrefabs[tilePrefabs.Length - 1], new Vector3(0, tilePrefabs[tilePrefabs.Length - 1].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
-					borderZone.tiles.Add(grid[row, 0]);
-					grid[row, 0].GetComponent<Tile>().xPos = 0;
-					grid[row, 0].GetComponent<Tile>().zPos = row;
-				}
-
-				if (grid[row, gridWidth - 1] == null)
-				{
-					grid[row, gridWidth - 1] = Instantiate(tilePrefabs[tilePrefabs.Length - 1], new Vector3(gridWidth - 1, tilePrefabs[tilePrefabs.Length - 1].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
-					borderZone.tiles.Add(grid[row, gridWidth - 1]);
-					grid[row, gridWidth - 1].GetComponent<Tile>().xPos = gridWidth - 1;
-					grid[row, gridWidth - 1].GetComponent<Tile>().zPos = row;
-				}
+				grid[row, 0] = Instantiate(tilePrefabs[(int)asteroidType * 2], new Vector3(0, 0, row), tilePrefabs[(int)asteroidType * 2].transform.rotation, borderZoneObj.transform);
+				GameObject border = grid[row, 0].GetComponent<Tile>().occupant = Instantiate(tilePrefabs[tilePrefabs.Length - 2 - (int)asteroidType * 2], new Vector3(0, tilePrefabs[tilePrefabs.Length - 2 - (int)asteroidType * 2].transform.position.y, row), tilePrefabs[tilePrefabs.Length - 2 - (int)asteroidType * 2].transform.rotation, borderZoneObj.transform);
+				borderZone.tiles.Add(grid[row, 0]);
+				grid[row, 0].GetComponent<Tile>().xPos = 0;
+				grid[row, 0].GetComponent<Tile>().zPos = row;
+				border.transform.SetPositionAndRotation(border.transform.position, Quaternion.Euler(border.transform.rotation.eulerAngles.x, border.transform.rotation.eulerAngles.y, 90));
+				border.transform.localScale *= 1.5f;
 			}
-			else
-			{
-				if (grid[row, 0] == null)
-				{
-					grid[row, 0] = Instantiate(tilePrefabs[tilePrefabs.Length - 2], new Vector3(0, tilePrefabs[tilePrefabs.Length - 2].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
-					borderZone.tiles.Add(grid[row, 0]);
-					grid[row, 0].GetComponent<Tile>().xPos = 0;
-					grid[row, 0].GetComponent<Tile>().zPos = row;
-				}
 
-				if (grid[row, gridWidth - 1] == null)
-				{
-					grid[row, gridWidth - 1] = Instantiate(tilePrefabs[tilePrefabs.Length - 2], new Vector3(gridWidth - 1, tilePrefabs[tilePrefabs.Length - 2].transform.position.y, row), Quaternion.identity, borderZoneObj.transform);
-					borderZone.tiles.Add(grid[row, gridWidth - 1]);
-					grid[row, gridWidth - 1].GetComponent<Tile>().xPos = gridWidth - 1;
-					grid[row, gridWidth - 1].GetComponent<Tile>().zPos = row;
-				}
+			if (grid[row, gridWidth - 1] == null)
+			{
+				grid[row, gridWidth - 1] = Instantiate(tilePrefabs[(int)asteroidType * 2], new Vector3(gridWidth - 1, 0, row), tilePrefabs[(int)asteroidType * 2].transform.rotation, borderZoneObj.transform);
+				GameObject border = grid[row, gridWidth - 1].GetComponent<Tile>().occupant = Instantiate(tilePrefabs[tilePrefabs.Length - 2 - (int)asteroidType * 2], new Vector3(gridWidth - 1, tilePrefabs[tilePrefabs.Length - 2 - (int)asteroidType * 2].transform.position.y, row), tilePrefabs[tilePrefabs.Length - 2 - (int)asteroidType * 2].transform.rotation, borderZoneObj.transform);
+				borderZone.tiles.Add(grid[row, gridWidth - 1]);
+				grid[row, gridWidth - 1].GetComponent<Tile>().xPos = gridWidth - 1;
+				grid[row, gridWidth - 1].GetComponent<Tile>().zPos = row;
+				border.transform.SetPositionAndRotation(border.transform.position, Quaternion.Euler(border.transform.rotation.eulerAngles.x, border.transform.rotation.eulerAngles.y, 90));
+				border.transform.localScale *= 1.5f;
 			}
 		}
 		#endregion
