@@ -27,7 +27,7 @@ public class GameplayUI : MonoBehaviour
     private static GameplayUI instance;
     public static GameplayUI Instance { get { return instance; } }
 
-    void Start()
+    void Awake()
     {
         instance = this;
     }

@@ -26,6 +26,7 @@ public class Character : MonoBehaviour
     private int oreCount = 0;
     [SerializeField]
     private bool boarded = false;
+    private float startRotation; // some models are rotated differently by default
 
     [Header("Movement Components:")]
     [SerializeField] private Tile currentTile;
@@ -98,7 +99,7 @@ public class Character : MonoBehaviour
 	protected virtual void Start()
     {
         health = maxHealth;
-
+        startRotation = transform.rotation.eulerAngles.y;
     }
 
     // Update is called once per frame
@@ -114,7 +115,7 @@ public class Character : MonoBehaviour
             RotateToward(direction);
 
             Vector3 lastRotation = transform.rotation.eulerAngles;
-            transform.rotation = Quaternion.Euler(lastRotation.x, Mathf.Atan2(-direction.z, direction.x) / Mathf.PI * 180 - 90, lastRotation.z);
+            transform.rotation = Quaternion.Euler(lastRotation.x, Mathf.Atan2(-direction.z, direction.x) / Mathf.PI * 180 - 90 + startRotation, lastRotation.z);
 
             transform.position += direction * moveSpeed * Time.deltaTime;
 
@@ -173,7 +174,7 @@ public class Character : MonoBehaviour
     // ingores y coordinate
     public void RotateToward(Vector3 facingDirection) {
         Vector3 lastRotation = transform.rotation.eulerAngles;
-        transform.rotation = Quaternion.Euler(lastRotation.x, Mathf.Atan2(-facingDirection.z, facingDirection.x) / Mathf.PI * 180 - 90, lastRotation.z);
+        transform.rotation = Quaternion.Euler(lastRotation.x, Mathf.Atan2(-facingDirection.z, facingDirection.x) / Mathf.PI * 180 - 90 + startRotation, lastRotation.z);
     }
 
     // used to set up a path for the character to move along

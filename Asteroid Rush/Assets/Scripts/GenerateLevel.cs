@@ -14,7 +14,7 @@ public enum Direction
 
 public enum AsteroidType
 {
-	Gray,
+	Gray = 0,
 	Blue,
 	Brown,
 }

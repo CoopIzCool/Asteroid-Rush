@@ -5,7 +5,7 @@ using UnityEngine;
 // handles the spawn of aliens
 public class AlienManager : MonoBehaviour
 {
-    [SerializeField] private GameObject alienPrefab;
+    [SerializeField] private GameObject[] alienPrefabs;
     [SerializeField] private GameObject spawnZoneContainer;
     [SerializeField] private GameObject trapPrefab;
     [SerializeField] private GameObject slowZonePrefab;
@@ -95,7 +95,7 @@ public class AlienManager : MonoBehaviour
             for(int i = 0; i < NUM_PER_SPAWN; i++) {
                 Transform tileSpot = spawnZone.GetChild(i);
 
-                GameObject newAlien = Instantiate(alienPrefab);
+                GameObject newAlien = Instantiate(alienPrefabs[(int)GenerateLevel.asteroidType]);
                 spawnedAliens.Add(newAlien);
                 newAlien.GetComponent<Alien>().MoveToTile(tileSpot.gameObject.GetComponent<Tile>());
 

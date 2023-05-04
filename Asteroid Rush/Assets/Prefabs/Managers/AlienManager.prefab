@@ -44,5 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71ecda0f68031ec4ca032113fe9e85ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  alienPrefab: {fileID: 814260038656492310, guid: 5f3df0a2a13772b4aad46467d63d541b, type: 3}
+  alienPrefabs:
+  - {fileID: 5265794281034928575, guid: d55cb722379f92f4ea7f3285ea4a6b92, type: 3}
+  - {fileID: 3678727057569897394, guid: 42d59efc163bfbb40935082ed0e86620, type: 3}
+  - {fileID: 6053072492234074662, guid: 9f965b54686ddcb43a2dde9aa56500bf, type: 3}
   spawnZoneContainer: {fileID: 0}
+  trapPrefab: {fileID: 6950621260607956420, guid: 1bd92d9656d7d7541b1c0ef9d614a888, type: 3}
+  slowZonePrefab: {fileID: 218734527233071987, guid: 7f5bdd264e11b03448fe734ad3e8002f, type: 3}
+  entityHealthPrefab: {fileID: 3805940419513935397, guid: 48e5edee8fcf07c4c89058e12cc6af69, type: 3}
+  entityHealthBlockPrefab: {fileID: 7022669498572769311, guid: 4b179f050130f3b438baa7ccdb6ac029, type: 3}
