@@ -98,13 +98,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecfcc51e24404b142890f9f0574a295f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 8
-  movementPoints: 3
-  damage: 2
+  maxHealth: 10
+  movementPoints: 4
+  damage: 3
   attackRange: 1
   isPlayer: 0
   miningPower: 0
   oreCount: 0
+  boarded: 0
   currentTile: {fileID: 0}
   heightAboveTile: 0.35
   moved: 0

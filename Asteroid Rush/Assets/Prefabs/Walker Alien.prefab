@@ -97,9 +97,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecfcc51e24404b142890f9f0574a295f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 90
+  maxHealth: 12
   movementPoints: 5
-  damage: 3
+  damage: 4
   attackRange: 1
   isPlayer: 0
   miningPower: 0
