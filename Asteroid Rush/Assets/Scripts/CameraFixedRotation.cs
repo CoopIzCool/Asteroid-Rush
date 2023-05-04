@@ -12,7 +12,8 @@ public class CameraFixedRotation : MonoBehaviour
     {
         Left,
         Right,
-        None
+        None,
+        Start
     }
 
     private RotationState state = RotationState.None;
@@ -29,9 +30,9 @@ public class CameraFixedRotation : MonoBehaviour
     [SerializeField]
     private Transform centerPoint;
 
-    [SerializeField] private float inactiveTime;
-    private float activeTimer;
-    private bool camActive = true;
+    [SerializeField]
+    private float movementScalar = 20f;
+
 
     [SerializeField] private float xShiftIndex;
     [SerializeField] private float zShiftIndex;
@@ -44,11 +45,6 @@ public class CameraFixedRotation : MonoBehaviour
     public bool ItemIsHeld
     {
         set { itemHeld = value; }
-    }
-
-    public bool CamActive
-    {
-        get { return camActive; }
     }
 
     public float XShift
@@ -70,6 +66,8 @@ public class CameraFixedRotation : MonoBehaviour
         counter = 180;
         xRotate = Mathf.PI / 6;
         //xRotateSensitivity = 1.0f;
+        //CenterCameraForRotation();
+        state = RotationState.Start;
     }
 
     // Update is called once per frame
@@ -77,13 +75,13 @@ public class CameraFixedRotation : MonoBehaviour
     {
         bool isActive = false;
         //increments counter;
-        if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) && state == RotationState.None )
+        if ((Input.GetKey(KeyCode.J)) && state == RotationState.None )
         {
             //counter += 36.0f * Time.deltaTime;
             state = RotationState.Left;
             goalRotation = counter + 90.0f;
         }
-        else if ((Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) && state == RotationState.None)
+        else if ((Input.GetKey(KeyCode.L)) && state == RotationState.None)
         {
             //counter -= 36.0f * Time.deltaTime;
             state = RotationState.Right;
@@ -122,10 +120,11 @@ public class CameraFixedRotation : MonoBehaviour
             //xRotateSensitivity += 8.00f * Time.deltaTime;
         }
 
-        
-        
 
+
+        #region Defunct Code
         //changes cameras horizantal view
+        /*
         if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
         {
             xRotate -= 0.6f * Time.deltaTime;
@@ -134,6 +133,7 @@ public class CameraFixedRotation : MonoBehaviour
         {
             xRotate += 0.6f * Time.deltaTime;
         }
+        */
 
         /* Shift CenterPoint Code, defunct for now.
         if (Input.GetKey(KeyCode.I))
@@ -160,27 +160,46 @@ public class CameraFixedRotation : MonoBehaviour
             centerPoint.position = new Vector3(centerShiftAxis, centerPoint.position.y, centerPoint.position.z);
         }
         */
+        #endregion
 
-        //Clamp XRotation to prevent Axis Flipping
-        xRotate = Mathf.Clamp(xRotate, 0.1f, Mathf.PI/2);
-        //Debug.Log(xRotate);
-        //convert x and y to radians
-        float radians = counter * (Mathf.PI / 180.0f);
-        float x = Mathf.Sin(radians) * Mathf.Sin(xRotate) * radius;
-        float y = Mathf.Cos(xRotate) * radius;
-        float z = Mathf.Cos(radians) * Mathf.Sin(xRotate) * radius;
-        //set position and rotation
-        transform.position = new Vector3(x + xShiftIndex, y, z+ zShiftIndex);
-        transform.LookAt(centerPoint);
-        if(!isActive && activeTimer < inactiveTime)
+        if(state == RotationState.None)
         {
-            activeTimer += Time.deltaTime;
-
-            if(activeTimer >= inactiveTime)
+            float x = 0;
+            float z = 0;
+            if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)))
             {
-                camActive = false;
+                x -= Time.deltaTime * movementScalar;
             }
+            else if ((Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)))
+            {
+                x += Time.deltaTime * movementScalar;
+            }
+            if ((Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)))
+            {
+                z += Time.deltaTime * movementScalar;
+            }
+            else if ((Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)))
+            {
+                z -= Time.deltaTime * movementScalar;
+            }
+            //Clamp values to border
+
+            Debug.Log(counter);
+            transform.position += (Quaternion.Euler(0, counter - 180, 0) * new Vector3(x, 0, z));
+            float posX = transform.position.x;
+            float posZ = transform.position.z;
+            posX = Mathf.Clamp(posX, 0, xShiftIndex * 2);
+            posZ = Mathf.Clamp(posZ, 0, zShiftIndex * 2);
+            transform.position = new Vector3(posX, transform.position.y, posZ);
         }
+        else if (state != RotationState.None)
+        {
+            CenterCameraForRotation();
+        }
+
+        //Change camera back after scene is loaded in
+        if(state == RotationState.Start)
+            state = RotationState.None;
     }
 
 
@@ -190,6 +209,22 @@ public class CameraFixedRotation : MonoBehaviour
         //Set radius to be the grid dimentions plus an offset
         radius = ((xShiftIndex + zShiftIndex) / 2.0f) + radiusOffset;
         centerPoint.position = new Vector3(xShiftIndex, 2.0f, zShiftIndex);
+    }
+
+
+    private void CenterCameraForRotation()
+    {
+        //Clamp XRotation to prevent Axis Flipping
+        xRotate = Mathf.Clamp(xRotate, 0.1f, Mathf.PI / 2);
+        //Debug.Log(xRotate);
+        //convert x and y to radians
+        float radians = counter * (Mathf.PI / 180.0f);
+        float x = Mathf.Sin(radians) * Mathf.Sin(xRotate) * radius;
+        float y = Mathf.Cos(xRotate) * radius;
+        float z = Mathf.Cos(radians) * Mathf.Sin(xRotate) * radius;
+        //set position and rotation
+        transform.position = new Vector3(x + xShiftIndex, y, z + zShiftIndex);
+        transform.LookAt(centerPoint);
     }
 }
 
