@@ -53,7 +53,9 @@ public class Rocket : MonoBehaviour
 
     public void AboardShip(GameObject character)
     {
+        character.GetComponent<Character>().CurrentTile.occupant = null;
         character.SetActive(false);
+        rocketTile.SetAvailabillitySelector(false);
         crewmatesAboard++;
         if(crewmatesAboard == crewmateTotal)
         {

@@ -184,7 +184,6 @@ public class CameraFixedRotation : MonoBehaviour
             }
             //Clamp values to border
 
-            Debug.Log(counter);
             transform.position += (Quaternion.Euler(0, counter - 180, 0) * new Vector3(x, 0, z));
             float posX = transform.position.x;
             float posZ = transform.position.z;

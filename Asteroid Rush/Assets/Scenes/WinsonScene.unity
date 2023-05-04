@@ -7566,6 +7566,7 @@ MonoBehaviour:
   spaceshipPrefab: {fileID: 4334381121931400981, guid: 5fbe593229466d44187df133e38e8ed9, type: 3}
   entityHealthPrefab: {fileID: 0}
   entityHealthBlockPrefab: {fileID: 0}
+  oreHealthBlockPrefab: {fileID: 0}
   parentZones: []
   enemyZoneWidth: 0
   enemyZoneHeight: 0
@@ -19215,7 +19216,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -0.341, y: -0.149}
-  m_SizeDelta: {x: 20, y: 5}
+  m_SizeDelta: {x: 25, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1335596036
 MonoBehaviour:
@@ -19237,7 +19238,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Asteroid #39XP87
+  m_text: Asteroid #39XP-MED
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -23537,7 +23538,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -0.367, y: -0.15}
-  m_SizeDelta: {x: 20, y: 5}
+  m_SizeDelta: {x: 25, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1622835673
 MonoBehaviour:
@@ -23559,7 +23560,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Asteroid #56GF12
+  m_text: Asteroid #56GF-EZ
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -24863,8 +24864,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 4.6, y: 179, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.37, y: -0.072}
-  m_SizeDelta: {x: 20, y: 5}
+  m_AnchoredPosition: {x: -0.34, y: -0.072}
+  m_SizeDelta: {x: 25, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1688821222
 MonoBehaviour:
@@ -24886,7 +24887,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Asteroid #20ZL47
+  m_text: Asteroid #20ZL-HRD
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

@@ -9,6 +9,7 @@ public class Character : MonoBehaviour
 {
     #region Fields
     [Header("Base Character Components:")]
+    [SerializeField]
     private int health;
     [SerializeField]
     private int maxHealth;
@@ -313,6 +314,7 @@ public class Character : MonoBehaviour
         currentTile.occupant = null;
 		gameObject.SetActive(false);
 		DataTracking.SaveData();
+        Debug.Log("DEATH");
 		SceneManager.LoadScene("Defeat");
     }
 
