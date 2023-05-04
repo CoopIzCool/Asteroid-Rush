@@ -202,7 +202,7 @@ public class Character : MonoBehaviour
 			int amtDamage = int.Parse(DataTracking.GetData(2)) + damage;
 			DataTracking.SetData(2, amtDamage.ToString());
 		}
-        else
+        
 
         //POTION & GUARD
         if (gameObject.GetComponent<Miner>())
@@ -258,6 +258,7 @@ public class Character : MonoBehaviour
             //Restores some health upon reaching half health, and uses a potion
             if (health <= maxHealth / 2)
             {
+
                 health += 3;
                 ShopManager.updatedShopItems[3, 1] -= 1;
             }
