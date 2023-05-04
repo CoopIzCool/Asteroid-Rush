@@ -49,7 +49,7 @@ public class HealthUI : MonoBehaviour
 			// Interesting Fact: Destroy activates at the end of the frame.
 			// If you do not include the "- i" here, Destroy() will just activate on the last child multiple times.
             // You could use DestroyImmediate() to achieve the same effect more cleanly, but Unity highly recommends against using it.
-			if (characterBar.childCount > 0) Destroy(characterBar.GetChild(characterBar.childCount - 1 - i).gameObject);
+			if (characterBar.childCount > i) Destroy(characterBar.GetChild(characterBar.childCount - 1 - i).gameObject);
             else break;
         }
     }
