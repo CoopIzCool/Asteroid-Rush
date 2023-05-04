@@ -5,7 +5,7 @@ using UnityEngine;
 public class HealthUI : MonoBehaviour
 {
     // A list of the characters in the scene
-    private static List<GameObject> characters = new List<GameObject>();
+    public static List<GameObject> characters = new List<GameObject>();
 
     // A list of the health bars in the scene
     [SerializeField] private GameObject[] healthBars;
