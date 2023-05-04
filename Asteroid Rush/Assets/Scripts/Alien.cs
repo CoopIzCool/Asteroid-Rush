@@ -9,6 +9,12 @@ public class Alien : Character
 
 	public GameObject HealthBar { get; set; }
 
+	protected override void Start()
+	{
+		base.Start();
+		RotateToward(TurnHandler.Instance.RocketObject.transform.position - transform.position);
+	}
+
 	public override void TakeDamage(int damage)
 	{
 		base.TakeDamage(damage);

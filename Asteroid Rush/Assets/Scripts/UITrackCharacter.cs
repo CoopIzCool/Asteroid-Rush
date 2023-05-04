@@ -6,13 +6,12 @@ using UnityEngine;
 public class UITrackCharacter : MonoBehaviour
 {
     public GameObject TargetObject;
-    private const float UPSHIFT = 50.0f; // distance above the head of the character
 
     void Update()
     {
-        Vector3 worldPosition = TargetObject.transform.position;
+        Vector3 worldPosition = TargetObject.transform.position + new Vector3(0, 1, 0);
         Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
-        transform.position = screenPosition + new Vector3(0, UPSHIFT, 0);
+        transform.position = screenPosition + new Vector3(0, 10, 0);
         //Deactivate UI if the player is deactivated
         if(!TargetObject.activeInHierarchy)
         {

@@ -65,6 +65,7 @@ public class TurnHandler : MonoBehaviour
     public Rocket RocketObject
     {
         set { rocket = value; }
+        get { return rocket; }
     }
     #endregion
 

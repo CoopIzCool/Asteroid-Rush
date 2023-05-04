@@ -99,7 +99,7 @@ public class AlienManager : MonoBehaviour
                 spawnedAliens.Add(newAlien);
                 newAlien.GetComponent<Alien>().MoveToTile(tileSpot.gameObject.GetComponent<Tile>());
 
-				GameObject enemyHealthBar = Instantiate(entityHealthPrefab, GameObject.Find("EnemyUI").transform);
+                GameObject enemyHealthBar = Instantiate(entityHealthPrefab, GameObject.Find("EnemyUI").transform);
 				enemyHealthBar.GetComponent<UITrackCharacter>().TargetObject = tileSpot.GetComponent<Tile>().occupant;
 				newAlien.GetComponent<Alien>().HealthBar = enemyHealthBar;
                 int amtHealth = tileSpot.GetComponent<Tile>().occupant.GetComponent<Alien>().MaxHealth;
