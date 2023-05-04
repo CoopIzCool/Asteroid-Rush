@@ -54,6 +54,7 @@ public class GenerateLevel : MonoBehaviour
 	[SerializeField] private GameObject spaceshipPrefab;
 	[SerializeField] private GameObject entityHealthPrefab;
 	[SerializeField] private GameObject entityHealthBlockPrefab;
+	[SerializeField] private GameObject oreHealthBlockPrefab;
 
 	[Space]
 	[Header("Zone Parameters")]
@@ -609,9 +610,9 @@ public class GenerateLevel : MonoBehaviour
 
 				for (int j = 0; j < numBlocks; j++)
 				{
-					GameObject healthBlock = Instantiate(entityHealthBlockPrefab, new Vector3(healthBarLeft + padding + healthBlockWidth * j, oreHealthBar.transform.position.y, oreHealthBar.transform.position.z), Quaternion.identity, oreHealthBar.transform);
+					GameObject healthBlock = Instantiate(oreHealthBlockPrefab, new Vector3(healthBarLeft + padding + healthBlockWidth * j, oreHealthBar.transform.position.y, oreHealthBar.transform.position.z), Quaternion.identity, oreHealthBar.transform);
 					healthBlock.transform.localPosition = new Vector3(healthBarLeft + padding + healthBlockWidth / 2f + healthBlockWidth * j, healthBlock.transform.localPosition.y, healthBlock.transform.localPosition.z);
-					healthBlock.transform.localScale = new Vector3(0.3f, entityHealthBlockPrefab.transform.localScale.y / oreHealthBar.transform.localScale.y, entityHealthBlockPrefab.transform.localScale.z);
+					healthBlock.transform.localScale = new Vector3(0.3f, oreHealthBlockPrefab.transform.localScale.y / oreHealthBar.transform.localScale.y, oreHealthBlockPrefab.transform.localScale.z);
 				}
 
 				oreHealthBar.transform.localScale *= 7;
@@ -666,9 +667,9 @@ public class GenerateLevel : MonoBehaviour
 
 			for (int j = 0; j < numBlocks; j++)
 			{
-				GameObject healthBlock = Instantiate(entityHealthBlockPrefab, new Vector3(healthBarLeft + padding + healthBlockWidth * j, oreHealthBar.transform.position.y, oreHealthBar.transform.position.z), Quaternion.identity, oreHealthBar.transform);
+				GameObject healthBlock = Instantiate(oreHealthBlockPrefab, new Vector3(healthBarLeft + padding + healthBlockWidth * j, oreHealthBar.transform.position.y, oreHealthBar.transform.position.z), Quaternion.identity, oreHealthBar.transform);
 				healthBlock.transform.localPosition = new Vector3(healthBarLeft + padding + healthBlockWidth / 2f + healthBlockWidth * j, healthBlock.transform.localPosition.y, healthBlock.transform.localPosition.z);
-				healthBlock.transform.localScale = new Vector3(0.3f, entityHealthBlockPrefab.transform.localScale.y / oreHealthBar.transform.localScale.y, entityHealthBlockPrefab.transform.localScale.z);
+				healthBlock.transform.localScale = new Vector3(0.3f, oreHealthBlockPrefab.transform.localScale.y / oreHealthBar.transform.localScale.y, oreHealthBlockPrefab.transform.localScale.z);
 			}
 
 			oreHealthBar.transform.localScale *= 7;

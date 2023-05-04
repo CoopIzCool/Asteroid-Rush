@@ -102,16 +102,18 @@ public class AlienManager : MonoBehaviour
                 GameObject enemyHealthBar = Instantiate(entityHealthPrefab, GameObject.Find("EnemyUI").transform);
 				enemyHealthBar.GetComponent<UITrackCharacter>().TargetObject = tileSpot.GetComponent<Tile>().occupant;
 				newAlien.GetComponent<Alien>().HealthBar = enemyHealthBar;
-                int amtHealth = tileSpot.GetComponent<Tile>().occupant.GetComponent<Alien>().MaxHealth;
-				float healthBlockWidth = enemyHealthBar.GetComponent<RectTransform>().rect.width / amtHealth;
+				float padding = 2.5f;
+				int amtHealth = tileSpot.GetComponent<Tile>().occupant.GetComponent<Alien>().MaxHealth;
+				float healthBlockPosition = enemyHealthBar.GetComponent<RectTransform>().rect.width / amtHealth;
+				float healthBlockWidth = healthBlockPosition - padding;
 				float healthBarLeft = -enemyHealthBar.GetComponent<RectTransform>().rect.width / 2f;
-				float padding = 0.1f;
 
 				for (int j = 0; j < amtHealth; j++)
 				{
-					GameObject healthBlock = Instantiate(entityHealthBlockPrefab, new Vector3(healthBarLeft + padding + healthBlockWidth * j, enemyHealthBar.transform.position.y, enemyHealthBar.transform.position.z), Quaternion.identity, enemyHealthBar.transform);
-					healthBlock.transform.localPosition = new Vector3(healthBarLeft + padding + healthBlockWidth / 2f + healthBlockWidth * j, healthBlock.transform.localPosition.y, healthBlock.transform.localPosition.z);
-					healthBlock.transform.localScale = new Vector3(0.2f, entityHealthBlockPrefab.transform.localScale.y / enemyHealthBar.transform.localScale.y, entityHealthBlockPrefab.transform.localScale.z);
+					GameObject healthBlock = Instantiate(entityHealthBlockPrefab, enemyHealthBar.transform);
+					healthBlock.transform.localPosition = new Vector3(healthBarLeft + padding / 4f + healthBlockPosition / 2f + healthBlockPosition * j, 0, healthBlock.transform.localPosition.z);
+                    healthBlock.transform.localScale = new Vector3(entityHealthBlockPrefab.transform.localScale.x, entityHealthBlockPrefab.transform.localScale.y / enemyHealthBar.transform.localScale.y, entityHealthBlockPrefab.transform.localScale.z);
+                    healthBlock.GetComponent<RectTransform>().sizeDelta = new Vector2(healthBlockWidth, healthBlock.GetComponent<RectTransform>().rect.size.y);
 				}
 
 				enemyHealthBar.transform.localScale *= 7;

@@ -2029,6 +2029,7 @@ MonoBehaviour:
   spaceshipPrefab: {fileID: 4334381121931400981, guid: 5fbe593229466d44187df133e38e8ed9, type: 3}
   entityHealthPrefab: {fileID: 3805940419513935397, guid: 48e5edee8fcf07c4c89058e12cc6af69, type: 3}
   entityHealthBlockPrefab: {fileID: 7022669498572769311, guid: 4b179f050130f3b438baa7ccdb6ac029, type: 3}
+  oreHealthBlockPrefab: {fileID: 679060253473413070, guid: 48dfbfc439efa5241acbc4ce41aa4215, type: 3}
   parentZones:
   - {fileID: 167595214}
   - {fileID: 1761830342}
