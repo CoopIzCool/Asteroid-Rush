@@ -82,6 +82,9 @@ public class GenerateLevel : MonoBehaviour
 	[Header("Camera Logic & Misc")]
 	[SerializeField] CameraFixedRotation cameraLogic;
 
+	[Space]
+	[SerializeField] private HealthUI healthUI;
+
 	// Start is called before the first frame update
 	void Start()
 	{
@@ -236,6 +239,8 @@ public class GenerateLevel : MonoBehaviour
 			hasGoodZones = BuildGrid();
 		}
 		while (!hasGoodZones || !IsGridValid());
+
+		healthUI.InitHealthBars();
 	}
 
 	/// <summary>

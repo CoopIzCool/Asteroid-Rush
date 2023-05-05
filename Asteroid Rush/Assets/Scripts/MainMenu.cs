@@ -11,7 +11,6 @@ public class MainMenu : MonoBehaviour
     public void StartGame()
     {
         SceneManager.LoadScene("WinsonScene");
-		HealthUI.characters.Clear();
 		Debug.Log("Clicked");
     }
 

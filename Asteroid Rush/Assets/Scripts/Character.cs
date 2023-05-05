@@ -41,6 +41,11 @@ public class Character : MonoBehaviour
 	#endregion
 
 	#region Properties
+	public int Health
+	{
+		get { return health; }
+	}
+
 	public int MaxHealth
     {
         get { return maxHealth; }
@@ -258,7 +263,7 @@ public class Character : MonoBehaviour
             //Restores some health upon reaching half health, and uses a potion
             if (health <= maxHealth / 2)
             {
-
+                HealthUI.UpdateHealthBar(gameObject, -3);
                 health += 3;
                 ShopManager.updatedShopItems[3, 1] -= 1;
             }
@@ -270,8 +275,9 @@ public class Character : MonoBehaviour
         //If revive is equipped, and there is at least one revive left in inventory
         if (roleItemsEquipped[1].isSelected && ShopManager.updatedShopItems[3, 2] >= 1)
         {
-            //Restores some health upon dying, and uses a revive
-            health += 5;
+			//Restores some health upon dying, and uses a revive
+			health += 5;
+			HealthUI.UpdateHealthBar(gameObject, -5);
             ShopManager.updatedShopItems[3, 2] -= 1;
         }
 

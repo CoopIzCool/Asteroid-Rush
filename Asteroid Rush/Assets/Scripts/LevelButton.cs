@@ -44,7 +44,9 @@ public class LevelButton : MonoBehaviour
             int numRuns = int.Parse(DataTracking.GetData(0)) + 1;
             DataTracking.SetData(0, numRuns.ToString());
 
-            SceneManager.LoadScene("JohnScene");
+			HealthUI.healthBars = null;
+
+			SceneManager.LoadScene("JohnScene");
         }
         else
         {

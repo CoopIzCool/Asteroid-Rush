@@ -4,11 +4,8 @@ using UnityEngine;
 
 public class HealthUI : MonoBehaviour
 {
-    // A list of the characters in the scene
-    public static List<GameObject> characters = new List<GameObject>();
-
     // A list of the health bars in the scene
-    [SerializeField] private GameObject[] healthBars;
+    [SerializeField] public static GameObject[] healthBars;
 
     // Health blocks
     [SerializeField] private GameObject healthBlockPrefab;
@@ -17,11 +14,11 @@ public class HealthUI : MonoBehaviour
     // The canvas
     [SerializeField] private static GameObject canvas;
 
-    private void InitHealthBars()
+    public void InitHealthBars()
     {
         for(int i = 0; i < healthBars.Length; i++)
         {
-            int numBlocks = characters[i].GetComponent<Character>().MaxHealth;
+            int numBlocks = GenerateLevel.PlayerCharacters[i].GetComponent<Character>().MaxHealth;
             float healthBlockWidth = healthBars[i].GetComponent<RectTransform>().rect.width / numBlocks;
 			float healthBarLeft = -healthBars[i].GetComponent<RectTransform>().rect.width / 2f;
 
@@ -42,32 +39,36 @@ public class HealthUI : MonoBehaviour
     /// <param name="damage">The number of health blocks to remove</param>
     public static void UpdateHealthBar(GameObject character, int damage)
     {
-        Transform characterBar = canvas.transform.GetChild(characters.IndexOf(character) * 2);
-
-        for (int i = 0; i < damage; i++)
+        int playerIndex = 0;
+        for(int i = 0; i < GenerateLevel.PlayerCharacters.Length; i++)
         {
+            if (GenerateLevel.PlayerCharacters[i] == character)
+            {
+                playerIndex = i * 2;
+                break;
+            }
+		}
+
+        Transform characterBar = canvas.transform.GetChild(playerIndex);
+
+		for (int i = 0; i < character.GetComponent<Character>().MaxHealth; i++)
+		{
 			// Interesting Fact: Destroy activates at the end of the frame.
 			// If you do not include the "- i" here, Destroy() will just activate on the last child multiple times.
-            // You could use DestroyImmediate() to achieve the same effect more cleanly, but Unity highly recommends against using it.
-			if (characterBar.childCount > i) Destroy(characterBar.GetChild(characterBar.childCount - 1 - i).gameObject);
-            else break;
-        }
+			// You could use DestroyImmediate() to achieve the same effect more cleanly, but Unity highly recommends against using it.
+			characterBar.GetChild(i).gameObject.SetActive(i < character.GetComponent<Character>().Health);
+		}
     }
 
     // Start is called before the first frame update
     void Start()
     {
         canvas = GameObject.Find("Canvas");
+        healthBars = new GameObject[] { canvas.transform.GetChild(0).gameObject, canvas.transform.GetChild(2).gameObject, canvas.transform.GetChild(4).gameObject };
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(characters == null || characters.Count == 0)
-        {
-			characters.AddRange(GameObject.FindGameObjectsWithTag("Character"));
-
-			InitHealthBars();
-		}
     }
 }
