@@ -32,6 +32,9 @@ public class Alien : Character
     {
         AlienManager.Instance.RemoveAlien(this);
         Destroy(HealthBar);
+		if(CurrentTrap != null) {
+			Destroy(CurrentTrap);
+		}
 
         int numKills = int.Parse(DataTracking.GetData(3)) + 1;
         DataTracking.SetData(3, numKills.ToString());
