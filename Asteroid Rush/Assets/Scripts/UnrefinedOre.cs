@@ -24,6 +24,9 @@ public class UnrefinedOre : MonoBehaviour
 
     public bool MineOre(int damage)
     {
+        if(damage > breakabillity) {
+            damage = breakabillity;
+        }
         breakabillity -= damage;
         for (int i = 0; i < damage; i++)
         {
