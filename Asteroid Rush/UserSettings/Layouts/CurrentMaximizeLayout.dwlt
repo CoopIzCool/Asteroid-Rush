@@ -24,7 +24,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 44034
+  controlID: 46266
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -141,7 +141,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 44035
+  controlID: 46267
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -166,7 +166,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 44036
+  controlID: 46268
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -186,8 +186,8 @@ MonoBehaviour:
     y: 0
     width: 301
     height: 536
-  m_MinSize: {x: 201, y: 221}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 6}
   m_Panes:
   - {fileID: 6}
@@ -226,7 +226,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: d4c2eaff5a30edffaa30edffd230edffe230edffc632edfff033edff0634edff6e7eedff263defff8495f0ff22a8f0ffa2d1f1ffaed1f1ffbad1f1ffead5f1ff3ed6f1ff66d7f1ff74d7f1ff66d9f1ff8cdaf1ffa2daf1ff94edf1ffd4edf1ffccf0f1ff4603f2ff0a04f2ffaa06f2ff2a24f2ffca24f2ffa225f2ffd628f2fff88cf3ff4c0cf6ff7a9bf6ff6ac7f6ff42d9f6ff00e2f6ffe476f7ff76acf7ff12b9f7ffe85afbff205dfbff40e2feff68e2feff90e2feffb8e2feff0ae3feff16e3feff22e3feff3ee4feff9ee6feff2cebffff3cebffff48ebffff26f2fffff8f7ffff34faffff5e7f00004e9400005e940000a69f0000b49f0000c49f00000eab000058ab00006a080100fa0801002c0901008c110100841201009012010032140100601401009a150100fa9b0100069c0100749c010070f30100
+      m_ExpandedIDs: 328adfffd4c2eaff5a30edffaa30edffd230edffe230edffc632edfff033edff0634edff6e7eedff263defff8495f0ff22a8f0ffa2d1f1ffaed1f1ffbad1f1ffead5f1ff3ed6f1ff66d7f1ff74d7f1ff66d9f1ff8cdaf1ffa2daf1ff94edf1ffd4edf1ffccf0f1ff4603f2ff0a04f2ffaa06f2ff2a24f2ffca24f2ffa225f2ffd628f2fff88cf3ff4c0cf6ff7a9bf6ff6ac7f6ff42d9f6ff00e2f6ffe476f7ff76acf7ff12b9f7ffe85afbff205dfbff40e2feff68e2feff90e2feffb8e2feff0ae3feff16e3feff22e3feff3ee4feff9ee6feff2cebffff3cebffff48ebffff26f2fffff8f7ffff34faffff5e7f00004e9400005e940000a69f0000b49f0000c49f00000eab000058ab00006a080100fa0801002c0901008c110100841201009012010032140100601401009a150100fa9b0100069c0100749c010070f3010092210200
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -502,9 +502,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 156.02075, y: 496.33963, z: 11.9429455}
+    m_Target: {x: 173.03029, y: 484.00772, z: 11.580397}
     speed: 2
-    m_Value: {x: 156.02075, y: 496.33963, z: 11.9429455}
+    m_Value: {x: 173.03029, y: 484.00772, z: 11.580397}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -592,7 +592,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ConsoleWindow
+  m_Name: ProjectBrowser
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -601,14 +601,14 @@ MonoBehaviour:
     y: 536
     width: 1223
     height: 231
-  m_MinSize: {x: 101, y: 121}
-  m_MaxSize: {x: 4001, y: 4021}
-  m_ActualView: {fileID: 11}
+  m_MinSize: {x: 231, y: 271}
+  m_MaxSize: {x: 10001, y: 10021}
+  m_ActualView: {fileID: 10}
   m_Panes:
   - {fileID: 10}
   - {fileID: 11}
-  m_Selected: 1
-  m_LastSelected: 0
+  m_Selected: 0
+  m_LastSelected: 1
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -650,13 +650,13 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scenes
+    - Assets/Scripts
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scenes
+  - Assets/Scripts
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\ryanc\Desktop\RIT\Spring 2023\IGME 603\Project 5\Asteroid-Rush\Asteroid
     Rush
@@ -664,8 +664,8 @@ MonoBehaviour:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 79}
-    m_SelectedIDs: 72660000
-    m_LastClickedID: 26226
+    m_SelectedIDs: 76660000
+    m_LastClickedID: 26230
     m_ExpandedIDs: 000000005066000052660000546600005666000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -719,8 +719,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 
-    m_LastClickedInstanceID: 0
+    m_SelectedInstanceIDs: 981d0000
+    m_LastClickedInstanceID: 7576
     m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c623000000000000
     m_RenameOverlay:
@@ -797,8 +797,8 @@ MonoBehaviour:
     y: 0
     width: 377
     height: 767
-  m_MinSize: {x: 275, y: 50}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 276, y: 71}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 13}
   m_Panes:
   - {fileID: 13}
@@ -838,7 +838,7 @@ MonoBehaviour:
     m_CachedPref: -160
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
-  m_LastInspectedObjectInstanceID: -1
+  m_LastInspectedObjectInstanceID: 7576
   m_LastVerticalScrollValue: 0
   m_GlobalObjectId: 
   m_InspectorMode: 0

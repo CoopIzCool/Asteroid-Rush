@@ -98,10 +98,13 @@ public class GenerateLevel : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		//Code to refresh grid, not needed
+		/*
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
 			ResetGrid();
 		}
+		*/
 	}
 
 	/// <summary>

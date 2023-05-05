@@ -42,6 +42,16 @@ public class Tile : MonoBehaviour
         return false;
     }
 
+    public bool IsAttackableTile()
+    {
+        if(occupant == null)
+        {
+            if (tileType == TileType.Basic || tileType == TileType.Pit)
+                return true;
+        }
+        return false;
+    }
+
     //Check if the tile has a character on it and whether or not the entity trying to attack is on the same side
     public bool IsAttackable(Character attackingCharacter)
     {

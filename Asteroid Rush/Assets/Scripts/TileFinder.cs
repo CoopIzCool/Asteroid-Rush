@@ -107,7 +107,7 @@ public class TileFinder : MonoBehaviour
                     {
                         //Debug.Log("Checking at " + adjacentLeftTile.zPos + " , " + adjacentLeftTile.xPos);
                         lookedAtTiles.Add(adjacentLeftTile);
-                        if (adjacentLeftTile.IsAvailableTile())
+                        if (adjacentLeftTile.IsAttackableTile())
                         {
                             nextLevelTiles.Add(adjacentLeftTile);
                             //adjacentLeftTile.SetAvailabillitySelector(true);
@@ -128,7 +128,7 @@ public class TileFinder : MonoBehaviour
                     {
                         //Debug.Log("Checking at " + adjacentRightTile.zPos + " , " + adjacentRightTile.xPos);
                         lookedAtTiles.Add(adjacentRightTile);
-                        if (adjacentRightTile.IsAvailableTile())
+                        if (adjacentRightTile.IsAttackableTile())
                         {
                             nextLevelTiles.Add(adjacentRightTile);
                             //adjacentRightTile.SetAvailabillitySelector(true);
@@ -149,7 +149,7 @@ public class TileFinder : MonoBehaviour
                     {
                         //Debug.Log("Checking at " + adjacentBottomTile.zPos + " , " + adjacentBottomTile.xPos);
                         lookedAtTiles.Add(adjacentBottomTile);
-                        if (adjacentBottomTile.IsAvailableTile())
+                        if (adjacentBottomTile.IsAttackableTile())
                         {
                             nextLevelTiles.Add(adjacentBottomTile);
                             //adjacentBottomTile.SetAvailabillitySelector(true);
@@ -171,7 +171,7 @@ public class TileFinder : MonoBehaviour
                     {
                         //Debug.Log("Checking at " + adjacentTopTile.zPos + " , " + adjacentTopTile.xPos);
                         lookedAtTiles.Add(adjacentTopTile);
-                        if (adjacentTopTile.IsAvailableTile())
+                        if (adjacentTopTile.IsAttackableTile())
                         {
                             nextLevelTiles.Add(adjacentTopTile);
                             //adjacentTopTile.SetAvailabillitySelector(true);
