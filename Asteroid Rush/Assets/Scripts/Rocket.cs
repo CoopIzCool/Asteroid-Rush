@@ -79,7 +79,7 @@ public class Rocket : MonoBehaviour
 		DataTracking.SetData(1, numWins.ToString());
         DataTracking.SaveData();
 
-        //SceneManager.LoadScene("Victory");
-        SceneManager.LoadScene("WinLoseScene");
+        SceneManager.LoadScene("Victory");
+        //SceneManager.LoadScene("WinLoseScene");
     }
 }

@@ -26,13 +26,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/NewestRyanScene.unity
     guid: 76e4f2b7560d64847bfb2ca25376e8eb
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Victory.unity
     guid: ec57f98f39195c044ae10be47d1a0449
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Defeat.unity
     guid: 608d22248e3798f47bc109924c03e0d2
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/WinLoseScene.unity
     guid: 1069665380e2f0247b3081a05fe205f3
   m_configObjects: {}
