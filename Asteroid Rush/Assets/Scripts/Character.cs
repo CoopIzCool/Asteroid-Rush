@@ -322,7 +322,8 @@ public class Character : MonoBehaviour
 		gameObject.SetActive(false);
 		DataTracking.SaveData();
         Debug.Log("DEATH");
-		SceneManager.LoadScene("Defeat");
+        //SceneManager.LoadScene("Defeat");
+        SceneManager.LoadScene("WinLoseScene");
     }
 
     public void MineOre(UnrefinedOre ore)
